@@ -445,6 +445,8 @@ func main() {
 	/////// API 로 호출하는 경우 start////////
 
 	e.POST("/api/auth/login", controller.ApiLogin)
+	e.POST("/auth/snsloginproc", controller.SnsLoginProc)
+	e.GET("/auth/snsloginproc", controller.GetSnsLoginProc)
 
 	restrictedGroup := e.Group("/api/auth/restricted/")
 	restrictedGroup.Use(middleware.JWT([]byte(os.Getenv("LoginAccessSecret"))))

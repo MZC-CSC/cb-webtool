@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+
 	// "github.com/davecgh/go-spew/spew"
 	"io/ioutil"
 	"log"
@@ -897,4 +898,34 @@ func LogoutProc(c echo.Context) error {
 	// return c.Render(http.StatusOK, "login.html", nil)
 	return c.Redirect(http.StatusTemporaryRedirect, "/login")
 
+}
+
+func SnsLoginProc(c echo.Context) error {
+	fmt.Println("============== SnsLogin Get proc ===============")
+
+	state := c.FormValue("state")
+	log.Println(state)
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message":                       "success",
+		"status":                        "200",
+		"LoginInfo":                     nil,
+		"NameSpaceList":                 nil,
+		"CloudConnectionConfigInfoList": nil,
+	})
+}
+
+func GetSnsLoginProc(c echo.Context) error {
+	fmt.Println("============== SnsLogin Get proc ===============")
+
+	state := c.FormValue("state")
+	log.Println(state)
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message":                       "success",
+		"status":                        "200",
+		"LoginInfo":                     nil,
+		"NameSpaceList":                 nil,
+		"CloudConnectionConfigInfoList": nil,
+	})
 }
