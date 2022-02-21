@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"golang.org/x/oauth2/google"
 
 	// "github.com/davecgh/go-spew/spew"
 	"io/ioutil"
@@ -19,14 +20,13 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 
-	//"github.com/twinj/uuid"
-	"github.com/google/uuid"
-
-	"github.com/labstack/echo"
-
 	"github.com/cloud-barista/cb-webtool/src/model"
 	"github.com/cloud-barista/cb-webtool/src/service"
 	"github.com/cloud-barista/cb-webtool/src/util"
+	//"github.com/twinj/uuid"
+	"github.com/google/uuid"
+	"github.com/labstack/echo"
+	"golang.org/x/oauth2"
 )
 
 type TokenDetails struct {
@@ -901,10 +901,11 @@ func LogoutProc(c echo.Context) error {
 }
 
 func SnsLoginProc(c echo.Context) error {
-	fmt.Println("============== SnsLogin Get proc ===============")
+	fmt.Println("============== SnsLogin Post proc ===============")
 
 	state := c.FormValue("state")
 	log.Println(state)
+	log.Println("==========")
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message":                       "success",
@@ -918,9 +919,22 @@ func SnsLoginProc(c echo.Context) error {
 func GetSnsLoginProc(c echo.Context) error {
 	fmt.Println("============== SnsLogin Get proc ===============")
 
-	state := c.FormValue("state")
-	log.Println(state)
+	//params := make(map[string]string)
+	//if err := c.Bind(&params); err != nil {
+	//	fmt.Println("err = ", err) // bind Error는 나지만 크게 상관없는 듯.
+	//}
+	//fmt.Println(params)
 
+	code := c.FormValue("code")
+	log.Println("code " + c.FormValue("code"))
+	log.Println("state " + c.FormValue("state"))
+	userEmail := GetGoogleUserInfoByToken(code)
+
+	if userEmail != "idogfootman@gmail.com" {
+		log.Println("loginFail")
+	}
+	// google api로 한번 더 호출
+	log.Println("==========")
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message":                       "success",
 		"status":                        "200",
@@ -929,3 +943,75 @@ func GetSnsLoginProc(c echo.Context) error {
 		"CloudConnectionConfigInfoList": nil,
 	})
 }
+
+var OAuthConf *oauth2.Config
+
+const oauthGoogleUrlAPI = "https://www.googleapis.com/oauth2/v2/userinfo?access_token="
+const UserInfoAPIEndpoint = "https://www.googleapis.com/oauth2/v3/userinfo"
+
+type GoogleUser struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
+//func GetGoogleUserInfoByToken(code string) (*http.Response, error) {
+func GetGoogleUserInfoByToken(code string) string {
+	ScopeEmail := "https://www.googleapis.com/auth/userinfo.email"
+	ScopeProfile := "https://www.googleapis.com/auth/userinfo.profile"
+	OAuthConf = &oauth2.Config{
+		ClientID:     "244703045150-c78m3r107820v4f1lqug7eevj49qvrag.apps.googleusercontent.com",
+		ClientSecret: "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",
+		RedirectURL:  "http://localhost:1234/auth/snsloginproc",
+		Scopes:       []string{ScopeEmail, ScopeProfile},
+		Endpoint:     google.Endpoint,
+	}
+	token, err := OAuthConf.Exchange(oauth2.NoContext, code)
+	if err != nil {
+		return "token err"
+	}
+
+	//
+	client := OAuthConf.Client(oauth2.NoContext, token)
+	userInfoResp, err := client.Get(UserInfoAPIEndpoint)
+	if err != nil {
+		return "userInfo err"
+	}
+	defer userInfoResp.Body.Close()
+	userInfo, err := ioutil.ReadAll(userInfoResp.Body)
+	if err != nil {
+		return "userInfor read err"
+	}
+
+	var authUser GoogleUser
+	json.Unmarshal(userInfo, &authUser)
+	log.Println("authUser = ")
+	log.Println(authUser)
+	log.Println("NAME = " + authUser.Name)
+	return authUser.Email
+
+}
+
+//func GetGoogleUserInfo(targetUrl string, formParam map[string]interface{}, httpMethod string) (*http.Response, error) {
+//	// object를 map으로
+//	urlValues, convertErr := util.StructToMapByJson(vmMonitoringAgentReg)
+//
+//	payload := &bytes.Buffer{}
+//	writer := multipart.NewWriter(payload)
+//
+//	log.Println(formParam)
+//
+//	// writer.WriteField 는 int 등으로는 전송이 안됨.... string으로 변환 후 전송
+//	for key, val := range formParam {
+//		_ = writer.WriteField(key, fmt.Sprintf("%v", val))
+//	}
+//	err := writer.Close()
+//
+//	client := &http.Client{}
+//	req, _ := http.NewRequest(httpMethod, targetUrl, payload)
+//
+//	req.Header.Set("Content-Type", writer.FormDataContentType())
+//	req.Header.Add("Authorization", authInfo)
+//
+//	resp, err := client.Do(req)
+//	return resp, err
+//}

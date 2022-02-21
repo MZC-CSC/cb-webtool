@@ -6,6 +6,17 @@ $(document).ready(function () {
     //          console.log(result);
     //      });
     // var nsUrl = "http://localhost:1234/"
+
+    var callback_url = "http://localhost:1234/auth/snsloginproc";
+    var googleClientID = "244703045150-c78m3r107820v4f1lqug7eevj49qvrag.apps.googleusercontent.com"
+    $("#google_login_btn").on("click", function () {
+        location.href="https://accounts.google.com/o/oauth2/auth?client_id="+ googleClientID +
+            "&redirect_uri="+callback_url+
+            "&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email" +
+            "&approval_prompt=force&access_type=offline";
+
+    });//google login button
+
     $("#sign_btn").on("click", function () {
         try {
             //  var email = $("#email").val();
@@ -436,8 +447,9 @@ var startApp = function () {
         // Retrieve the singleton for the GoogleAuth library and set up the client.
         auth2 = gapi.auth2.init({
             client_id: '1097552780449-0c9kjir5vh8qvlmfhjkr9eb9ma6c122p.apps.googleusercontent.com',
+            // client_id: '244703045150-mrj4s46lr46h2r04sl0td79tr2t3bj0h.apps.googleusercontent.com',
             cookiepolicy: 'single_host_origin',
-            redirect_uri: 'http://localhost:1234/auth/snsloginproc'
+            redirect_uri: 'http://localhost:1234/auth/snsloginproc',
             
             // Request scopes in addition to 'profile' and 'email'
             //scope: 'additional_scope'
@@ -465,9 +477,11 @@ function attachSignin(element) {
             console.log("Image URL: " + profile.getImageUrl());
             console.log("Email: " + profile.getEmail());
             console.log(googleUser.getAuthResponse());
-            // const frm = new FormData()
-            // frm.append('userID', 'admin')
-            // frm.append('password', 'admin')
+
+            var url = "/auth/snslogicproc";
+            const frm = new FormData()
+            frm.append('token', id_token)
+            frm.append('userEmail', profile.getEmail())
 
             // var url = "/login/proc";
             // axios.post(url, frm)
@@ -527,4 +541,8 @@ function attachSignin(element) {
         }, function (error) {
             console.log(JSON.stringify(error, undefined, 2));
         });
+}
+
+function googleLogin(){
+
 }
