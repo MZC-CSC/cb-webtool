@@ -967,6 +967,7 @@ func GetGoogleUserInfoByToken(code string) string {
 	}
 	token, err := OAuthConf.Exchange(oauth2.NoContext, code)
 	if err != nil {
+		log.Println(err)
 		return "token err"
 	}
 
@@ -974,11 +975,13 @@ func GetGoogleUserInfoByToken(code string) string {
 	client := OAuthConf.Client(oauth2.NoContext, token)
 	userInfoResp, err := client.Get(UserInfoAPIEndpoint)
 	if err != nil {
+		log.Println(err)
 		return "userInfo err"
 	}
 	defer userInfoResp.Body.Close()
 	userInfo, err := ioutil.ReadAll(userInfoResp.Body)
 	if err != nil {
+		log.Println(err)
 		return "userInfor read err"
 	}
 
@@ -990,28 +993,3 @@ func GetGoogleUserInfoByToken(code string) string {
 	return authUser.Email
 
 }
-
-//func GetGoogleUserInfo(targetUrl string, formParam map[string]interface{}, httpMethod string) (*http.Response, error) {
-//	// object를 map으로
-//	urlValues, convertErr := util.StructToMapByJson(vmMonitoringAgentReg)
-//
-//	payload := &bytes.Buffer{}
-//	writer := multipart.NewWriter(payload)
-//
-//	log.Println(formParam)
-//
-//	// writer.WriteField 는 int 등으로는 전송이 안됨.... string으로 변환 후 전송
-//	for key, val := range formParam {
-//		_ = writer.WriteField(key, fmt.Sprintf("%v", val))
-//	}
-//	err := writer.Close()
-//
-//	client := &http.Client{}
-//	req, _ := http.NewRequest(httpMethod, targetUrl, payload)
-//
-//	req.Header.Set("Content-Type", writer.FormDataContentType())
-//	req.Header.Add("Authorization", authInfo)
-//
-//	resp, err := client.Do(req)
-//	return resp, err
-//}
