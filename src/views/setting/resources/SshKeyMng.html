@@ -175,7 +175,7 @@
                                         title="" />
                                     <label for="raw_{{$index}}"></label> <span class="ov off"></span>
                                 </td>
-                                <td class="btn_mtd ovm" data-th="Name">{{$item.ID}}
+                                <td class="btn_mtd ovm" data-th="Name">{{$item.Name}}
                                     <!-- <a href="javascript:void(0);"><img src="/assets/img/contents/icon_copy.png" class="td_icon" alt=""/></a> 
                                     <span class="ov"></span> -->
                                 </td>
@@ -218,6 +218,7 @@
 
     <!-- Modify -->
     <div class="dashboard dashboard_cont server_status" id="sskKeyInfoBox">
+        <input type="hidden" id="dtlSshKeyId" name="dtlSshKeyId" />
 
         <div class="d_box box_m box_w100">
             <div class="titbox_n">
@@ -233,16 +234,8 @@
                                 <li class="reg_1">
                                     <label>SSH Key Name</label>
                                     <span class="sbox">
-                                        <input type="hidden" id="dtlCspSshKeyId" name="" value="" placeholder=""
-                                               class="gray" title="" readonly />
-                                        <input type="text" id="dtlCspSshKeyName" name="" value="" placeholder=""
-                                            class="gray" title="" readonly />
-                                        /
                                         <input type="text" id="dtlSshKeyName" name="" value="" placeholder=""
-                                               class="gray" title="" readonly />
-                                        <input type="hidden" id="dtlSshKeyId" name="" value="" placeholder=""
-                                               class="gray" title="" readonly />
-                                        <!--<a href="javascript:void(0);"><img src="/assets/img/contents/icon_copy.png" class="icon" alt="" /></a>-->
+                                            class="gray" title="" readonly />
                                     </span>
                                 </li>
                                 <li class="reg_1">
@@ -295,6 +288,19 @@
                                         readonly></textarea>
                                 </li>
                             </ul>
+                        </div>
+                    </div>
+
+                    <div class="btnbox">
+                        <div class="btn_center" id="modifySshkey">
+                            <button name="" value="" class="btn_co btn_cr_g w135 btn_ok"
+                                onclick="modifySshkeyInfo()">Modify</button>
+                        </div>
+                        <div class="btn_center" id="modifySshkeyConfirm" style="display: none;">
+                            <button name="" value="" class="btn_co btn_cr_b w135 btn_cancel"
+                                onclick="modifySshkeyInfoConfirm('cancel')">Cancel</button>
+                            <button name="" value="" class="btn_co btn_cr_g w135 btn_ok"
+                                onclick="modifySshkeyInfoConfirm('ok')">Ok</button>
                         </div>
                     </div>
 

@@ -696,7 +696,7 @@ func main() {
 	resourcesGroup.GET("/sshkey/mngform", controller.SshKeyMngForm) // Form + SshKeyMng 같이 앞으로 넘길까?
 	resourcesGroup.GET("/sshkey/list", controller.GetSshKeyList)
 	resourcesGroup.GET("/sshkey/:sshKeyID", controller.GetSshKeyData)
-	resourcesGroup.PUT("/sshkey/update/:sshKeyID", controller.SshKeyUpdateProc)
+	resourcesGroup.PUT("/sshkey/put/:sshKeyID", controller.SshKeyPutProc)
 	resourcesGroup.POST("/sshkey/reg", controller.SshKeyRegProc)             // RegProc _ SshKey 같이 앞으로 넘길까
 	resourcesGroup.DELETE("/sshkey/del/:sshKeyID", controller.SshKeyDelProc) // DelProc + SskKey 같이 앞으로 넘길까
 
@@ -705,6 +705,7 @@ func main() {
 	resourcesGroup.GET("/machineimage/:imageID", controller.GetVirtualMachineImageData)
 	resourcesGroup.POST("/machineimage/reg", controller.VirtualMachineImageRegProc)            // RegProc _ SshKey 같이 앞으로 넘길까
 	resourcesGroup.DELETE("/machineimage/del/:imageID", controller.VirtualMachineImageDelProc) // DelProc + SskKey 같이 앞으로 넘길까
+	e.PUT("/setting/resources/machineimage/put/:imageID", controller.VirtualMachineImagePutProc)
 
 	e.GET("/setting/resources/machineimage/lookupimages", controller.LookupCspVirtualMachineImageList) // TODO : Image 전체목록인가? 확인필요
 	//resourcesGroup.GET("/machineimage/lookupimage", controller.LookupVirtualMachineImageList)          // TODO : Image 전체목록인가? 확인필요
@@ -720,7 +721,7 @@ func main() {
 	resourcesGroup.GET("/vmspec/:vmSpecID", controller.GetVmSpecData)
 	resourcesGroup.POST("/vmspec/reg", controller.VmSpecRegProc)             // RegProc _ SshKey 같이 앞으로 넘길까
 	resourcesGroup.DELETE("/vmspec/del/:vmSpecID", controller.VmSpecDelProc) // DelProc + SskKey 같이 앞으로 넘길까
-	// resourcesGroup.PUT("/vmspec/put/:vmSpecID", controller.VmSpecPutProc)	// TODO : put 만들어야 함
+	resourcesGroup.PUT("/vmspec/put/:vmSpecID", controller.VmSpecPutProc)
 
 	// resourcesGroup.GET("/vmspec/lookupvmspec", controller.LookupVmSpecList)             // TODO : Image 전체목록인가? 확인필요
 	e.GET("/setting/resources/vmspec/lookupvmspecs", controller.LookupVmSpecList) // TODO : Image 전체목록인가? 확인필요

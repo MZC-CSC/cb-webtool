@@ -692,7 +692,7 @@ func SshKeyDelProc(c echo.Context) error {
 	})
 }
 
-func SshKeyUpdateProc(c echo.Context) error {
+func SshKeyPutProc(c echo.Context) error {
 	log.Println("SshKeyUpdateProc : ")
 
 	loginInfo := service.CallLoginInfo(c)
@@ -905,6 +905,44 @@ func VirtualMachineImageRegProc(c echo.Context) error {
 	// respStatus := resp.Status
 	// log.Println("respStatusCode = ", respStatusCode)
 	// log.Println("respStatus = ", respStatus)
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message":                 "success",
+		"status":                  respStatus.StatusCode,
+		"VirtualMachineImageInfo": resultVirtualMachineImageInfo,
+	})
+}
+
+func VirtualMachineImagePutProc(c echo.Context) error {
+	log.Println("VirtualMachineImagePutProc : ")
+
+	loginInfo := service.CallLoginInfo(c)
+	if loginInfo.UserID == "" {
+		return c.Redirect(http.StatusTemporaryRedirect, "/login")
+	}
+
+	// store := echosession.FromContext(c)
+	defaultNameSpaceID := loginInfo.DefaultNameSpaceID
+
+	paramImageID := c.Param("imageID")
+
+	imagePutInfo := new(tbmcir.TbImageInfo)
+	if err := c.Bind(imagePutInfo); err != nil {
+		log.Println(err)
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "fail",
+			"status":  "fail",
+		})
+	}
+
+	resultVirtualMachineImageInfo, respStatus := service.UpdateVirtualMachineImage(defaultNameSpaceID, paramImageID, imagePutInfo)
+
+	if respStatus.StatusCode != 200 && respStatus.StatusCode != 201 {
+		return c.JSON(respStatus.StatusCode, map[string]interface{}{
+			"error":  respStatus.Message,
+			"status": respStatus.StatusCode,
+		})
+	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message":                 "success",
@@ -1327,6 +1365,44 @@ func VmSpecDelProc(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": respMessage.Message,
 		"status":  respStatus.StatusCode,
+	})
+}
+
+func VmSpecPutProc(c echo.Context) error {
+	log.Println("VmSpecUpdateProc : ")
+
+	loginInfo := service.CallLoginInfo(c)
+	if loginInfo.UserID == "" {
+		return c.Redirect(http.StatusTemporaryRedirect, "/login")
+	}
+
+	// store := echosession.FromContext(c)
+	defaultNameSpaceID := loginInfo.DefaultNameSpaceID
+
+	paramVMSpecID := c.Param("vmSpecID")
+
+	vmSpecPutInfo := new(tbmcir.TbSpecInfo)
+	if err := c.Bind(vmSpecPutInfo); err != nil {
+		log.Println(err)
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "fail",
+			"status":  "fail",
+		})
+	}
+
+	resultVMSpecInfo, respStatus := service.UpdateVMSpec(defaultNameSpaceID, paramVMSpecID, vmSpecPutInfo)
+
+	if respStatus.StatusCode != 200 && respStatus.StatusCode != 201 {
+		return c.JSON(respStatus.StatusCode, map[string]interface{}{
+			"error":  respStatus.Message,
+			"status": respStatus.StatusCode,
+		})
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success",
+		"status":  respStatus.StatusCode,
+		"VMSpec":  resultVMSpecInfo,
 	})
 }
 

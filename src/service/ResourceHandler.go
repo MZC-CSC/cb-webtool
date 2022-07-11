@@ -1822,9 +1822,8 @@ func RegVmSpecWithInfo(nameSpaceID string, specregisteringMethod string, vmSpecR
 	return &vmSpecInfo, returnStatus
 }
 
-func UpdateVMSpec(nameSpaceID string, vmSpecRegInfo *tbmcir.TbSpecInfo) (*tbmcir.TbSpecInfo, model.WebStatus) {
+func UpdateVMSpec(nameSpaceID string, vmSpecID string, vmSpecRegInfo *tbmcir.TbSpecInfo) (*tbmcir.TbSpecInfo, model.WebStatus) {
 	fmt.Println("UpdateVMSpec ************ : ")
-	vmSpecID := vmSpecRegInfo.ID
 	var originalUrl = "/ns/{nsId}/resources/spec/{specId}"
 	var paramMapper = make(map[string]string)
 	paramMapper["{nsId}"] = nameSpaceID

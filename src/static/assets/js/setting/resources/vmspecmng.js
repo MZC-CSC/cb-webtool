@@ -139,7 +139,7 @@ function virtualMachineSpecListCallbackSuccess(caller, data, sortType) {
             if (sortType) {
                 console.log("check : ", sortType);
                 data.filter(list => list.name !== "").sort((a, b) => (a[sortType] < b[sortType] ? - 1 : a[sortType] > b[sortType] ? 1 : 0)).map((item, index) => (
-                    html += '<tr onclick="showVmSpecInfo(\'' + item.name + '\');">'
+                    html += '<tr onclick="showVmSpecInfo(\'' + item.id + '\');">'
                     + '<td class="overlay hidden column-50px" data-th="">'
                     + '<input type="hidden" id="spec_info_' + index + '" value="' + item.name + '|' + item.connectionName + '|' + item.cspSpecName + '"/>'
                     + '<input type="checkbox" name="chk" value="' + item.name + '" id="raw_' + index + '" title="" /><label for="td_ch1"></label> <span class="ov off"></span></td>'
@@ -151,7 +151,7 @@ function virtualMachineSpecListCallbackSuccess(caller, data, sortType) {
                 ))
             } else {
                 data.filter((list) => list.name !== "").map((item, index) => (
-                    html += '<tr onclick="showVmSpecInfo(\'' + item.name + '\');">'
+                    html += '<tr onclick="showVmSpecInfo(\'' + item.id + '\');">'
                     + '<td class="overlay hidden column-50px" data-th="">'
                     + '<input type="hidden" id="spec_info_' + index + '" value="' + item.name + '"/>'
                     + '<input type="checkbox" name="chk" value="' + item.name + '" id="raw_' + index + '" title="" /><label for="td_ch1"></label> <span class="ov off"></span></td>'
@@ -285,6 +285,8 @@ function getVmSpecList(sort_type) {
 
 function showVmSpecInfo(target) {
     console.log("target showVMSpecInfo : ", target);
+
+    $("#vmSpecName").text(target)
     // var apiInfo = "{{ .apiInfo}}";
     var vmSpecId = encodeURIComponent(target);
 
@@ -300,17 +302,23 @@ function showVmSpecInfo(target) {
         var data = result.data.VmSpec
         console.log("Show Data : ", data);
 
+        var dtlSpecId = data.id;
         var dtlSpecName = data.name;
+        var dtlDescription = data.description;
         var dtlConnectionName = data.connectionName;
         var dtlCspSpecName = data.cspSpecName;
 
+        $("#dtlSpecId").empty();
         $("#dtlSpecName").empty();
+        $("#dtlDescription").empty();
         $("#dtlProvider").empty();
         $("#dtlConnectionName").empty();
         $("#dtlCspSpecName").empty();
 
 
+        $("#dtlSpecId").val(dtlSpecId);
         $("#dtlSpecName").val(dtlSpecName);
+        $("#dtlDescription").val(dtlDescription);
         $("#dtlConnectionName").val(dtlConnectionName);
         $("#dtlCspSpecName").val(dtlCspSpecName);
 
@@ -574,4 +582,61 @@ function lookupSpecListCallbackFail(error) {
     var errorMessage = error.response.data.error;
     var statusCode = error.response.status;
     commonErrorAlert(statusCode, errorMessage);
+}
+
+// name, description 수정 가능하도록 input 활성화
+function modifyVmSpecInfo() {
+    $("#dtlSpecName").removeAttr('readonly')
+    $("#dtlSpecName").attr('class', 'pline')
+    $("#dtlDescription").removeAttr('disabled')
+    $("#dtlDescription").attr('class', 'pline')
+
+    $("#modifySpec").css('display', 'none')
+    $("#modifySpecConfirm").css('display', 'block')
+}
+
+function modifyVmSpecInfoConfirm(caller) {
+    $("#dtlSpecName").attr('readonly', true)
+    $("#dtlSpecName").attr('class', 'gray')
+    $("#dtlDescription").attr('disabled', true)
+    $("#dtlDescription").attr('class', 'gray')
+
+    $("#modifySpec").css('display', 'block')
+    $("#modifySpecConfirm").css('display', 'none')
+
+    if (caller == "ok") {
+        var specId = $("#dtlSpecId").val()
+        var specName = $("#dtlSpecName").val()
+        var description = $("#dtlDescription").val()
+        var url = "/setting/resources" + "/vmspec/put/" + specId
+        var obj = {
+            name: specName,
+            description: description,
+        }
+
+        console.log("update spec obj: ", obj);
+
+        axios.put(url, obj, {
+            headers: {
+                'Content-type': 'application/json',
+            }
+        }).then(result => {
+            console.log("result update spec : ", result);
+            var statusCode = result.data.status;
+            if (statusCode == 200 || statusCode == 201) {
+                commonAlert("Success")
+                getVmSpecList("name")
+            } else {
+                var message = result.data.message;
+                commonAlert("Fail Update Spec : " + message + "(" + statusCode + ")");
+            }
+        }).catch((error) => {
+            console.warn(error);
+            console.log(error.response)
+            var errorMessage = error.response.data.error;
+            var statusCode = error.response.status;
+            commonErrorAlert(statusCode, errorMessage);
+        });
+
+    }
 }

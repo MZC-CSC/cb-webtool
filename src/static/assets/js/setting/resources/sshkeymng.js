@@ -143,7 +143,7 @@ function getSshKeyList(sort_type) {
                         + '<td class="overlay hidden column-50px" data-th="">'
                         + '<input type="hidden" id="ssh_info_' + index + '" value="' + item.name + '|' + item.connectionName + '|' + item.cspSshKeyName + '"/>'
                         + '<input type="checkbox" name="chk" value="' + item.name + '" id="raw_' + index + '" title="" /><label for="td_ch1"></label> <span class="ov off"></span></td>'
-                        + '<td class="btn_mtd ovm" data-th="Name">' + item.id
+                        + '<td class="btn_mtd ovm" data-th="Name">' + item.name
                         // + '<a href="javascript:void(0);"><img src="/assets/img/contents/icon_copy.png" class="td_icon" alt=""/></a> <span class="ov"></span></td>'
                         + '</td>'
                         + '<td class="overlay hidden" data-th="connectionName">' + item.connectionName + '</td>'
@@ -158,7 +158,7 @@ function getSshKeyList(sort_type) {
                         + '<td class="overlay hidden column-50px" data-th="">'
                         + '<input type="hidden" id="ssh_info_' + index + '" value="' + item.name + '"/>'
                         + '<input type="checkbox" name="chk" value="' + item.name + '" id="raw_' + index + '" title="" /><label for="td_ch1"></label> <span class="ov off"></span></td>'
-                        + '<td class="btn_mtd ovm" data-th="id">' + item.id + '<span class="ov"></span></td>'
+                        + '<td class="btn_mtd ovm" data-th="Name">' + item.name + '<span class="ov"></span></td>'
                         + '<td class="overlay hidden" data-th="connectionName">' + item.connectionName + '</td>'
                         + '<td class="overlay hidden" data-th="cspSshKeyName">' + item.cspSshKeyName + '</td>'
                         // + '<td class="overlay hidden column-60px" data-th=""><a href="javascript:void(0);"><img src="/assets/img/contents/icon_link.png" class="icon" alt=""/></a></td>' 
@@ -275,6 +275,8 @@ function showSshKeyInfo(sshKeyId) {
         var data = result.data.SshKeyInfo
         console.log("Show Data : ", data);
 
+        var dtlSshKeyId = data.id
+        var dtlSshKeyName = data.name
         var dtlCspSshKeyName = data.cspSshKeyName;
         var dtlDescription = data.description;
         var dtlUserID = data.userID;
@@ -284,6 +286,8 @@ function showSshKeyInfo(sshKeyId) {
         var dtlFingerprint = data.fingerprint;
 
 
+        $('#dtlSshKeyId').empty();
+        $('#dtlSshKeyName').empty();
         $('#dtlCspSshKeyName').empty();
         $('#dtlDescription').empty();
         $('#dtlUserID').empty();
@@ -292,6 +296,8 @@ function showSshKeyInfo(sshKeyId) {
         $('#dtlPrivateKey').empty();
         $('#dtlFingerprint').empty();
 
+        $('#dtlSshKeyId').val(dtlSshKeyId);
+        $('#dtlSshKeyName').val(dtlSshKeyName);
         $('#dtlCspSshKeyName').val(dtlCspSshKeyName);
         $('#dtlDescription').val(dtlDescription);
         $('#dtlUserID').val(dtlUserID);
@@ -397,17 +403,17 @@ function updateSSHKey() {
     var url = "/setting/resources" + "/sshkey/del/" + sshKeyId
     console.log("ssh key URL : ", url)
     var obj = {
-        connectionName : connectionName,
-        id : sshKeyId,
-        name : sshKeyName,
-        cspSshKeyId	: cspSshKeyId,
-        cspSshKeyName : cspSshKeyName,
-        description	: description,
-        privateKey : privateKey,
-        publicKey :	publicKey,
-        fingerprint	: fingerprint,
-        username :	username,
-        verifiedUsername :	verifiedUsername
+        connectionName: connectionName,
+        id: sshKeyId,
+        name: sshKeyName,
+        cspSshKeyId: cspSshKeyId,
+        cspSshKeyName: cspSshKeyName,
+        description: description,
+        privateKey: privateKey,
+        publicKey: publicKey,
+        fingerprint: fingerprint,
+        username: username,
+        verifiedUsername: verifiedUsername
     }
     console.log("info updateSSHKey obj Data : ", obj);
     if (cspSshKeyName) {
@@ -476,6 +482,63 @@ function ModalDetail() {
             });
         });
     });
+}
+
+// name, description 수정 가능하도록 input 활성화
+function modifySshkeyInfo() {
+    $("#dtlSshKeyName").removeAttr('readonly')
+    $("#dtlSshKeyName").attr('class', 'pline')
+    $("#dtlDescription").removeAttr('readonly')
+    $("#dtlDescription").attr('class', 'pline')
+
+    $("#modifySshkey").css('display', 'none')
+    $("#modifySshkeyConfirm").css('display', 'block')
+}
+
+function modifySshkeyInfoConfirm(caller) {
+    $("#dtlSshKeyName").attr('readonly', true)
+    $("#dtlSshKeyName").attr('class', 'gray')
+    $("#dtlDescription").attr('readonly', true)
+    $("#dtlDescription").attr('class', 'gray')
+
+    $("#modifySshkey").css('display', 'block')
+    $("#modifySshkeyConfirm").css('display', 'none')
+
+    if (caller == "ok") {
+        var sshkeyId = $("#dtlSshKeyId").val()
+        var sshkeyName = $("#dtlSshKeyName").val()
+        var description = $("#dtlDescription").val()
+        var url = "/setting/resources/sshkey/put/" + sshkeyId
+        var obj = {
+            name: sshkeyName,
+            description: description,
+        }
+
+        console.log("update sshkey obj: ", obj);
+
+        axios.put(url, obj, {
+            headers: {
+                'Content-type': 'application/json',
+            }
+        }).then(result => {
+            console.log("result update image : ", result);
+            var statusCode = result.data.status;
+            if (statusCode == 200 || statusCode == 201) {
+                commonAlert("Success")
+                getSshKeyList("name")
+            } else {
+                var message = result.data.message;
+                commonAlert("Fail Update Image : " + message + "(" + statusCode + ")");
+            }
+        }).catch((error) => {
+            console.warn(error);
+            console.log(error.response)
+            var errorMessage = error.response.data.error;
+            var statusCode = error.response.status;
+            commonErrorAlert(statusCode, errorMessage);
+        });
+
+    }
 }
 
 

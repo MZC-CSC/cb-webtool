@@ -142,7 +142,7 @@
 							{{ end }}
 
 							{{range $index, $item := .VirtualMachineImageList}}
-							<tr onclick="showVirtualMachinImageInfo('{{$item.Name}}');">
+							<tr onclick="showVirtualMachinImageInfo('{{$item.ID}}');">
 								<td class="overlay hidden column-50px" data-th="">
 									<input type="hidden" id="img_info_{{$index}}" value="{{$item.Name }}" />
 									<input type="checkbox" name="chk" value="{{$item.Name}}" id="raw_{{$index}}"
@@ -186,6 +186,7 @@
 
 	<!-- Modify -->
 	<div class="dashboard dashboard_cont server_status" id="virtualMachineImageInfoBox">
+		<input type="hidden" id="dtlImageId" name="dtlImageId" value="" />
 
 		<div class="d_box box_m box_w100">
 			<div class="titbox_n">
@@ -238,69 +239,30 @@
 						</div>
 					</div>
 
-					<div class="graybox">
 
-						<div class="g_box">
-							<div class="g_ipbox g_ipbox1">
-								<ul>
-									<li>
-										<label>Image Id</label>
-										<span class="sbox">
-											<input type="text" id="dtlImageId" name="" value="" placeholder=""
-												class="gray" title="" readonly />
-											<!--<a href="javascript:void(0);"><img src="/assets/img/contents/icon_copy.png" class="icon" alt=""/></a>-->
-										</span>
-									</li>
-									<li>
-										<label>guestOS</label>
-										<input type="text" id="dtlGuestOS" name="dtlGuestOS" value="" placeholder=""
-											class="gray" title="" readonly />
-									</li>
-								</ul>
-							</div>
 
-							<div class="g_ipbox g_ipbox1">
-								<ul>
-									<li>
-										<label>Description</label>
-										<textarea id="dtlDescription" name="dtlDescription" cols="" rows=""
-											placeholder="" class="gray" title="" readonly></textarea>
-									</li>
-								</ul>
-							</div>
-							<!--
-											<div class="g_ipbox g_ipbox1 g_ipbox3">
-												<ul>
-													<li>
-														<label>guestOS</label>
-														<input type="text" name="" value="" placeholder="guestOS" class="gray" title="" readonly />
-													</li>
-													<li>
-														<label>status</label>
-														<input type="text" name="" value="" placeholder="status" class="gray" title="" readonly />
-													</li>
-												</ul>
-											</div>
-											-->
-							<!--
-											<div class="g_ipbox g_ipbox2 g_ipbox4">
-												<ul>
-													<li>
-														<label>creationDate</label>
-														<input type="text" name="" value="" placeholder="vNetId" class="gray" title="" readonly />
-													</li>
-													<li>
-														<label>keyvalues</label>
-														<textarea  cols="" rows="" placeholder="display Json Context" class="gray" title="" readonly ></textarea>
-														<span class="reg_stxt right_a"><a href="#">Import JSON</a></span>
-													</li>
-												</ul>
-												<span class="b_txt">Help ) Provider 별 Custom 필수 항목 값이 정의 될 수도 있음.</span>
-											</div>
-											-->
+					<div class="top_ipbox">
+						<div class="ipbox ipbox1">
+							<ul>
+								<li class="reg_1">
+									<label>GuestOS</label>
+									<input type="text" id="dtlGuestOS" name="dtlGuestOS" value="" placeholder=""
+										class="gray" title="" readonly />
+								</li>
+							</ul>
 						</div>
-
+						<div class="ipbox ipbox1">
+							<ul>
+								<li class="reg_1">
+									<label>Description</label>
+									<textarea id="dtlDescription" name="dtlDescription" cols="" rows="" placeholder=""
+										class="gray" title="" readonly></textarea>
+								</li>
+							</ul>
+						</div>
 					</div>
+
+
 
 					<div class="top_ipbox bottom_ipbox padd_Box_1">
 						<div class="ipbox ipbox1 ipbox5">
@@ -320,6 +282,19 @@
 										class="gray" title="" readonly />
 								</li>
 							</ul>
+						</div>
+					</div>
+
+					<div class="btnbox">
+						<div class="btn_center" id="modifyImage">
+							<button name="" value="" class="btn_co btn_cr_g w135 btn_ok"
+								onclick="modifyVmImageInfo()">Modify</button>
+						</div>
+						<div class="btn_center" id="modifyImageConfirm" style="display: none;">
+							<button name="" value="" class="btn_co btn_cr_b w135 btn_cancel"
+								onclick="modifyVmImageInfoConfirm('cancel')">Cancel</button>
+							<button name="" value="" class="btn_co btn_cr_g w135 btn_ok"
+								onclick="modifyVmImageInfoConfirm('ok')">Ok</button>
 						</div>
 					</div>
 

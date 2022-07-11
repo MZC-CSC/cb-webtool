@@ -270,7 +270,7 @@ function setVirtualMachineImageListAtServerImage(data, sortType) {
             if (sortType) {
                 console.log("check : ", sortType);
                 data.filter(list => list.name !== "").sort((a, b) => (a[sortType] < b[sortType] ? - 1 : a[sortType] > b[sortType] ? 1 : 0)).map((item, index) => (
-                    html += '<tr onclick="showVirtualMachinImageInfo(\'' + item.name + '\');">'
+                    html += '<tr onclick="showVirtualMachinImageInfo(\'' + item.id + '\');">'
                     + '<td class="overlay hidden column-50px" data-th="">'
                     + '<input type="hidden" id="img_info_' + index + '" value="' + item.name + '|' + item.cspImageId + '"/>'
                     + '<input type="checkbox" name="chk" value="' + item.name + '" id="raw_' + index + '" title="" /><label for="td_ch1"></label> <span class="ov off"></span></td>'
@@ -284,7 +284,7 @@ function setVirtualMachineImageListAtServerImage(data, sortType) {
                 ))
             } else {
                 data.filter((list) => list.name !== "").map((item, index) => (
-                    html += '<tr onclick="showVirtualMachinImageInfo(\'' + item.name + '\');">'
+                    html += '<tr onclick="showVirtualMachinImageInfo(\'' + item.id + '\');">'
                     + '<td class="overlay hidden column-50px" data-th="">'
                     + '<input type="hidden" id="img_info_' + index + '" value="' + item.name + '"/>'
                     + '<input type="checkbox" name="chk" value="' + item.name + '" id="raw_' + index + '" title="" /><label for="td_ch1"></label> <span class="ov off"></span></td>'
@@ -681,4 +681,62 @@ function delAllKeyword() {
     $(".keyword").each(function (i, item) {
         $(item).remove();
     })
+}
+
+
+// name, description 수정 가능하도록 input 활성화
+function modifyVmImageInfo() {
+    $("#dtlImageName").removeAttr('readonly')
+    $("#dtlImageName").attr('class', 'pline')
+    $("#dtlDescription").removeAttr('readonly')
+    $("#dtlDescription").attr('class', 'pline')
+
+    $("#modifyImage").css('display', 'none')
+    $("#modifyImageConfirm").css('display', 'block')
+}
+
+function modifyVmImageInfoConfirm(caller) {
+    $("#dtlImageName").attr('readonly', true)
+    $("#dtlImageName").attr('class', 'gray')
+    $("#dtlDescription").attr('readonly', true)
+    $("#dtlDescription").attr('class', 'gray')
+
+    $("#modifyImage").css('display', 'block')
+    $("#modifyImageConfirm").css('display', 'none')
+
+    if (caller == "ok") {
+        var imageId = $("#dtlImageId").val()
+        var imageName = $("#dtlImageName").val()
+        var description = $("#dtlDescription").val()
+        var url = "/setting/resources/machineimage/put/" + imageId
+        var obj = {
+            name: imageName,
+            description: description,
+        }
+
+        console.log("update image obj: ", obj);
+
+        axios.put(url, obj, {
+            headers: {
+                'Content-type': 'application/json',
+            }
+        }).then(result => {
+            console.log("result update image : ", result);
+            var statusCode = result.data.status;
+            if (statusCode == 200 || statusCode == 201) {
+                commonAlert("Success")
+                getVirtualMachineImageList("name")
+            } else {
+                var message = result.data.message;
+                commonAlert("Fail Update Image : " + message + "(" + statusCode + ")");
+            }
+        }).catch((error) => {
+            console.warn(error);
+            console.log(error.response)
+            var errorMessage = error.response.data.error;
+            var statusCode = error.response.status;
+            commonErrorAlert(statusCode, errorMessage);
+        });
+
+    }
 }
