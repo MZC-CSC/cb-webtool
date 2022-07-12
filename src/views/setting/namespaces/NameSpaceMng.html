@@ -213,7 +213,7 @@
 								</li>
 							</ul>
 						</div>
-						<div class="ipbox ipbox2">
+						<div class="ipbox ipbox1">
 							<ul>
 								<li class="reg_2">
 									<label>Description</label>
@@ -224,9 +224,17 @@
 						</div>
 					</div>
 					<div class="btnbox">
-						<div class="btn_center">
+						<div class="btn_center" id="modifyNameSpace">
 							<button name="" value="" class="btn_co btn_cr_g w135 btn_ok"
-								onclick="nameSpaceSet('NameSpace')">Ok</button>
+								onclick="nameSpaceSet('NameSpace')">Set Default</button>
+							<button name="" value="" class="btn_co btn_cr_g w135 btn_ok"
+								onclick="modifyNameSpace()">Modify</button>
+						</div>
+						<div class="btn_center" id="modifyNameSpaceConfirm" style="display: none;">
+							<button name="" value="" class="btn_co btn_cr_b w135 btn_cancel"
+								onclick="modifyNameSpaceConfirm('cancel')">Cancel</button>
+							<button name="" value="" class="btn_co btn_cr_g w135 btn_ok"
+								onclick="modifyNameSpaceConfirm('ok')">Ok</button>
 						</div>
 					</div>
 				</div>

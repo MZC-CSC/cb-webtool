@@ -306,3 +306,59 @@ function ModalDetail() {
 //     alert("ajax로 Set하기")
 //     //tobboxSetNameSpace('{{.ID}}')
 // }
+
+// name, description 수정 가능하도록 input 활성화
+function modifyNameSpace() {
+    $("#infoName").removeAttr('readonly')
+    $("#infoName").attr('class', 'pline')
+    $("#infoDesc").removeAttr('readonly')
+    $("#infoDesc").attr('class', 'pline')
+
+    $("#modifyNameSpace").css('display', 'none')
+    $("#modifyNameSpaceConfirm").css('display', 'block')
+}
+
+function modifyNameSpaceConfirm(caller) {
+    $("#infoName").attr('readonly', true)
+    $("#infoName").attr('class', 'gray')
+    $("#infoDesc").attr('readonly', true)
+    $("#infoDesc").attr('class', 'gray')
+
+    $("#modifyNameSpace").css('display', 'block')
+    $("#modifyNameSpaceConfirm").css('display', 'none')
+
+    if (caller == "ok") {
+        var namespaceName = $("#infoName").val()
+        var description = $("#infoDesc").val()
+        var url = "/setting/namespaces/namespace/update/proc"
+        var obj = {
+            name: namespaceName,
+            description: description,
+        }
+
+        console.log("update ns obj: ", obj);
+
+        axios.put(url, obj, {
+            headers: {
+                'Content-type': 'application/json',
+            }
+        }).then(result => {
+            console.log("result update image : ", result);
+            var statusCode = result.data.status;
+            if (statusCode == 200 || statusCode == 201) {
+                commonAlert("Success")
+                getNameSpaceList()
+            } else {
+                var message = result.data.message;
+                commonAlert("Fail Update Namespace : " + message + "(" + statusCode + ")");
+            }
+        }).catch((error) => {
+            console.warn(error);
+            console.log(error.response)
+            var errorMessage = error.response.data.error;
+            var statusCode = error.response.status;
+            commonErrorAlert(statusCode, errorMessage);
+        });
+
+    }
+}
