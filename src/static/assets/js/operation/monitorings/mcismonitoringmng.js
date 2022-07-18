@@ -1,25 +1,25 @@
-$(document).ready(function() {
+$(document).ready(function () {
     getCommonMcisList("mcismonitoringmng", true, '', "id")
     resizeContent();
 });
-$(window).resize(function() {
+$(window).resize(function () {
     resizeContent();
 });
 //Selected MCIS selectbox(CPUs,Memory,DiskIO,Network) width 반응형 적용
 function resizeContent() {
-    $(".g_list .gbox .sel").each(function(){
-        var $list =  $(this),
-                $label =  $list.find('label'),
-                $labelWidth = $label.width(),
-                $gboxWidth = $list.width(),
-                $selectbox =  $list.find('.selectbox');
-        $list.each(function(){
-            $selectbox.css({'width':($gboxWidth-$labelWidth-20)+'px'});
+    $(".g_list .gbox .sel").each(function () {
+        var $list = $(this),
+            $label = $list.find('label'),
+            $labelWidth = $label.width(),
+            $gboxWidth = $list.width(),
+            $selectbox = $list.find('.selectbox');
+        $list.each(function () {
+            $selectbox.css({ 'width': ($gboxWidth - $labelWidth - 20) + 'px' });
         });
     });
 }
 
-$(document).ready(function(){
+$(document).ready(function () {
     // page Load 시점에 이미 가져옴.
     // checkNS();
     // var nsid = "{{ .NameSpace}}";
@@ -30,23 +30,23 @@ $(document).ready(function(){
 
 // <option value="{ {$item.ID} }"  selected>{ {$item.Name} }|{ {$item.Status} }|{ {$item.Description} }-->
 // MCIS 목록 조회 후 화면에 Set
-function getMcisListCallbackSuccess(caller, mcisList){
+function getMcisListCallbackSuccess(caller, mcisList) {
 
     // MCIS Status
     var addMcis = "";
     addMcis += '<option>Choose a Target MCIS for Monitoring</option>';
-    if(!isEmpty(mcisList) && mcisList.length > 0 ){
+    if (!isEmpty(mcisList) && mcisList.length > 0) {
         var initMcis = $("#init_mcis").val();
         var mcisExist = false;// monitoring할 mcis가 없을 수도 있음.
         console.log(mcisList)
-        for(var i in mcisList){
+        for (var i in mcisList) {
             // if(i == 0 ){
             //     addMcis +='<option value="'+mcisList[i].id+'"  selected>'+mcisList[i].name+"|"+mcisList[i].status+"|"+mcisList[i].description
             // }else{
             //     addMcis +='<option value="'+mcisList[i].id+'" >'+mcisList[i].name+"|"+mcisList[i].status+"|"+mcisList[i].description
             // }
-            addMcis +='<option value="'+mcisList[i]+'">'+mcisList[i] + '</option>';
-            if( initMcis == mcisList[i]){
+            addMcis += '<option value="' + mcisList[i] + '">' + mcisList[i] + '</option>';
+            if (initMcis == mcisList[i]) {
                 mcisExist = true;
             }
         }
@@ -54,7 +54,7 @@ function getMcisListCallbackSuccess(caller, mcisList){
         $("#mcisList").append(addMcis)
         if (initMcis && mcisExist) {
             console.log("initMcis = " + initMcis)
-        }else{
+        } else {
             console.log("initMcis is not exists");
             initMcis = mcisList[0]
         }
@@ -62,7 +62,7 @@ function getMcisListCallbackSuccess(caller, mcisList){
         // id="mcisList"
         $("#mcisList").val(initMcis).prop("selected", true);
         selectMonitoringMcis(initMcis)
-    }else{
+    } else {
         var addMcis = "";
 
         // $("#mcisList").append(addMcis);
@@ -70,7 +70,7 @@ function getMcisListCallbackSuccess(caller, mcisList){
 }
 
 // 조회 실패시.
-function getMcisListCallbackFail(caller, error){
+function getMcisListCallbackFail(caller, error) {
     // List table에 no data 표시? 또는 조회 오류를 표시?
 }
 
@@ -111,7 +111,7 @@ function getMcisListCallbackFail(caller, error){
 //     })
 // }
 
-function selectMonitoringMcis(mcisId){
+function selectMonitoringMcis(mcisId) {
     $("#mcis_id").val(mcisId);
     // var nsid = NAMESPACE
     // var url = "{{ .comURL.TumbleBugURL}}"+"/ns/"+nsid+"/mcis/"+mcis_id;
@@ -211,35 +211,35 @@ function selectMonitoringMcis(mcisId){
     // })
 }
 
-function getCommonMcisDataCallbackSuccess(caller, mcisInfo){
+function getCommonMcisDataCallbackSuccess(caller, mcisInfo) {
 
-        console.log(mcisInfo)
+    console.log(mcisInfo)
     var mcisId = mcisInfo.id
     var vms = mcisInfo.vm
     console.log(vms)
-    var vm_badge ="";
+    var vm_badge = "";
     var vm_options = "";
 
-    if(vms){
+    if (vms) {
         // var init_vm = vms[0].id
         vm_len = vms.length
-        for(var o in vms){
+        for (var o in vms) {
             var vm_status = vms[o].status
-            vm_options +='<option value="'+vms[o].id+'">'+vms[o].name+'|'+vms[o].status+'|'+vms[o].description
+            vm_options += '<option value="' + vms[o].id + '">' + vms[o].name + '|' + vms[o].status + '|' + vms[o].description
 
             var vmStatusIcon = "bgbox_b";
-            if(vm_status == "Running"){
+            if (vm_status == "Running") {
                 vmStatusIcon = "bgbox_b";
-            }else if(vm_status == "include" ){
+            } else if (vm_status == "include") {
                 vmStatusIcon = "bgbox_g";
-            }else if(vm_status == "Suspended"){
+            } else if (vm_status == "Suspended") {
                 vmStatusIcon = "bgbox_g";
-            }else if(vm_status == "Terminated"){
+            } else if (vm_status == "Terminated") {
                 vmStatusIcon = "bgbox_r";
-            }else{
+            } else {
                 vmStatusIcon = "bgbox_g";
             }
-            vm_badge += '<li class="sel_cr ' + vmStatusIcon + '" ><a href="javascript:void(0);" onclick="selectVm(\''+mcisId+'\',\''+vms[o].id+'\')" ><span class="txt">'+vms[o].name+'</span></a></li>';
+            vm_badge += '<li class="sel_cr ' + vmStatusIcon + '" ><a href="javascript:void(0);" onclick="selectVm(\'' + mcisId + '\',\'' + vms[o].id + '\',\'' + vms[o].publicIP + '\')" ><span class="txt">' + vms[o].name + '</span></a></li>';
             console.log("vm_status : ", vm_status)
 
         }
@@ -248,20 +248,20 @@ function getCommonMcisDataCallbackSuccess(caller, mcisInfo){
         var status = sl[0].toLowerCase()
         var mcis_badge = '';
         var mcisStatusIcon = "icon_running_db.png";
-        if(status == "running"){
+        if (status == "running") {
             mcisStatusIcon = 'icon_running_db.png'
-        }else if(status == "include" ){
+        } else if (status == "include") {
             mcisStatusIcon = 'icon_stop_db.png'
-        }else if(status == "suspended"){
+        } else if (status == "suspended") {
             mcisStatusIcon = 'icon_stop_db.png'
-        }else if(status == "terminate"){
+        } else if (status == "terminate") {
             mcisStatusIcon = 'icon_terminate_db.png'
-        }else{
+        } else {
             mcisStatusIcon = 'icon_stop_db.png'
         }
         mcis_badge = '<img src="/assets/img/contents/' + mcisStatusIcon + '" alt="' + status + '"/> '
 
-        $("#mcis_info_txt").text("[ "+mcisInfo.name+"("+mcisInfo.id+")"+" ]");
+        $("#mcis_info_txt").text("[ " + mcisInfo.name + "(" + mcisInfo.id + ")" + " ]");
         $("#monitoring_mcis_status_img").empty()
         $("#monitoring_mcis_status_img").append(mcis_badge)
         $("#vmArrList").empty();
@@ -271,17 +271,17 @@ function getCommonMcisDataCallbackSuccess(caller, mcisInfo){
         $("#vmList").empty()
         $("#vmList").append(vm_options)
 
-        $(".ds_cont_mbox .mtbox .g_list .listbox li.sel_cr").each(function(){
+        $(".ds_cont_mbox .mtbox .g_list .listbox li.sel_cr").each(function () {
             var $sel_list = $(this),
                 $detail_view = $(".monitoring_view");
-            $sel_list.off("click").click(function(){
+            $sel_list.off("click").click(function () {
                 $sel_list.addClass("active");
                 $sel_list.siblings().removeClass("active");
                 $detail_view.addClass("active");
                 $detail_view.siblings().removeClass("active");
 
-                $sel_list.off("click").click(function(){
-                    if( $(this).hasClass("active") ) {
+                $sel_list.off("click").click(function () {
+                    if ($(this).hasClass("active")) {
                         $sel_list.removeClass("active");
                         $detail_view.removeClass("active");
                     } else {
@@ -298,56 +298,104 @@ function getCommonMcisDataCallbackSuccess(caller, mcisInfo){
 }
 
 // vm 선택시 해당 vm의 monitoring 조회
-function selectVm(mcis_id,vm_id){
+function selectVm(mcis_id, vm_id, agent_ip) {
     $('#vm_id').val(vm_id);
+    $('#agent_ip').val(agent_ip);
     var input_duration = $("#input_duration").val();
     var duration_type = $("#duration_type").val();
-    var duration = input_duration+duration_type
+    var duration = input_duration + duration_type
     var period_type = $("#vm_period").val();
     var metric = $("#select_metric").val();
-    showMonitoring(mcis_id,vm_id,metric,period_type,duration);
+    showMonitoring(mcis_id, vm_id, metric, period_type, duration);
 }
 
-function btn_view_click(){
+function changeMonitoringType(type) {
+    if (type == "history") {
+        $("#monitoring_duration").css("display", "inline")
+        $("#monitoring_period").css("display", "inline")
+        $("#monitoring_interval").css("display", "none")
+        $("#btn_history").css("display", "inline")
+        $("#btn_ondemand_start").css("display", "none")
+
+    } else if (type == "live") {
+        $("#monitoring_duration").css("display", "none")
+        $("#monitoring_period").css("display", "none")
+        $("#monitoring_interval").css("display", "inline")
+        $("#btn_history").css("display", "none")
+        $("#btn_ondemand_start").css("display", "inline")
+    }
+}
+
+function btn_view_click() {
     var sel_history = $("#sel_history").val();
     var vm_id = $("#vm_id").val();
-    var mcis_id =$("#mcis_id").val();
+    var mcis_id = $("#mcis_id").val();
 
     var input_duration = $("#input_duration").val();
     var duration_type = $("#duration_type").val();
-    var duration = input_duration+duration_type
+    var duration = input_duration + duration_type
     var period_type = $("#vm_period").val();
     var metric = $("#select_metric").val();
 
-    showMonitoring(mcis_id,vm_id,metric,period_type,duration);
+    showMonitoring(mcis_id, vm_id, metric, period_type, duration);
 }
 
+let timerId
+function btn_ondemand_start() {
+    $("#btn_ondemand_stop").css("display", "inline")
+    $("#btn_ondemand_start").css("display", "none")
+    var vm_id = $("#vm_id").val();
+    var mcis_id = $("#mcis_id").val();
+    var agent_ip = $("#agent_ip").val();
 
-function ModalDetail(){
-    $(".dashboard .status_list tbody tr").each(function(){
-    var $td_list = $(this),
+    var interval = $("#input_interval").val();
+    var metric = $("#select_metric").val();
+    console.log("interval: ", interval);
+    ////vmChart, "canvas_vm", metric
+    // setVmChartInit(vmChart, "canvas_vm", metric)
+    showOnDemandMonitoring(vmChart, mcis_id, vm_id, metric, interval, agent_ip)
+
+}
+
+function btn_ondemand_stop() {
+    $("#btn_ondemand_stop").css("display", "none")
+    $("#btn_ondemand_start").css("display", "inline")
+    clearInterval(timerId)
+}
+
+function initDataset() {
+    data_set = []
+    labels = []
+    $("#btn_ondemand_stop").css("display", "none")
+    $("#btn_ondemand_start").css("display", "inline")
+    clearInterval(timerId)
+}
+
+function ModalDetail() {
+    $(".dashboard .status_list tbody tr").each(function () {
+        var $td_list = $(this),
             $status = $(".server_status"),
             $detail = $(".server_info");
-    $td_list.off("click").click(function(){
+        $td_list.off("click").click(function () {
             $td_list.addClass("on");
             $td_list.siblings().removeClass("on");
             $status.addClass("view");
             $status.siblings().removeClass("on");
             $(".dashboard.register_cont").removeClass("active");
-        $td_list.off("click").click(function(){
-                if( $(this).hasClass("on") ) {
+            $td_list.off("click").click(function () {
+                if ($(this).hasClass("on")) {
                     console.log("reg ok button click")
                     $td_list.removeClass("on");
                     $status.removeClass("view");
                     $detail.removeClass("active");
-            } else {
+                } else {
                     $td_list.addClass("on");
                     $td_list.siblings().removeClass("on");
                     $status.addClass("view");
-                    
+
                     $status.siblings().removeClass("view");
                     $(".dashboard.register_cont").removeClass("active");
-            }
+                }
             });
         });
     });

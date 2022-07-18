@@ -280,12 +280,12 @@ func GetMcisOnDemandMonitoringMetricInfo(agentIp string, metricName string, vmMo
 
 // 멀티 클라우드 인프라 VM 온디맨드 모니터링 정보 조회
 // Get vm on-demand monitoring metric info
-func GetVmOnDemandMonitoringMetricInfo(agentIp string, metricName string, vmMonitoring *dragonfly.VmMonitoring) (*dragonfly.VmMonitoringOnDemandInfo, model.WebStatus) {
+func GetVmOnDemandMonitoringMetricInfo(agentIp string, vmMonitoring *dragonfly.VmMonitoring) (map[string]interface{}, model.WebStatus) {
 	nameSpaceID := vmMonitoring.NameSpaceID
 	mcisID := vmMonitoring.McisID
 	vmID := vmMonitoring.VmID
 	// agentIp := vmMonitoring.AgentIp
-	// metricName := vmMonitoring.MetricName
+	metricName := vmMonitoring.Metric
 
 	var originalUrl = "/ns/:ns_id/mcis/:mcis_id/vm/:vm_id/agent_ip/:agent_ip/metric/:metric_name/ondemand-monitoring-info"
 	// {{ip}}:{{port}}/dragonfly/ns/:ns_id/mcis/:mcis_id/vm/:vm_id/agent_ip/:agent_ip/metric/:metric_name/ondemand-monitoring-info
@@ -304,21 +304,39 @@ func GetVmOnDemandMonitoringMetricInfo(agentIp string, metricName string, vmMoni
 
 	resp, err := util.CommonHttpWithoutParam(url, http.MethodGet)
 
-	// defer body.Close()
-	vmMonitoringInfo := dragonfly.VmMonitoringOnDemandInfo{}
+	vmMonitoringInfo := make(map[string]interface{})
 	if err != nil {
 		fmt.Println(err)
-		return &vmMonitoringInfo, model.WebStatus{StatusCode: 500, Message: err.Error()}
+		return vmMonitoringInfo, model.WebStatus{StatusCode: 500, Message: err.Error()}
 	}
 	// util.DisplayResponse(resp) // 수신내용 확인
 
 	respBody := resp.Body
 	respStatus := resp.StatusCode
 
-	json.NewDecoder(respBody).Decode(&vmMonitoringInfo)
-	fmt.Println(vmMonitoringInfo)
+	if metricName == "cpu" {
+		vmMonitoringInfoByCpu := dragonfly.VmMonitoringOnDemandInfoByCpu{}
+		json.NewDecoder(respBody).Decode(&vmMonitoringInfoByCpu)
 
-	return &vmMonitoringInfo, model.WebStatus{StatusCode: respStatus}
+		vmMonitoringInfo[metricName] = vmMonitoringInfoByCpu
+	} else if metricName == "memory" {
+		vmMonitoringInfoByMemory := dragonfly.VmMonitoringOnDemandInfoByMemory{}
+		json.NewDecoder(respBody).Decode(&vmMonitoringInfoByMemory)
+
+		vmMonitoringInfo[metricName] = vmMonitoringInfoByMemory
+	} else if metricName == "disk" {
+		vmMonitoringInfoByDisk := dragonfly.VmMonitoringOnDemandInfoByDisk{}
+		json.NewDecoder(respBody).Decode(&vmMonitoringInfoByDisk)
+
+		vmMonitoringInfo[metricName] = vmMonitoringInfoByDisk
+	} else if metricName == "network" {
+		vmMonitoringInfoByNetwork := dragonfly.VmMonitoringOnDemandInfoByNetwork{}
+		json.NewDecoder(respBody).Decode(&vmMonitoringInfoByNetwork)
+
+		vmMonitoringInfo[metricName] = vmMonitoringInfoByNetwork
+	}
+
+	return vmMonitoringInfo, model.WebStatus{StatusCode: respStatus}
 }
 
 // 모니터링 정책 조회

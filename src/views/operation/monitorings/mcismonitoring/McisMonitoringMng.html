@@ -213,7 +213,22 @@
 				<div class="ds_cont_mbox g_detail_view monitoring_view" id="monitoring_viewbox">
 					<input type="hidden" id="vm_id" />
 					<input type="hidden" id="mcis_id" />
+					<input type="hidden" id="agent_ip" />
 					<div class="view_ipbox">
+						<div class="view-cont">
+							<div class="view_ip">
+								<ul>
+									<li class="m5_n">
+										<label>Type</label>
+										<select class="selectbox white" required id="select_type"
+											onchange="changeMonitoringType(this.value)">
+											<option value="history" selected>History</option>
+											<option value="live">Live</option>
+										</select>
+									</li>
+								</ul>
+							</div>
+						</div>
 
 						<div class="view-cont">
 							<div class="view_ip">
@@ -224,8 +239,8 @@
 													</li> -->
 									<li class="m5_n">
 										<label>Items</label>
-										<select class="selectbox white" required id="select_metric">
-											<!-- <option value="sel_vm_item" disabled selected hidden>Select Server's Monitoring Item</option> -->
+										<select class="selectbox white" required id="select_metric"
+											onchange="initDataset()">
 											<option value="cpu" selected>CPU</option>
 											<option value="memory">Memory</option>
 											<option value="disk">DiskIO</option>
@@ -248,7 +263,7 @@
 								<div class="mvbox v_ip2">
 									<ul>
 										<li class="mt_2" id="m_hidden_div">
-											<span class="sbox">
+											<span class="sbox" id="monitoring_duration">
 												<label>Duration</label>
 												<span class="sel_w1">
 													<input type="text" name="" value="5" placeholder="" title=""
@@ -260,7 +275,7 @@
 													</select>
 												</span>
 											</span>
-											<span class="sbox">
+											<span class="sbox" id="monitoring_period">
 												<label>Period</label>
 												<select class="selectbox white" id="vm_period">
 													<option value="m" selected>per Minutely</option>
@@ -268,19 +283,31 @@
 													<option value="d">per Daily</option>
 												</select>
 											</span>
+											<span class="sbox" id="monitoring_interval" style="display: none;">
+												<label>Interval</label>
+												<span class="sel_w1">
+													<input type="text" name="" value="5" placeholder="" title=""
+														id="input_interval" />
+													sec
+												</span>
+											</span>
 										</li>
 										<li class="mt_1">
-											<!-- <label>Type</label> -->
-											<!-- <span class="sbox_m2">
+											<!-- <label>Type</label>
+											<span class="sbox_m2">
 												<select class="selectbox white" placeholder="Select Type(Live, History)"
 													id="sel_history">
 													<option value="history">Default History</option>
 													<option value="live">OnDemend</option>
 												</select>
-												
+
 											</span> -->
-											<button name="" value="" class="btn_view"
+											<button name="" value="" class="btn_view" id="btn_history"
 												onclick="btn_view_click()">View</button>
+											<button name="" value="" class="btn_view" id="btn_ondemand_start"
+												style="display: none;" onclick="btn_ondemand_start()">start</button>
+											<button name="" value="" class="btn_view" id="btn_ondemand_stop"
+												style="display: none;" onclick="btn_ondemand_stop()">stop</button>
 										</li>
 									</ul>
 

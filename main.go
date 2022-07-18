@@ -590,6 +590,7 @@ func main() {
 	//var url = "/operation/manage" + "/mcis/" + mcisID + "/operation/" + type
 	e.POST("/operation/manages/mcismng/proc/vmlifecycle", controller.McisVmLifeCycle)
 	e.POST("/operation/manages/mcismng/proc/vmmonitoring", controller.GetVmMonitoring)
+	e.POST("/operation/manages/mcismng/proc/vmondemandmonitoring/:agentIp", controller.GetVmOnDemandMonitoring)
 
 	e.POST("/operation/manages/mcismng/cmd/mcis/:mcisID", controller.CommandMcis)
 	e.POST("/operation/manages/mcismng/cmd/mcis/:mcisID/vm/:vmID", controller.CommandVmOfMcis)

@@ -987,6 +987,41 @@ func GetVmMonitoring(c echo.Context) error {
 	})
 }
 
+func GetVmOnDemandMonitoring(c echo.Context) error {
+	log.Println("GetVmOnDemandMonitoring")
+	loginInfo := service.CallLoginInfo(c)
+	if loginInfo.UserID == "" {
+		return c.Redirect(http.StatusTemporaryRedirect, "/login") // 조회기능에서 바로 login화면으로 돌리지말고 return message로 하는게 낫지 않을까?
+	}
+	defaultNameSpaceID := loginInfo.DefaultNameSpaceID
+
+	agentIp := c.Param("agentIp")
+
+	vmMonitoring := &dragonfly.VmMonitoring{}
+	if err := c.Bind(vmMonitoring); err != nil {
+		log.Println(err)
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "fail",
+			"status":  "fail",
+		})
+	}
+
+	vmMonitoring.NameSpaceID = defaultNameSpaceID
+
+	returnVMMonitoringInfo, respStatus := service.GetVmOnDemandMonitoringMetricInfo(agentIp, vmMonitoring)
+	if respStatus.StatusCode != 200 && respStatus.StatusCode != 201 {
+		return c.JSON(respStatus.StatusCode, map[string]interface{}{
+			"error":  respStatus.Message,
+			"status": respStatus.StatusCode,
+		})
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message":          "success",
+		"status":           respStatus.StatusCode,
+		"VMMonitoringInfo": returnVMMonitoringInfo[vmMonitoring.Metric],
+	})
+}
+
 // MCIS에 Command 전송
 func CommandMcis(c echo.Context) error {
 	log.Println("CommandMcis : ")
