@@ -477,6 +477,7 @@ func main() {
 	//e.GET("/apicall", controller.ApiCall)
 	e.POST("/apicall", controller.ApiCall)
 	e.POST("/servercall", controller.ServerCall)
+	e.GET("/gethealthcheck/:framework", controller.GetHealthCheck)
 
 	mainGroup := e.Group("/main", mainTemplate)
 	mainGroup.GET("", controller.MainForm)

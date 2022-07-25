@@ -156,13 +156,17 @@ function getMcisStatusDisp(mcisFullStatus) {
 	return returnStatus
 }
 
-function getMcisStatusIcon(mcisDispStatus){
+function getMcisStatusIcon(mcisDispStatus) {
 	var mcisStatusIcon = "";
-	if(mcisDispStatus == "running"){ mcisStatusIcon = "icon_running_db.png"
-	}else if(mcisDispStatus == "include" ){ mcisStatusIcon = "icon_stop_db.png"
-	}else if(mcisDispStatus == "suspended"){mcisStatusIcon = "icon_stop_db.png"
-	}else if(mcisDispStatus == "terminate"){mcisStatusIcon = "icon_terminate_db.png"
-	}else{
+	if (mcisDispStatus == "running") {
+		mcisStatusIcon = "icon_running_db.png"
+	} else if (mcisDispStatus == "include") {
+		mcisStatusIcon = "icon_stop_db.png"
+	} else if (mcisDispStatus == "suspended") {
+		mcisStatusIcon = "icon_stop_db.png"
+	} else if (mcisDispStatus == "terminate") {
+		mcisStatusIcon = "icon_terminate_db.png"
+	} else {
 		mcisStatusIcon = "icon_stop_db.png"
 	}
 	return mcisStatusIcon
@@ -210,7 +214,7 @@ function getVmStatus(vm_name, connection_name) {
 	})
 }
 
-function getVmStatusClass(vmDispStatus){
+function getVmStatusClass(vmDispStatus) {
 	var vmStatusClass = "bgbox_g";
 	if (vmDispStatus == "running") {
 		vmStatusClass = "bgbox_b"
@@ -225,18 +229,18 @@ function getVmStatusClass(vmDispStatus){
 	}
 	return vmStatusClass;
 }
-function getVmStatusIcon(vmDispStatus){
+function getVmStatusIcon(vmDispStatus) {
 	var vmStatusIcon = "icon_running_db.png";
-	if(vmDispStatus == "running"){
-	    vmStatusIcon = "icon_running_db.png";
-	}else if(vmDispStatus == "stop"){
-	    vmStatusIcon = "icon_stop_db.png";
-	}else if(vmDispStatus == "suspended"){
-	    vmStatusIcon = "icon_stop_db.png";
-	}else if(vmDispStatus == "terminate"){
-	    vmStatusIcon = "icon_terminate_db.png";
-	}else{
-	    vmStatusIcon = "icon_stop_db.png";
+	if (vmDispStatus == "running") {
+		vmStatusIcon = "icon_running_db.png";
+	} else if (vmDispStatus == "stop") {
+		vmStatusIcon = "icon_stop_db.png";
+	} else if (vmDispStatus == "suspended") {
+		vmStatusIcon = "icon_stop_db.png";
+	} else if (vmDispStatus == "terminate") {
+		vmStatusIcon = "icon_terminate_db.png";
+	} else {
+		vmStatusIcon = "icon_stop_db.png";
 	}
 	return vmStatusIcon;
 }
@@ -773,11 +777,25 @@ function checkEmptyString(stringVal) {
 }
 
 // plus 버튼을 추가하는 script
-function getPlusVm(){
+function getPlusVm() {
 	var append = "";
 	append = append + '<li id="plusVmIcon" >';
 	append = append + '<div class="server server_add" onClick="displayNewServerForm()">';
 	append = append + '</div>';
 	append = append + '</li>';
 	return append;
+}
+
+function getNow(seperator) {
+	var today = new Date()
+	var year = today.getFullYear(); // 년도
+	var month = today.getMonth() + 1;  // 월
+	var date = today.getDate();  // 날짜
+	var hours = today.getHours(); // 시
+	var minutes = today.getMinutes();  // 분
+	var seconds = today.getSeconds();  // 초
+
+	if (seperator == "/") {
+		return year + '/' + month + '/' + date + " " + hours + ':' + minutes + ':' + seconds
+	}
 }

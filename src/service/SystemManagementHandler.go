@@ -19,10 +19,8 @@ import (
 	// tbmcis "github.com/cloud-barista/cb-webtool/src/model/tumblebug/mcis"
 
 	util "github.com/cloud-barista/cb-webtool/src/util"
-
 	// "github.com/labstack/echo"
 )
-
 
 func GetCheckResourceExistence(nameSpaceID string, resourceType string, resourceId string) (tbcommon.TbSimpleMsg, model.WebStatus) {
 	var originalUrl = "/{nsId}/checkResource/{resourceType}/{resourceId}"
@@ -47,7 +45,6 @@ func GetCheckResourceExistence(nameSpaceID string, resourceType string, resource
 
 	respBody := resp.Body
 	respStatus := resp.StatusCode
-	
 
 	json.NewDecoder(respBody).Decode(&resultInfo)
 	log.Println(resultInfo)
@@ -59,7 +56,6 @@ func GetCheckResourceExistence(nameSpaceID string, resourceType string, resource
 
 	return resultInfo, model.WebStatus{StatusCode: respStatus}
 }
-
 
 func GetHealth() (tbcommon.TbSimpleMsg, model.WebStatus) {
 	fmt.Println("Check Tumblebug alive start")
@@ -80,7 +76,6 @@ func GetHealth() (tbcommon.TbSimpleMsg, model.WebStatus) {
 
 	respBody := resp.Body
 	respStatus := resp.StatusCode
-	
 
 	json.NewDecoder(respBody).Decode(&resultInfo)
 	log.Println(resultInfo)
@@ -92,7 +87,6 @@ func GetHealth() (tbcommon.TbSimpleMsg, model.WebStatus) {
 
 	return resultInfo, model.WebStatus{StatusCode: respStatus}
 }
-
 
 func DelObject(optionParam string) (tbcommon.TbSimpleMsg, model.WebStatus) {
 	fmt.Println("Delete object start")
@@ -113,7 +107,6 @@ func DelObject(optionParam string) (tbcommon.TbSimpleMsg, model.WebStatus) {
 
 	respBody := resp.Body
 	respStatus := resp.StatusCode
-	
 
 	json.NewDecoder(respBody).Decode(&resultInfo)
 	log.Println(resultInfo)
@@ -125,7 +118,6 @@ func DelObject(optionParam string) (tbcommon.TbSimpleMsg, model.WebStatus) {
 
 	return resultInfo, model.WebStatus{StatusCode: respStatus}
 }
-
 
 func GetObject(optionParam string) (tbcommon.TbSimpleMsg, model.WebStatus) {
 	fmt.Println("Get object start")
@@ -146,7 +138,6 @@ func GetObject(optionParam string) (tbcommon.TbSimpleMsg, model.WebStatus) {
 
 	respBody := resp.Body
 	respStatus := resp.StatusCode
-	
 
 	json.NewDecoder(respBody).Decode(&resultInfo)
 	log.Println(resultInfo)
@@ -178,7 +169,6 @@ func DelObjects(optionParam string) (tbcommon.TbSimpleMsg, model.WebStatus) {
 
 	respBody := resp.Body
 	respStatus := resp.StatusCode
-	
 
 	json.NewDecoder(respBody).Decode(&resultInfo)
 	log.Println(resultInfo)
@@ -210,7 +200,6 @@ func GetObjectList(optionParam string) (tbcommon.TbSimpleMsg, model.WebStatus) {
 
 	respBody := resp.Body
 	respStatus := resp.StatusCode
-	
 
 	json.NewDecoder(respBody).Decode(&resultInfo)
 	log.Println(resultInfo)
@@ -222,7 +211,6 @@ func GetObjectList(optionParam string) (tbcommon.TbSimpleMsg, model.WebStatus) {
 
 	return resultInfo, model.WebStatus{StatusCode: respStatus}
 }
-
 
 func GetAPIDocument(optionParam string) (tbcommon.TbSimpleMsg, model.WebStatus) {
 	fmt.Println("Get API document start")
@@ -243,7 +231,6 @@ func GetAPIDocument(optionParam string) (tbcommon.TbSimpleMsg, model.WebStatus) 
 
 	respBody := resp.Body
 	respStatus := resp.StatusCode
-	
 
 	json.NewDecoder(respBody).Decode(&resultInfo)
 	log.Println(resultInfo)

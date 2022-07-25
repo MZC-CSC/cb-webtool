@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+
 	// "github.com/davecgh/go-spew/spew"
 	"io/ioutil"
 	"log"
@@ -902,4 +903,31 @@ func LogoutProc(c echo.Context) error {
 	// return c.Render(http.StatusOK, "login.html", nil)
 	return c.Redirect(http.StatusTemporaryRedirect, "/login")
 
+}
+
+// Framework Health Check
+func GetHealthCheck(c echo.Context) error {
+	framework := c.Param("framework")
+	if framework == "tumblebug" {
+		resultHealthInfo, _ := service.GetHealth()
+		var status = 200
+		if resultHealthInfo.Message != "API server of CB-Tumblebug is alive" {
+			status = 408 // request time out
+		}
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"HealthInfo": model.WebStatus{StatusCode: status, Message: resultHealthInfo.Message},
+		})
+	} else if framework == "dragonfly" {
+		resultHealthInfo := service.GetHealthCheck()
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"HealthInfo": resultHealthInfo,
+		})
+	} else if framework == "mcks" {
+		resultHealthInfo := service.GetHealthy()
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"HealthInfo": resultHealthInfo,
+		})
+	}
+
+	return c.JSON(http.StatusBadRequest, map[string]interface{}{})
 }

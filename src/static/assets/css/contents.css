@@ -2486,6 +2486,18 @@ table tbody tr {
 	border-width: 1px 1px 1px 0;
 }
 
+.dataTable tbody td .framework_info {
+	margin: 0 5px;
+}
+
+.dataTable tbody td .framework_info.status {
+	color: #28a745;
+}
+
+.dataTable tbody td .framework_info.unhealthy {
+	color: red;
+}
+
 .dataTable tbody td:last-child {
 	border-right: none;
 }
@@ -6147,6 +6159,10 @@ table tbody tr {
 	border-radius: 15px;
 	background-color: #f8f9fa;
 	padding: 30px 0;
+}
+
+.dashboard .register_box .graybox.framework_info {
+	padding: 30px;
 }
 
 .dashboard .register_box .graybox .g_box:after {

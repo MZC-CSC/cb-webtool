@@ -1281,3 +1281,25 @@ function selectBoxFilterBy2Texts(targetObject, compareText1, compareText2) {
     });
 }
 
+// framework health check
+function getHealthCheck(framework) {
+    console.log("getHealthCheck");
+
+    var url = "/gethealthcheck/" + framework
+    axios.get(url, {
+        headers: {
+
+        }
+    }).then(result => {
+        console.log("framework health: ", result);
+        var healthInfo = result.data.HealthInfo
+        var statusText = "Unhealthy"
+        $("#" + framework + "_status").addClass("unhealthy")
+        if (healthInfo.code == 200 || healthInfo.code == 204) {
+            statusText = "Healthy"
+            $("#" + framework + "_status").removeClass("unhealthy")
+        }
+        $("#" + framework + "_status").text(statusText)
+        $("#" + framework + "_time").text(getNow("/"))
+    })
+}

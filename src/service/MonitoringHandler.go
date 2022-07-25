@@ -22,6 +22,28 @@ import (
 	util "github.com/cloud-barista/cb-webtool/src/util"
 )
 
+// Health Check
+func GetHealthCheck() model.WebStatus {
+	var originalUrl = "/healthcheck"
+	urlParam := util.MappingUrlParameter(originalUrl, nil)
+	url := util.DRAGONFLY + urlParam
+	resp, err := util.CommonHttp(url, nil, http.MethodGet)
+
+	if err != nil {
+		fmt.Println(err)
+		return model.WebStatus{StatusCode: 500, Message: err.Error()}
+	}
+
+	respBody := resp.Body
+	respStatus := resp.StatusCode
+
+	result := ""
+	json.NewDecoder(respBody).Decode(&result)
+	log.Println(result)
+
+	return model.WebStatus{StatusCode: respStatus, Message: result}
+}
+
 // VM 에 모니터링 Agent 설치
 ///ns/{nsId}/monitoring/install/mcis/{mcisId}
 func RegBenchmarkAgentInVm(nameSpaceID string, mcisID string, vmMonitoringAgentReg *tbmcis.McisCmdReq) (*tbmcis.AgentInstallContentWrapper, model.WebStatus) {
