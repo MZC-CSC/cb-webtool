@@ -908,7 +908,12 @@ func LogoutProc(c echo.Context) error {
 // Framework Health Check
 func GetHealthCheck(c echo.Context) error {
 	framework := c.Param("framework")
-	if framework == "tumblebug" {
+	if framework == "spider" {
+		resultHealthInfo := service.GetSpiderHealthCheck()
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"HealthInfo": resultHealthInfo,
+		})
+	} else if framework == "tumblebug" {
 		resultHealthInfo, _ := service.GetHealth()
 		var status = 200
 		if resultHealthInfo.Message != "API server of CB-Tumblebug is alive" {

@@ -88,6 +88,27 @@ func GetHealth() (tbcommon.TbSimpleMsg, model.WebStatus) {
 	return resultInfo, model.WebStatus{StatusCode: respStatus}
 }
 
+func GetSpiderHealthCheck() model.WebStatus {
+	var originalUrl = "/healthcheck"
+	urlParam := util.MappingUrlParameter(originalUrl, nil)
+	url := util.SPIDER + urlParam
+	resp, err := util.CommonHttp(url, nil, http.MethodGet)
+
+	if err != nil {
+		fmt.Println(err)
+		return model.WebStatus{StatusCode: 500, Message: err.Error()}
+	}
+
+	respBody := resp.Body
+	respStatus := resp.StatusCode
+
+	result := ""
+	json.NewDecoder(respBody).Decode(&result)
+	log.Println(result)
+
+	return model.WebStatus{StatusCode: respStatus, Message: result}
+}
+
 func DelObject(optionParam string) (tbcommon.TbSimpleMsg, model.WebStatus) {
 	fmt.Println("Delete object start")
 	var originalUrl = "/object"

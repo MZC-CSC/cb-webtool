@@ -42,6 +42,7 @@ $(document).ready(function () {
 
 	getCommonMcksList("mainmcks", "id")
 	//$("#guideArea").modal();
+	getHealthCheck('spider')
 	getHealthCheck('tumblebug')
 	getHealthCheck('dragonfly')
 	getHealthCheck('mcks')
