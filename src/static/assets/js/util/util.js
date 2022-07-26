@@ -727,7 +727,7 @@ function commonPromptEnter(keyEvent) {
 //////// Prompt end //////////
 // provider에 등록된 connection을 selectbox에 표시
 function getConnectionListForSelectbox(provider, targetSelectBoxID) {
-
+    getRootDiskType(provider)
     var data = new Array();
     var url = "/setting/connections/cloudconnectionconfig/" + "list"
     console.log("provider : ", provider)

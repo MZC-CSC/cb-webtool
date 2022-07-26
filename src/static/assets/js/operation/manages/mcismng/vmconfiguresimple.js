@@ -252,10 +252,12 @@ function simpleDone_btn() {
 	$("#s_spec").val($("#ss_spec").val())
 	$("#s_imageId").val($("#ss_imageId").val())
 	$("#s_sshKey").val($("#ss_sshKey").val())
+	$("#s_rootDiskType").val($("#ss_rootDiskType").val())
+	$("#s_rootDiskSize").val($("#ss_rootDiskSize").val())
 	$("#s_vm_cnt").val($("#ss_vm_add_cnt").val() + "")
 
-	console.log($("#s_imageId").val());
-	console.log($("#ss_imageId").val());
+	console.log($("#s_rootDiskType").val());
+	console.log($("#ss_rootDiskType").val());
 
 	var simple_form = $("#simple_form").serializeObject()
 	console.log(simple_form);
@@ -434,3 +436,39 @@ function importFileProcess(file) {
 
 // }
 
+const Root_Disk_Type = new Map([
+	['AWS', 'standard,gp2,gp3'],
+	['AZURE', 'PremiumSSD,StandardSSD,StandardHHD'],
+	['GCP', 'pd-standard,pd-balanced,pd-ssd,pd-extreme'],
+	['ALIBABA', 'cloud_efficiency,cloud,cloud_ssd'],
+	['TENCENT', 'CLOUD_PREMIUM,CLOUD_SSD'],
+	['NHNCLOUD', 'General_HDD,General_SSD'],
+])
+
+function getRootDiskType(provider) {
+	console.log("root disk provider: ", provider);
+	var typeString = Root_Disk_Type.get(provider)
+	var html = ""
+	if (typeString) {
+		var typeArray = typeString.split(',')
+		typeArray.forEach(function (typeItem, typeIndex) {
+			html += "<option>" + typeItem + "</option>"
+		})
+		$("#ss_rootDiskType").empty()
+		$("#ss_rootDiskType").append(html)
+		$("#ss_rootDiskType").attr("disabled", false)
+		$("#ss_rootDiskType").css("background-color", "#fff")
+		$("#ss_rootDiskSize").attr("disabled", false)
+		$("#ss_rootDiskSize").removeClass("gray")
+
+	} else {
+		html += "<option>Comming Soon</option>"
+		$("#ss_rootDiskType").empty()
+		$("#ss_rootDiskType").append(html)
+		$("#ss_rootDiskType").attr("disabled", true)
+		$("#ss_rootDiskType").css("background-color", "#e7ebee")
+		$("#ss_rootDiskSize").attr("disabled", true)
+		$("#ss_rootDiskSize").addClass("gray")
+	}
+
+}

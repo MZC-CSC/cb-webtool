@@ -1198,6 +1198,9 @@ function vmDetailInfo(mcisID, mcisName, vmID) {
     $("#server_detail_view_public_dns").val(data.publicDNS)
     $("#server_detail_view_private_ip").val(data.privateIP)
     $("#server_detail_view_private_dns").val(data.privateDNS)
+    $("#server_detail_view_root_disk_type").val(data.rootDiskType)
+    $("#server_detail_view_root_disk_size").val(data.rootDiskSize + "GB")
+    $("#server_detail_view_root_device_name").val(data.rootDeviceName)
 
     $("#manage_mcis_popup_public_ip").val(vmPublicIp)
 

@@ -19,6 +19,8 @@
 		<input type="hidden" name="specId" id="s_spec" />
 		<input type="hidden" name="imageId" id="s_imageId" />
 		<input type="hidden" name="sshKeyId" id="s_sshKey" />
+		<input type="hidden" name="rootDiskType" id="s_rootDiskType" />
+		<input type="hidden" name="rootDiskSize" id="s_rootDiskSize" />
 		<input type="hidden" name="tempProvider" id="t_regProvider" />
 		<input type="hidden" name="tempConnectionName" id="t_regConnectionName" />
 		<input type="hidden" name="tempSpec" id="t_spec" />
@@ -106,6 +108,27 @@
 							<select class="selectbox white pline sel_4" name="sshKeyId" id="ss_sshKey">
 								<option value="">Select SSH Key</option>
 							</select>
+
+						</li>
+					</ul>
+				</div>
+
+			</div>
+
+			<div class="svc_ipbox svc_ipbox_2">
+				<div class="ipbox ipbox3">
+					<ul>
+						<li>
+							<label>Root Disk Type</label>
+							<select class="selectbox white pline sel_4" name="rootDiskType" id="ss_rootDiskType">
+								<option value="">Select Root Disk Type</option>
+							</select>
+
+						</li>
+						<li>
+							<label>Root Disk Size (GB)</label>
+							<input type="text" name="rootDiskSize" id="ss_rootDiskSize" placeholder="Input Count"
+								class="pline count" title="" value="10" />
 
 						</li>
 					</ul>

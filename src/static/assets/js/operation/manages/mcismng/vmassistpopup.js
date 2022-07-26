@@ -980,9 +980,10 @@ function changeCloudConnection() {
 	setResourcesForOptions("OS Platform", totalImageListByNamespace, selectedConnection)
 	setResourcesForOptions("SSH Key", totalSshKeyListByNamespace, selectedConnection)
 
-	// security group, vnet setting
+	// security group, vnet, root disk type setting
 	getSecurityInfo(selectedConnection);
 	getVnetInfo(selectedConnection);
+	getRootDiskType(selectedProvider)
 
 	// connection & spec setting
 	$("#ss_regConnectionName").val(selectedConnection)
