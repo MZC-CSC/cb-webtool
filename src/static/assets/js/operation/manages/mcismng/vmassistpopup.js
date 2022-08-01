@@ -22,9 +22,11 @@ $(document).ready(function () {
 		showMap()
 	});
 
-	$("#recommendVmAssist").on("show.bs.modal", function (e) {
-		console.log("show.bs.modal")
-		console.log(e)
+	$("#recommendVmAssist").on("hidden.bs.modal", function (e) {
+		console.log("hidden.bs.modal")
+		$("#longitude").val("")
+		$("#latitude").val("")
+		$("#assistRecommendSpecList").empty()
 	});
 });
 

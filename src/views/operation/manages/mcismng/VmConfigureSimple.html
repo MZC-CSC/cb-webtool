@@ -62,7 +62,7 @@
 						<li>
 							<label><span class="ch">*</span>Provider</label>
 							<select class="selectbox white pline sel_4" name="provider" id="ss_regProvider"
-								onchange="getConnectionListForSelectbox(this.value, 'ss_regConnectionName');">
+								onchange="getConnectionListForSelectbox(this.value, 'ss_regConnectionName', 'createVm');">
 								<option value="">Select Provider</option>
 								{{ range $item := .CloudOSList}}
 								<option value="{{ $item }}">{{ $item }}</option>

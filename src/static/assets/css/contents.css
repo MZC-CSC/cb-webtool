@@ -17,6 +17,11 @@
 	color: #c7c7c7;
 }
 
+.row_flex_box {
+	display: flex;
+	flex-direction: row;
+}
+
 .layerpopup {
 	z-index: 9999999
 }
@@ -10320,6 +10325,11 @@ table tbody tr {
 	margin-left: 5px;
 }
 
+.popup_editBox .modal-body .pop-body .pop-cont .mapcont.recommend {
+	display: inline-block;
+	width: 80%;
+}
+
 /*spec assist*/
 .popup_editBox .modal-body .pop-body .pop-cont .spec_box {
 	padding: 10px 25px 25px 25px;
@@ -10327,6 +10337,14 @@ table tbody tr {
 	border: 1px dashed #ccc;
 	border-radius: 10px;
 	margin-bottom: 20px;
+}
+
+.popup_editBox .modal-body .pop-body .pop-cont .spec_box.recommend {
+	display: inline-block;
+	width: 20%;
+	padding: 10px;
+	margin-bottom: 0;
+	margin-right: 20px;
 }
 
 .popup_editBox .modal-body .pop-body .pop-cont .spec_box:after {
@@ -10343,8 +10361,8 @@ table tbody tr {
 }
 
 .popup_editBox .modal-body .pop-body .pop-cont .spec_box .s_box.recommend {
-	float: left;
-	width: 33%;
+	float: none;
+	width: 100%;
 }
 
 .popup_editBox .modal-body .pop-body .pop-cont .spec_box .s_box>ul {}
@@ -10356,15 +10374,22 @@ table tbody tr {
 
 .popup_editBox .modal-body .pop-body .pop-cont .spec_box .s_box li label {
 	display: block;
-	margin: 15px 0;
+	margin: 20px 10px;
 	font-size: 16px;
 	font-weight: 500;
 	color: #5e636c;
 }
 
-.popup_editBox .modal-body .pop-body .pop-cont .spec_box .s_box li .s_slider_box {
-	display: inline-block;
+.popup_editBox .modal-body .pop-body .pop-cont .spec_box .s_slider_box.recommend {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	width: 100%;
 }
+
+/*.popup_editBox .modal-body .pop-body .pop-cont .spec_box .s_box li .s_slider_box {
+	display: inline-block;
+}*/
 
 .popup_editBox .modal-body .pop-body .pop-cont .spec_box .s_box li .stxt {
 	display: inline-block;
@@ -10706,6 +10731,10 @@ table tbody tr {
 	font-weight: 500;
 	transform: translateY(30%);
 	z-index: 99;
+}
+
+.popup_editBox .modal-body .pop-body .pop-cont .toptxt.recommend {
+	transform: translateY(0%);
 }
 
 .popup_editBox .modal-body .pop-body .pop-cont .toptxt.search {

@@ -1620,124 +1620,128 @@
 					</div>
 
 					<div class="pop-cont">
-						<div class="spec_box">
-							<div class="toptxt search">
-								<!-- <label>Search</label> -->
-								<!-- <input type="submit" name="" class="btn_search_spec" title="" value=""
+						<div class="row_flex_box">
+							<div class="spec_box recommend">
+								<div class="toptxt recommend">
+									<!-- <label>Search</label> -->
+									<!-- <input type="submit" name="" class="btn_search_spec" title="" value=""
 									onclick="searchSpecsByRange('searchVmSpecAssistAtReg')" /> -->
-								<input type="hidden" id="longitude" name="" value="" class="pline" title="" />
-								<input type="hidden" id="latitude" name="" value="" class="pline" title="" />
-								<ul>
-									<li class="reg_1">
-										<label class="assistLabel"></span>Priority Option</label>
-										<select class="selectbox white pline w3"
-											name="assistRecommendSpecConnectionName"
-											id="assistRecommendSpecConnectionName">
-											<option value="" selected>Select Priority Option</option>
-											<option value="location" selected>Location</option>
-											<option value="cost">Cost</option>
-											<option value="latency">Latency</option>
-										</select>
-									</li>
-									<li class="reg_1">
-										<label class="assistLabel"></span>Limit</label>
-										<input type="text" class="pline" value="5" name="recommendVmLimit"
-											id="recommendVmLimit">
-									</li>
-									<li class="reg_1">
-										<input type="submit" name="" class="btn_search_spec" title="" value=""
-											onclick="getRecommendVmInfo()" />
-									</li>
+									<input type="hidden" id="longitude" name="" value="" class="pline" title="" />
+									<input type="hidden" id="latitude" name="" value="" class="pline" title="" />
+									<ul>
+										<li class="reg_1">
+											<label class="assistLabel"></span>Priority Option</label>
+											<select class="selectbox white pline w3"
+												name="assistRecommendSpecConnectionName"
+												id="assistRecommendSpecConnectionName" style="width: 100%;">
+												<option value="" selected>Select Priority Option</option>
+												<option value="location" selected>Location</option>
+												<option value="cost">Cost</option>
+												<option value="latency">Latency</option>
+											</select>
+										</li>
+										<li class="reg_1">
+											<label class="assistLabel"></span>Limit</label>
+											<input type="text" class="pline" value="5" name="recommendVmLimit"
+												id="recommendVmLimit" style="width: 100%;">
+										</li>
+										<!-- <li class="reg_1">
+											<input type="submit" name="" class="btn_search_spec" title="" value=""
+												onclick="getRecommendVmInfo()" />
+										</li> -->
 
-								</ul>
+									</ul>
 
-							</div>
+								</div>
 
-							<div class="s_box recommend s_box_1">
-								<ul>
+								<div class="s_box recommend s_box_1">
+									<ul>
 
-									<li>
-										<label>Memory</label>
-										<div class="s_slider_box">
-											<input type="text" id="num_memory_min" name="assist_max_num_memory_min"
-												value="0" placeholder="1" class="components_input txt_ipbox" title=""
-												disabled />
-											<div class="slider_ip">
-												<button class="btn_s btn_s_minus">-</button>
-												<div class="slider_bar">
-													<!-- <input type="text" name="" value="" placeholder=""
-															class="slider_bar" title="" data-slider-min="0"
-															data-slider-max="100" data-slider-step="1"
-															data-slider-value="1" /> -->
-												</div>
-												<button class="btn_s btn_s_plus">+</button>
+										<li>
+											<label>Memory (GiB)</label>
+											<div class="s_slider_box recommend">
+												<input type="text" id="num_memory_min" name="assist_max_num_memory_min"
+													value="0" placeholder="1" class="components_input txt_ipbox"
+													title="" />
+												<span>~</span>
+												<!-- <div class="slider_ip">
+													<button class="btn_s btn_s_minus">-</button>
+													<div class="slider_bar">
+													</div>
+													<button class="btn_s btn_s_plus">+</button>
+												</div> -->
+												<input type="text" id="num_memory_max" name="assist_max_num_memory_min"
+													value="100" placeholder="1" class="components_input txt_ipbox"
+													title="" />
 											</div>
-											<input type="text" id="num_memory_max" name="assist_max_num_memory_min"
-												value="100" placeholder="1" class="components_input txt_ipbox" title=""
-												disabled />
-										</div>
-										<span class="stxt">TiB</span>
-									</li>
+											<!-- <span class="stxt">TiB</span> -->
+										</li>
 
-								</ul>
-							</div>
+									</ul>
+								</div>
 
-							<div class="s_box recommend s_box_2">
-								<ul>
-									<li>
-										<label>CPU</label>
-										<div class="s_slider_box">
-											<input type="text" id="num_vCPU_min" name="assist_num_vCPU_min" value="0"
-												placeholder="0" class="components_input txt_ipbox" title="" disabled />
-											<div class="slider_ip">
-												<button class="btn_s btn_s_minus">-</button>
-												<div class="slider_bar">
-													<!-- <input type="text" name="" value="" placeholder=""
-															class="slider_bar" title="" data-slider-min="0"
-															data-slider-max="10" data-slider-step="1"
-															data-slider-value="0" /> -->
-												</div>
-												<button class="btn_s btn_s_plus">+</button>
+								<div class="s_box recommend s_box_2">
+									<ul>
+										<li>
+											<label>CPU (Unit)</label>
+											<div class="s_slider_box recommend">
+												<input type="text" id="num_vCPU_min" name="assist_num_vCPU_min"
+													value="0" placeholder="0" class="components_input txt_ipbox"
+													title="" />
+												<span>~</span>
+												<!-- <div class="slider_ip">
+													<button class="btn_s btn_s_minus">-</button>
+													<div class="slider_bar">
+													</div>
+													<button class="btn_s btn_s_plus">+</button>
+												</div> -->
+												<input type="text" id="num_vCPU_max" name="assist_num_vCPU_max"
+													value="100" placeholder="0" class="components_input txt_ipbox"
+													title="" />
 											</div>
-											<input type="text" id="num_vCPU_max" name="assist_num_vCPU_max" value="100"
-												placeholder="0" class="components_input txt_ipbox" title="" disabled />
-										</div>
-										<span class="stxt">Unit</span>
-									</li>
-								</ul>
-							</div>
+											<!--<span class="stxt">Unit</span>-->
+										</li>
+									</ul>
+								</div>
 
-							<div class="s_box recommend s_box_2">
-								<ul>
-									<li>
-										<label>COST</label>
-										<div class="s_slider_box">
-											<input type="text" id="num_cost_min" name="assist_num_vCPU_min" value="0"
-												placeholder="0" class="components_input txt_ipbox" title="" disabled />
-											<div class="slider_ip">
-												<button class="btn_s btn_s_minus">-</button>
-												<div class="slider_bar">
-													<!-- <input type="text" name="" value="" placeholder=""
-															class="slider_bar" title="" data-slider-min="0"
-															data-slider-max="10" data-slider-step="1"
-															data-slider-value="0" /> -->
-												</div>
-												<button class="btn_s btn_s_plus">+</button>
+								<div class="s_box recommend s_box_2">
+									<ul>
+										<li>
+											<label>COST</label>
+											<div class="s_slider_box recommend">
+												<input type="text" id="num_cost_min" name="assist_num_vCPU_min"
+													value="0" placeholder="0" class="components_input txt_ipbox"
+													title="" />
+												<span>~</span>
+												<!-- <div class="slider_ip">
+													<button class="btn_s btn_s_minus">-</button>
+													<div class="slider_bar">
+													</div>
+													<button class="btn_s btn_s_plus">+</button>
+												</div> -->
+												<input type="text" id="num_cost_max" name="assist_num_vCPU_max"
+													value="100" placeholder="0" class="components_input txt_ipbox"
+													title="" />
 											</div>
-											<input type="text" id="num_cost_max" name="assist_num_vCPU_max" value="100"
-												placeholder="0" class="components_input txt_ipbox" title="" disabled />
-										</div>
-										<span class="stxt">Unit</span>
-									</li>
-								</ul>
+											<!--<span class="stxt">Unit</span>-->
+										</li>
+									</ul>
+								</div>
+
+								<div class="btnbox">
+									<div class="btn_center">
+										<button name="" value="" class="btn_co btn_cr_g"
+											onclick="getRecommendVmInfo('recommendVmAssist')"><span>Search</span></button>
+									</div>
+								</div>
+
+
 							</div>
 
-
-						</div>
-
-						<div class="mapcont">
-							<div class="map" id="recommend_map" style="height:150px;"></div>
-							<!--							<div class="map" id="map" style="height:300px;"></div>-->
+							<div class="mapcont recommend">
+								<div class="map" id="recommend_map" style="height:450px;"></div>
+								<!--							<div class="map" id="map" style="height:300px;"></div>-->
+							</div>
 						</div>
 
 						<!-- table scrollbar -->
@@ -1756,7 +1760,7 @@
 											<th>EvaluationScore01</th>
 										</tr>
 									</thead>
-									<tbody id="assistRecommendSpecList">
+									<tbody id="assistRecommendSpecList" style="height: auto;">
 
 									</tbody>
 								</table>
