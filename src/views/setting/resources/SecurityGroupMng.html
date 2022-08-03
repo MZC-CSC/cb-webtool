@@ -32,7 +32,8 @@
 		<div class="tit"><img src="/assets/img/common/icon_cont.png" alt="" />Resources / <strong>Security</strong>
 		</div>
 		<div class="location">Home <span>></span> Setting <span>></span> Resources <span>></span>
-			<strong>Security</strong></div>
+			<strong>Security</strong>
+		</div>
 	</div>
 
 	<!-- list -->
@@ -155,7 +156,7 @@
 							</tr>
 						</thead>
 						<tbody id="sgList">
-							{{ $length := len .SecurityGroupList }}
+							<!-- {{ $length := len .SecurityGroupList }}
 							{{ if eq $length 0 }}
 							<tr>
 								<td class="overlay hidden" data-th="" colspan="5">No Data</td>
@@ -178,8 +179,14 @@
 								<!-- <td class="overlay hidden column-60px" data-th=""><a href="javascript:void(0);">
 													<img src="/assets/img/contents/icon_link.png" class="icon" alt=""/></a>
 												</td> -->
-							</tr>
-							{{ end }}
+							<!--</tr>
+							{{ end }} -->
+						</tbody>
+					</table>
+				</div>
+				<div class="pageTable">
+					<table cellpadding="0" cellspacing="0" border="1" summary="" id="page_sgListTable">
+						<tbody id="page_sgList">
 						</tbody>
 					</table>
 				</div>

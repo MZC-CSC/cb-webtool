@@ -1237,7 +1237,7 @@ var TotalPaginationMap = new Map();// paging을 위한 map
 // pagination 정보 Set.
 // 기본정보 : tatalCount, itemsOnPage, visiblePages
 // 가변정보 : currentPageNum,
-function setTablePagination(tableId, paginationMap){
+function setTablePagination(tableId, paginationMap) {
     //
     // var paginationMap = new Map();
     // paginationMap.set("addRowFunctionName", "addRowVpcNet");// addRow를 구현한 function이름 : 반드시 필요.
@@ -1249,10 +1249,10 @@ function setTablePagination(tableId, paginationMap){
     // paginationMap.set("listData", listData)//
 
     var listData = paginationMap.get("listData");
-    var currentPageNum = paginationMap.get("currentPageNum")== "" ? "1": paginationMap.get("currentPageNum")
+    var currentPageNum = paginationMap.get("currentPageNum") == "" ? "1" : paginationMap.get("currentPageNum")
     var addRowFunctionName = paginationMap.get("addRowFunctionName");
 
-    if( addRowFunctionName == "" || addRowFunctionName == undefined){
+    if (addRowFunctionName == "" || addRowFunctionName == undefined) {
         console.log("there is no addRowFunctionName")
         return
     }
@@ -1277,9 +1277,9 @@ function setTablePagination(tableId, paginationMap){
         var endRowNum = listData.length
 
         if (endRowNum < beginRowNum + countPerPage) {
-            endRowNum = beginRowNum + lastPageRowNum -1
+            endRowNum = beginRowNum + lastPageRowNum - 1
         } else if (endRowNum > beginRowNum + countPerPage) {
-            endRowNum = beginRowNum + countPerPage -1
+            endRowNum = beginRowNum + countPerPage - 1
         }
 
         console.log("beginPageNum:" + beginPageNum)
@@ -1302,7 +1302,7 @@ function setTablePagination(tableId, paginationMap){
 // paginationTable 에서 넘겨주는 param으로 생성.
 function displayPaginationInfo(tableId, currentPageNum) {
     var paginationMap = TotalPaginationMap.get(tableId);
-    var html="";
+    var html = "";
 
     /////////
     // var countPerPage = paginationMap.get("itemsOnPage");// TODO : screen size에 따라 한번에 보여주는 객수 다르게
@@ -1319,51 +1319,51 @@ function displayPaginationInfo(tableId, currentPageNum) {
 
     var html = ""
 
-    if( currentPageNum != 1) {
-        html += '<td onclick="moveToPage(\'' + tableId+ '\' ,1 );">FIRST</td>'
+    if (currentPageNum != 1) {
+        html += '<td onclick="moveToPage(\'' + tableId + '\' ,1 );">FIRST</td>'
     }
-    if( currentPageNum > 1) {
-        html += '<td onclick="moveToPage(\'' + tableId+ '\' ,' + (currentPageNum-1) + ' );">PREV</td>'
+    if (currentPageNum > 1) {
+        html += '<td onclick="moveToPage(\'' + tableId + '\' ,' + (currentPageNum - 1) + ' );">PREV</td>'
     }
 
-    for( var i = beginPageNum; i <= endPageNum; i++){
-        if( i == currentPageNum ){
+    for (var i = beginPageNum; i <= endPageNum; i++) {
+        if (i == currentPageNum) {
             // 현재 page는 링크 제외
-            html += '<td>c' + i + '</td>'
-        }else{
-            html += '<td onclick="moveToPage(\'' + tableId+ '\' ,' + i + ' );">' + i + '</td>'
+            html += '<td class="current_page">' + i + '</td>'
+        } else {
+            html += '<td onclick="moveToPage(\'' + tableId + '\' ,' + i + ' );">' + i + '</td>'
         }
     }
 
-    if( endPageNum > currentPageNum) {
-        html += '<td onclick="moveToPage(\'' + tableId+ '\' ,' + (currentPageNum+1) + ' );">NEXT</td>'
+    if (endPageNum > currentPageNum) {
+        html += '<td onclick="moveToPage(\'' + tableId + '\' ,' + (currentPageNum + 1) + ' );">NEXT</td>'
     }
-    if( endPageNum != currentPageNum) {
-        html += '<td onclick="moveToPage(\'' + tableId+ '\' ,' + endPageNum + ' );">LAST</td>'
+    if (endPageNum != currentPageNum) {
+        html += '<td onclick="moveToPage(\'' + tableId + '\' ,' + endPageNum + ' );">LAST</td>'
     }
 
-    html+="<td></td>"
-    html+="<td>" + currentPageNum + " / " + totalPageNum + "</td>"
-    html+="<td> total : " + totalRowNum + "</td>"
+    html += "<td></td>"
+    html += "<td>" + currentPageNum + " / " + totalPageNum + "</td>"
+    html += "<td> total : " + totalRowNum + "</td>"
 
     //vpcPagination
-    $("#page_"+ tableId).empty()
-    $("#page_"+ tableId).append(html)
+    $("#page_" + tableId).empty()
+    $("#page_" + tableId).append(html)
 }
 
 // 이전page로 이동
-function prevPage(tableId, currentPageNum){
-    moveToPage(tableId, currentPageNum-1 )
+function prevPage(tableId, currentPageNum) {
+    moveToPage(tableId, currentPageNum - 1)
 }
 // 다음 page로 이동
-function nextPage(tableId, currentPageNum){
-    moveToPage(tableId, currentPageNum+1 )
+function nextPage(tableId, currentPageNum) {
+    moveToPage(tableId, currentPageNum + 1)
 }
 
 // 해당 page로 이동
-function moveToPage(tableId, targetPageNum){
+function moveToPage(tableId, targetPageNum) {
     var paginationMap = TotalPaginationMap.get(tableId);
-    var html="";
+    var html = "";
 
     /////////
     var addRowFunctionName = paginationMap.get("addRowFunctionName");// 반드시 있어야 함 : table에 addRow를 하는 function 이름
@@ -1384,9 +1384,9 @@ function moveToPage(tableId, targetPageNum){
     var endRowNum = listData.length
 
     if (endRowNum < beginRowNum + countPerPage) {
-        endRowNum = beginRowNum + lastPageRowNum -1
-    } else if (endRowNum > beginRowNum + countPerPage) {
-        endRowNum = beginRowNum + countPerPage -1
+        endRowNum = beginRowNum + lastPageRowNum - 1
+    } else if (endRowNum >= beginRowNum + countPerPage) {
+        endRowNum = beginRowNum + countPerPage - 1
     }
 
     paginationMap.set("beginPageNum", beginPageNum)

@@ -134,7 +134,7 @@
 												<td class="overlay hidden" data-th=""><a href="javascript:void(0);"><img src="/assets/img/contents/icon_link.png" class="icon" alt=""/></a></td>
                                             </tr>
                                             -->
-							{{ $length := len .VirtualMachineImageList }}
+							<!-- {{ $length := len .VirtualMachineImageList }}
 							{{ if eq $length 0 }}
 							<tr>
 								<td class="overlay hidden" data-th="" colspan="5">No Data</td>
@@ -154,12 +154,18 @@
 								<td class="btn_mtd ovm" data-th="cspImageId">{{$item.CspImageId}}<span
 										class="ov"></span></td>
 								<td class="overlay hidden" data-th="name">{{$item.Name}}</td>
-								<td class="overlay hidden" data-th="description">{{$item.Description}}</td>
-								<!-- <td class="overlay hidden column-60px" data-th="">
+								<td class="overlay hidden" data-th="description">{{$item.Description}}</td> -->
+							<!-- <td class="overlay hidden column-60px" data-th="">
 													<a href="javascript:void(0);"><img src="/assets/img/contents/icon_link.png" class="icon" alt=""/></a>
 												</td> -->
-							</tr>
-							{{ end }}
+							<!-- </tr>
+							{{ end }} -->
+						</tbody>
+					</table>
+				</div>
+				<div class="pageTable">
+					<table cellpadding="0" cellspacing="0" border="1" summary="" id="page_imgListTable">
+						<tbody id="page_imgList">
 						</tbody>
 					</table>
 				</div>

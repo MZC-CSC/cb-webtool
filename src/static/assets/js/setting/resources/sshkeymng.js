@@ -36,6 +36,7 @@ $(document).ready(function () {
     // });
 
     setTableHeightForScroll('sshkeyList', 300)
+    getSshKeyList("name")
 });
 
 $(document).ready(function () {
@@ -135,40 +136,57 @@ function getSshKeyList(sort_type) {
             ModalDetail()
         } else {
             if (data.length) { // null exception if not exist
-                if (sort_type) {
-                    console.log("check : ", sort_type);
-                    data.filter(list => list.name !== "").sort((a, b) => (a[sort_type] < b[sort_type] ? - 1 : a[sort_type] > b[sort_type] ? 1 : 0)).map((item, index) => (
-                        //html += '<tr onclick="showSshKeyInfo(\'' + item.cspSshKeyName + '\');">'
-                        html += '<tr onclick="showSshKeyInfo(\'' + item.id + '\');">'
-                        + '<td class="overlay hidden column-50px" data-th="">'
-                        + '<input type="hidden" id="ssh_info_' + index + '" value="' + item.name + '|' + item.connectionName + '|' + item.cspSshKeyName + '"/>'
-                        + '<input type="checkbox" name="chk" value="' + item.name + '" id="raw_' + index + '" title="" /><label for="td_ch1"></label> <span class="ov off"></span></td>'
-                        + '<td class="btn_mtd ovm" data-th="Name">' + item.id
-                        // + '<a href="javascript:void(0);"><img src="/assets/img/contents/icon_copy.png" class="td_icon" alt=""/></a> <span class="ov"></span></td>'
-                        + '</td>'
-                        + '<td class="overlay hidden" data-th="connectionName">' + item.connectionName + '</td>'
-                        + '<td class="overlay hidden" data-th="cspSshKeyName">' + item.cspSshKeyName + '</td>'
-                        // + '<td class="overlay hidden column-60px" data-th=""><a href="javascript:void(0);"><img src="/assets/img/contents/icon_link.png" class="icon" alt=""/></a></td>' 
-                        + '</tr>'
-                    ))
-                } else {
-                    data.filter((list) => list.name !== "").map((item, index) => (
-                        //html += '<tr onclick="showSshKeyInfo(\'' + item.cspSshKeyName + '\');">'
-                        html += '<tr onclick="showSshKeyInfo(\'' + item.id + '\');">'
-                        + '<td class="overlay hidden column-50px" data-th="">'
-                        + '<input type="hidden" id="ssh_info_' + index + '" value="' + item.name + '"/>'
-                        + '<input type="checkbox" name="chk" value="' + item.name + '" id="raw_' + index + '" title="" /><label for="td_ch1"></label> <span class="ov off"></span></td>'
-                        + '<td class="btn_mtd ovm" data-th="id">' + item.id + '<span class="ov"></span></td>'
-                        + '<td class="overlay hidden" data-th="connectionName">' + item.connectionName + '</td>'
-                        + '<td class="overlay hidden" data-th="cspSshKeyName">' + item.cspSshKeyName + '</td>'
-                        // + '<td class="overlay hidden column-60px" data-th=""><a href="javascript:void(0);"><img src="/assets/img/contents/icon_link.png" class="icon" alt=""/></a></td>' 
-                        + '</tr>'
-                    ))
+                // if (sort_type) {
+                //     console.log("check : ", sort_type);
+                //     data.filter(list => list.name !== "").sort((a, b) => (a[sort_type] < b[sort_type] ? - 1 : a[sort_type] > b[sort_type] ? 1 : 0)).map((item, index) => (
+                //         //html += '<tr onclick="showSshKeyInfo(\'' + item.cspSshKeyName + '\');">'
+                //         html += '<tr onclick="showSshKeyInfo(\'' + item.id + '\');">'
+                //         + '<td class="overlay hidden column-50px" data-th="">'
+                //         + '<input type="hidden" id="ssh_info_' + index + '" value="' + item.name + '|' + item.connectionName + '|' + item.cspSshKeyName + '"/>'
+                //         + '<input type="checkbox" name="chk" value="' + item.name + '" id="raw_' + index + '" title="" /><label for="td_ch1"></label> <span class="ov off"></span></td>'
+                //         + '<td class="btn_mtd ovm" data-th="Name">' + item.id
+                //         // + '<a href="javascript:void(0);"><img src="/assets/img/contents/icon_copy.png" class="td_icon" alt=""/></a> <span class="ov"></span></td>'
+                //         + '</td>'
+                //         + '<td class="overlay hidden" data-th="connectionName">' + item.connectionName + '</td>'
+                //         + '<td class="overlay hidden" data-th="cspSshKeyName">' + item.cspSshKeyName + '</td>'
+                //         // + '<td class="overlay hidden column-60px" data-th=""><a href="javascript:void(0);"><img src="/assets/img/contents/icon_link.png" class="icon" alt=""/></a></td>' 
+                //         + '</tr>'
+                //     ))
+                // } else {
+                //     data.filter((list) => list.name !== "").map((item, index) => (
+                //         //html += '<tr onclick="showSshKeyInfo(\'' + item.cspSshKeyName + '\');">'
+                //         html += '<tr onclick="showSshKeyInfo(\'' + item.id + '\');">'
+                //         + '<td class="overlay hidden column-50px" data-th="">'
+                //         + '<input type="hidden" id="ssh_info_' + index + '" value="' + item.name + '"/>'
+                //         + '<input type="checkbox" name="chk" value="' + item.name + '" id="raw_' + index + '" title="" /><label for="td_ch1"></label> <span class="ov off"></span></td>'
+                //         + '<td class="btn_mtd ovm" data-th="id">' + item.id + '<span class="ov"></span></td>'
+                //         + '<td class="overlay hidden" data-th="connectionName">' + item.connectionName + '</td>'
+                //         + '<td class="overlay hidden" data-th="cspSshKeyName">' + item.cspSshKeyName + '</td>'
+                //         // + '<td class="overlay hidden column-60px" data-th=""><a href="javascript:void(0);"><img src="/assets/img/contents/icon_link.png" class="icon" alt=""/></a></td>' 
+                //         + '</tr>'
+                //     ))
 
-                }
+                // }
 
-                $("#sList").empty();
-                $("#sList").append(html);
+                // $("#sList").empty();
+                // $("#sList").append(html);
+
+                var tableId = "sList";// paging이 구현 될 table의 ID
+                // pagination 정보가 있는 tableId : page_ + tableId
+                // ex) page_vpcList
+                var paginationMap = new Map();
+
+                paginationMap.set("addRowFunctionName", "addSshkeyRow");// addRow를 구현한 function 이름
+                paginationMap.set("totalCount", data.length);// 전체 갯수
+                paginationMap.set("visiblePages", 10);// 한번에 보여지는 page 갯수. pre, next 로 해당 단위씩 이동
+                paginationMap.set("itemsOnPage", 5);// 한 페이지 당 갯수
+                paginationMap.set("currentPageNum", 1);// 현재 page 번호
+                // paginationMap.set("lastPageNum", 0);// 마지막 page번호 // set에서 설정
+                paginationMap.set("listData", data)//
+
+                setTablePagination(tableId, paginationMap)
+
+                moveToPage(tableId, 1)
 
                 ModalDetail()
 
@@ -185,6 +203,26 @@ function getSshKeyList(sort_type) {
         var statusCode = error.response.status;
         commonErrorAlert(statusCode, errorMessage);
     });
+}
+
+
+// SG목록에 Item 추가
+function addSshkeyRow(item, index) {
+    console.log("addSshkeyRow " + index);
+    console.log(item)
+    var html = ""
+    html += '<tr onclick="showSshKeyInfo(\'' + item.id + '\');">'
+        + '<td class="overlay hidden column-50px" data-th="">'
+        + '<input type="hidden" id="ssh_info_' + index + '" value="' + item.name + '|' + item.connectionName + '|' + item.cspSshKeyName + '"/>'
+        + '<input type="checkbox" name="chk" value="' + item.name + '" id="raw_' + index + '" title="" /><label for="td_ch1"></label> <span class="ov off"></span></td>'
+        + '<td class="btn_mtd ovm" data-th="Name">' + item.id
+        // + '<a href="javascript:void(0);"><img src="/assets/img/contents/icon_copy.png" class="td_icon" alt=""/></a> <span class="ov"></span></td>'
+        + '</td>'
+        + '<td class="overlay hidden" data-th="connectionName">' + item.connectionName + '</td>'
+        + '<td class="overlay hidden" data-th="cspSshKeyName">' + item.cspSshKeyName + '</td>'
+        // + '<td class="overlay hidden column-60px" data-th=""><a href="javascript:void(0);"><img src="/assets/img/contents/icon_link.png" class="icon" alt=""/></a></td>' 
+        + '</tr>'
+    return html;
 }
 
 // function goFocus(target) {

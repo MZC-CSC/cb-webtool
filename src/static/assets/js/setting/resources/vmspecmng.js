@@ -37,6 +37,7 @@ $(document).ready(function () {
         showSpecAssistPopup();
         // lookupSpecList()
     });
+    getVmSpecList("name")
 });
 
 $(document).ready(function () {
@@ -136,38 +137,71 @@ function virtualMachineSpecListCallbackSuccess(caller, data, sortType) {
         $("#specList").append(html)
     } else {
         if (data.length) {
-            if (sortType) {
-                console.log("check : ", sortType);
-                data.filter(list => list.name !== "").sort((a, b) => (a[sortType] < b[sortType] ? - 1 : a[sortType] > b[sortType] ? 1 : 0)).map((item, index) => (
-                    html += '<tr onclick="showVmSpecInfo(\'' + item.name + '\');">'
-                    + '<td class="overlay hidden column-50px" data-th="">'
-                    + '<input type="hidden" id="spec_info_' + index + '" value="' + item.name + '|' + item.connectionName + '|' + item.cspSpecName + '"/>'
-                    + '<input type="checkbox" name="chk" value="' + item.name + '" id="raw_' + index + '" title="" /><label for="td_ch1"></label> <span class="ov off"></span></td>'
-                    + '<td class="btn_mtd ovm" data-th="name ">' + item.name + '<span class="ov"></span></td>'
-                    + '<td class="overlay hidden" data-th="connectionName">' + item.connectionName + '</td>'
-                    + '<td class="overlay hidden" data-th="cspSpecName">' + item.cspSpecName + '</td>'
-                    // + '<td class="overlay hidden column-60px" data-th=""><a href="javascript:void(0);"><img src="/assets/img/contents/icon_link.png" class="icon" alt=""/></a></td>' 
-                    + '</tr>'
-                ))
-            } else {
-                data.filter((list) => list.name !== "").map((item, index) => (
-                    html += '<tr onclick="showVmSpecInfo(\'' + item.name + '\');">'
-                    + '<td class="overlay hidden column-50px" data-th="">'
-                    + '<input type="hidden" id="spec_info_' + index + '" value="' + item.name + '"/>'
-                    + '<input type="checkbox" name="chk" value="' + item.name + '" id="raw_' + index + '" title="" /><label for="td_ch1"></label> <span class="ov off"></span></td>'
-                    + '<td class="btn_mtd ovm" data-th="name ">' + item.name + '<span class="ov"></span></td>'
-                    + '<td class="overlay hidden" data-th="connectionName">' + item.connectionName + '</td>'
-                    + '<td class="overlay hidden" data-th="cspSpecName">' + item.cspSpecName + '</td>'
-                    // + '<td class="overlay hidden column-60px" data-th=""><a href="javascript:void(0);"><img src="/assets/img/contents/icon_link.png" class="icon" alt=""/></a></td>' 
-                    + '</tr>'
-                ))
-            }
+            // if (sortType) {
+            //     console.log("check : ", sortType);
+            //     data.filter(list => list.name !== "").sort((a, b) => (a[sortType] < b[sortType] ? - 1 : a[sortType] > b[sortType] ? 1 : 0)).map((item, index) => (
+            //         html += '<tr onclick="showVmSpecInfo(\'' + item.name + '\');">'
+            //         + '<td class="overlay hidden column-50px" data-th="">'
+            //         + '<input type="hidden" id="spec_info_' + index + '" value="' + item.name + '|' + item.connectionName + '|' + item.cspSpecName + '"/>'
+            //         + '<input type="checkbox" name="chk" value="' + item.name + '" id="raw_' + index + '" title="" /><label for="td_ch1"></label> <span class="ov off"></span></td>'
+            //         + '<td class="btn_mtd ovm" data-th="name ">' + item.name + '<span class="ov"></span></td>'
+            //         + '<td class="overlay hidden" data-th="connectionName">' + item.connectionName + '</td>'
+            //         + '<td class="overlay hidden" data-th="cspSpecName">' + item.cspSpecName + '</td>'
+            //         // + '<td class="overlay hidden column-60px" data-th=""><a href="javascript:void(0);"><img src="/assets/img/contents/icon_link.png" class="icon" alt=""/></a></td>' 
+            //         + '</tr>'
+            //     ))
+            // } else {
+            //     data.filter((list) => list.name !== "").map((item, index) => (
+            //         html += '<tr onclick="showVmSpecInfo(\'' + item.name + '\');">'
+            //         + '<td class="overlay hidden column-50px" data-th="">'
+            //         + '<input type="hidden" id="spec_info_' + index + '" value="' + item.name + '"/>'
+            //         + '<input type="checkbox" name="chk" value="' + item.name + '" id="raw_' + index + '" title="" /><label for="td_ch1"></label> <span class="ov off"></span></td>'
+            //         + '<td class="btn_mtd ovm" data-th="name ">' + item.name + '<span class="ov"></span></td>'
+            //         + '<td class="overlay hidden" data-th="connectionName">' + item.connectionName + '</td>'
+            //         + '<td class="overlay hidden" data-th="cspSpecName">' + item.cspSpecName + '</td>'
+            //         // + '<td class="overlay hidden column-60px" data-th=""><a href="javascript:void(0);"><img src="/assets/img/contents/icon_link.png" class="icon" alt=""/></a></td>' 
+            //         + '</tr>'
+            //     ))
+            // }
 
-            $("#specList").empty()
-            $("#specList").append(html)
-            console.log("setVirtualMachineImageSpecAtServerSpec completed");
+            // $("#specList").empty()
+            // $("#specList").append(html)
+            // console.log("setVirtualMachineImageSpecAtServerSpec completed");
+            var tableId = "specList";// paging이 구현 될 table의 ID
+            // pagination 정보가 있는 tableId : page_ + tableId
+            // ex) page_vpcList
+            var paginationMap = new Map();
+
+            paginationMap.set("addRowFunctionName", "addSpecRow");// addRow를 구현한 function 이름
+            paginationMap.set("totalCount", data.length);// 전체 갯수
+            paginationMap.set("visiblePages", 10);// 한번에 보여지는 page 갯수. pre, next 로 해당 단위씩 이동
+            paginationMap.set("itemsOnPage", 5);// 한 페이지 당 갯수
+            paginationMap.set("currentPageNum", 1);// 현재 page 번호
+            // paginationMap.set("lastPageNum", 0);// 마지막 page번호 // set에서 설정
+            paginationMap.set("listData", data)//
+
+            setTablePagination(tableId, paginationMap)
+
+            moveToPage(tableId, 1)
         }
     }
+}
+
+// SG목록에 Item 추가
+function addSpecRow(item, index) {
+    console.log("addSpecRow " + index);
+    console.log(item)
+    var html = ""
+    html += '<tr onclick="showVmSpecInfo(\'' + item.name + '\');">'
+        + '<td class="overlay hidden column-50px" data-th="">'
+        + '<input type="hidden" id="spec_info_' + index + '" value="' + item.name + '|' + item.connectionName + '|' + item.cspSpecName + '"/>'
+        + '<input type="checkbox" name="chk" value="' + item.name + '" id="raw_' + index + '" title="" /><label for="td_ch1"></label> <span class="ov off"></span></td>'
+        + '<td class="btn_mtd ovm" data-th="name ">' + item.name + '<span class="ov"></span></td>'
+        + '<td class="overlay hidden" data-th="connectionName">' + item.connectionName + '</td>'
+        + '<td class="overlay hidden" data-th="cspSpecName">' + item.cspSpecName + '</td>'
+        // + '<td class="overlay hidden column-60px" data-th=""><a href="javascript:void(0);"><img src="/assets/img/contents/icon_link.png" class="icon" alt=""/></a></td>' 
+        + '</tr>'
+    return html;
 }
 
 function virtualMachineSpecListCallbackFail(error) {

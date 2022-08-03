@@ -159,7 +159,7 @@
                             </tr>
                         </thead>
                         <tbody id="sList">
-                            {{ $length := len .SshKeyList }}
+                            <!-- {{ $length := len .SshKeyList }}
                             {{ if eq $length 0 }}
                             <tr>
                                 <td class="overlay hidden" data-th="" colspan="5">No Data</td>
@@ -178,14 +178,14 @@
                                 <td class="btn_mtd ovm" data-th="Name">{{$item.ID}}
                                     <!-- <a href="javascript:void(0);"><img src="/assets/img/contents/icon_copy.png" class="td_icon" alt=""/></a> 
                                     <span class="ov"></span> -->
-                                </td>
+                            <!-- </td>
                                 <td class="overlay hidden" data-th="connectionName">{{$item.ConnectionName}}</td>
-                                <td class="overlay hidden" data-th="cspSshKeyName">{{$item.CspSshKeyName}}</td>
-                                <!-- <td class="overlay hidden column-60px" data-th=""><a href="javascript:void(0);">
+                                <td class="overlay hidden" data-th="cspSshKeyName">{{$item.CspSshKeyName}}</td> -->
+                            <!-- <td class="overlay hidden column-60px" data-th=""><a href="javascript:void(0);">
                                     <img src="/assets/img/contents/icon_link.png" class="icon" alt=""/></a>
                                 </td> -->
-                            </tr>
-                            {{ end }}
+                            <!--</tr>
+                            {{ end }} -->
                             <!--
                             <tr>
                                 <td class="overlay hidden" data-th=""><input type="checkbox" name="chk" value="" id="td_ch1" title="" /><label for="td_ch1"></label> <span class="ov off"></span></td>
@@ -195,6 +195,12 @@
                                 <td class="overlay hidden" data-th=""><a href="javascript:void(0);"><img src="/assets/img/contents/icon_link.png" class="icon" alt="" /></a></td>
                             </tr>
                             -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pageTable">
+                    <table cellpadding="0" cellspacing="0" border="1" summary="" id="page_sListTable">
+                        <tbody id="page_sList">
                         </tbody>
                     </table>
                 </div>
