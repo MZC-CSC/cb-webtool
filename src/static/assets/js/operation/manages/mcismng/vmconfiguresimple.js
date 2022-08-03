@@ -448,7 +448,7 @@ const Root_Disk_Type = new Map([
 function getRootDiskType(provider) {
 	console.log("root disk provider: ", provider);
 	var typeString = Root_Disk_Type.get(provider)
-	var html = ""
+	var html = "<option value=''>Select Root Disk Type</option>"
 	if (typeString) {
 		var typeArray = typeString.split(',')
 		typeArray.forEach(function (typeItem, typeIndex) {
