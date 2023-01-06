@@ -40,7 +40,7 @@ func ApiLogin(c echo.Context) error {
 	}
 	fmt.Println(params)
 
-	storedUser, ok := util.GetUserInfo(c, params["userID"])
+	storedUser, ok := util.GetStoredUserInfo(c, params["userID"])
 	if !ok {
 		return c.JSON(http.StatusUnauthorized, map[string]interface{}{ //401
 			"message": "Try again",

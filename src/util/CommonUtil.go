@@ -23,7 +23,7 @@ import (
 	// "github.com/cloud-barista/cb-webtool/src/model"
 )
 
-func GetUserInfo(c echo.Context, userID string) (map[string]string, bool) {
+func GetStoredUserInfo(c echo.Context, userID string) (map[string]string, bool) {
 	user := os.Getenv("LoginUser")
 	store := echosession.FromContext(c) // store내 param은 모두 소문자.
 	result, ok := store.Get(userID)

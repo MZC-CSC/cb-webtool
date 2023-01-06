@@ -3,6 +3,7 @@ package controller
 import (
 	// "encoding/json"
 	"fmt"
+	"github.com/cloud-barista/cb-webtool/src/db"
 
 	// "github.com/cloud-barista/cb-webtool/src/model/tumblebug"
 	"github.com/cloud-barista/cb-webtool/src/model"
@@ -60,7 +61,13 @@ func VpcMngForm(c echo.Context) error {
 	log.Println(" cloudOsList  ", cloudOsList)
 
 	// 최신 namespacelist 가져오기
-	nsList, _ := service.GetNameSpaceList()
+	//nsList, _ := service.GetNameSpaceList()
+	nsList := []tbcommon.TbNsInfo{}
+	if loginInfo.UserID == "admin" {
+		nsList, _ = service.GetNameSpaceList()
+	} else {
+		nsList, _ = db.GetUserNamespaceList(loginInfo.UserID)
+	}
 	store.Set("namespace", nsList)
 	store.Save()
 	log.Println(" nsList  ", nsList)
@@ -258,7 +265,13 @@ func SecirityGroupMngForm(c echo.Context) error {
 	log.Println(" cloudOsList  ", cloudOsList)
 
 	// 최신 namespacelist 가져오기
-	nsList, _ := service.GetNameSpaceList()
+	//nsList, _ := service.GetNameSpaceList()
+	nsList := []tbcommon.TbNsInfo{}
+	if loginInfo.UserID == "admin" {
+		nsList, _ = service.GetNameSpaceList()
+	} else {
+		nsList, _ = db.GetUserNamespaceList(loginInfo.UserID)
+	}
 	store.Set("namespace", nsList)
 	store.Save()
 	log.Println(" nsList  ", nsList)
@@ -527,7 +540,14 @@ func SshKeyMngForm(c echo.Context) error {
 	log.Println(" cloudOsList  ", cloudOsList)
 
 	// 최신 namespacelist 가져오기
-	nsList, _ := service.GetNameSpaceList()
+	//nsList, _ := service.GetNameSpaceList()
+	nsList := []tbcommon.TbNsInfo{}
+	if loginInfo.UserID == "admin" {
+		nsList, _ = service.GetNameSpaceList()
+	} else {
+		nsList, _ = db.GetUserNamespaceList(loginInfo.UserID)
+	}
+
 	store.Set("namespace", nsList)
 	store.Save()
 	log.Println(" nsList  ", nsList)
@@ -749,7 +769,13 @@ func VirtualMachineImageMngForm(c echo.Context) error {
 	log.Println(" cloudOsList  ", cloudOsList)
 
 	// 최신 namespacelist 가져오기
-	nsList, _ := service.GetNameSpaceList()
+	//nsList, _ := service.GetNameSpaceList()
+	nsList := []tbcommon.TbNsInfo{}
+	if loginInfo.UserID == "admin" {
+		nsList, _ = service.GetNameSpaceList()
+	} else {
+		nsList, _ = db.GetUserNamespaceList(loginInfo.UserID)
+	}
 	store.Set("namespace", nsList)
 	store.Save()
 	log.Println(" nsList  ", nsList)
@@ -1139,7 +1165,13 @@ func VmSpecMngForm(c echo.Context) error {
 	log.Println(" cloudOsList  ", cloudOsList)
 
 	// 최신 namespacelist 가져오기
-	nsList, _ := service.GetNameSpaceList()
+	//nsList, _ := service.GetNameSpaceList()
+	nsList := []tbcommon.TbNsInfo{}
+	if loginInfo.UserID == "admin" {
+		nsList, _ = service.GetNameSpaceList()
+	} else {
+		nsList, _ = db.GetUserNamespaceList(loginInfo.UserID)
+	}
 	store.Set("namespace", nsList)
 	store.Save()
 	log.Println(" nsList  ", nsList)
@@ -1622,7 +1654,13 @@ func DataDiskMngForm(c echo.Context) error {
 	log.Println(" cloudOsList  ", cloudOsList)
 
 	// 최신 namespacelist 가져오기
-	nsList, _ := service.GetNameSpaceList()
+	//nsList, _ := service.GetNameSpaceList()
+	nsList := []tbcommon.TbNsInfo{}
+	if loginInfo.UserID == "admin" {
+		nsList, _ = service.GetNameSpaceList()
+	} else {
+		nsList, _ = db.GetUserNamespaceList(loginInfo.UserID)
+	}
 	store.Set("namespace", nsList)
 	store.Save()
 	log.Println(" nsList  ", nsList)
@@ -1930,7 +1968,13 @@ func MyImageMngForm(c echo.Context) error {
 	store.Set("cloudos", cloudOsList)
 
 	// 최신 namespacelist 가져오기
-	nsList, _ := service.GetNameSpaceList()
+	//nsList, _ := service.GetNameSpaceList()
+	nsList := []tbcommon.TbNsInfo{}
+	if loginInfo.UserID == "admin" {
+		nsList, _ = service.GetNameSpaceList()
+	} else {
+		nsList, _ = db.GetUserNamespaceList(loginInfo.UserID)
+	}
 	store.Set("namespace", nsList)
 	store.Save()
 

@@ -3,6 +3,8 @@ package controller
 import (
 	// "encoding/json"
 	"fmt"
+	"github.com/cloud-barista/cb-webtool/src/db"
+	tbcommon "github.com/cloud-barista/cb-webtool/src/model/tumblebug/common"
 	"github.com/cloud-barista/cb-webtool/src/util"
 	"log"
 	"net/http"
@@ -61,7 +63,13 @@ func MonitoringConfigPolicyMngForm(c echo.Context) error {
 	defaultNameSpaceID := loginInfo.DefaultNameSpaceID
 
 	// 최신 namespacelist 가져오기
-	nsList, _ := service.GetNameSpaceList()
+	//nsList, _ := service.GetNameSpaceList()
+	nsList := []tbcommon.TbNsInfo{}
+	if loginInfo.UserID == "admin" {
+		nsList, _ = service.GetNameSpaceList()
+	} else {
+		nsList, _ = db.GetUserNamespaceList(loginInfo.UserID)
+	}
 	log.Println(" nsList  ", nsList)
 
 	//MonitoringConfig
@@ -139,7 +147,7 @@ func MonitoringConfigPolicyPutProc(c echo.Context) error {
 	})
 }
 
-//PolicyThresholdMngForm
+// PolicyThresholdMngForm
 // PolicyThreshold 등록화면
 func ThresholdPolicyRegForm(c echo.Context) error {
 	fmt.Println("PolicyThresholdRegForm ************ : ")
@@ -177,7 +185,13 @@ func MonitoringAlertPolicyMngForm(c echo.Context) error {
 	defaultNameSpaceID := loginInfo.DefaultNameSpaceID
 
 	// 최신 namespacelist 가져오기
-	nsList, _ := service.GetNameSpaceList()
+	//nsList, _ := service.GetNameSpaceList()
+	nsList := []tbcommon.TbNsInfo{}
+	if loginInfo.UserID == "admin" {
+		nsList, _ = service.GetNameSpaceList()
+	} else {
+		nsList, _ = db.GetUserNamespaceList(loginInfo.UserID)
+	}
 	log.Println(" nsList  ", nsList)
 
 	monitoringAlertPolicyList, _ := service.GetMonitoringAlertList()
@@ -492,7 +506,13 @@ func PlacementPolicyMngForm(c echo.Context) error {
 	defaultNameSpaceID := loginInfo.DefaultNameSpaceID
 
 	// 최신 namespacelist 가져오기
-	nsList, _ := service.GetNameSpaceList()
+	//nsList, _ := service.GetNameSpaceList()
+	nsList := []tbcommon.TbNsInfo{}
+	if loginInfo.UserID == "admin" {
+		nsList, _ = service.GetNameSpaceList()
+	} else {
+		nsList, _ = db.GetUserNamespaceList(loginInfo.UserID)
+	}
 	log.Println(" nsList  ", nsList)
 
 	// status, filepath, return params

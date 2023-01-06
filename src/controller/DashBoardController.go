@@ -3,6 +3,8 @@ package controller
 import (
 	// "encoding/json"
 	"fmt"
+	"github.com/cloud-barista/cb-webtool/src/db"
+	tbcommon "github.com/cloud-barista/cb-webtool/src/model/tumblebug/common"
 	"log"
 	"net/http"
 
@@ -59,7 +61,13 @@ func DashBoardByNameSpaceMngForm(c echo.Context) error {
 	//connectionConfigCountMap := make(map[string]int)
 
 	// 최신 namespacelist 가져오기
-	nsList, _ := service.GetNameSpaceList()
+	nsList := []tbcommon.TbNsInfo{}
+	if loginInfo.UserID == "admin" {
+		nsList, _ = service.GetNameSpaceList()
+	} else {
+		nsList, _ = db.GetUserNamespaceList(loginInfo.UserID)
+	}
+
 	store.Set("namespace", nsList)
 	_ = store.Save()
 	log.Println(" nsList  ", nsList)
