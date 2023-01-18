@@ -3,5 +3,5 @@ echo "Setup config"
 source ./conf/setup.env
 
 #Run server
-echo "start server:1234"
+echo "start server:1235"
 go run main.go
