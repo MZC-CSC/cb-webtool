@@ -61,21 +61,16 @@ body {
   align-items: center;
 }
 
-#lnb .topbox .info .thumb img {
-  width: 100%;
-  height: 80px;
-}
-
 #lnb .topbox .info .txt_1 {
-  margin: 13px 0 0 0;
+  display: none;
   color: #5e636c;
   font-size: 20px;
-  font-weight: 300;
+  font-weight: 400;
 }
 
 #lnb .topbox .info .txt_2 {
   position: relative;
-  margin: 20px 0 0 0;
+  margin: 15px 0 0 0;
   cursor: pointer;
   display: inline-block;
 }
@@ -350,15 +345,17 @@ body {
   vertical-align: bottom;
 }
 
+#lnb .bottom .topmenu>ul>li.user {
+  display: none;
+}
+
 #lnb .bottom .topmenu>ul>li>a {
   position: relative;
   display: block;
 }
 
-#lnb .bottom .topmenu>ul>li:first-child {
-  margin: 0 -8px -10px 0;
-  width: 50px;
-  text-align: center;
+#lnb .bottom .topmenu>ul>li:first-child>a img {
+  height: 22px;
 }
 
 #lnb .bottom .topmenu>ul>li>a img {
@@ -465,6 +462,14 @@ body {
     height: 100%;
   }
 
+  #lnb .topbox .info .txt_1 {
+    display: block;
+  }
+
+  #lnb .topbox .info .txt_2 {
+    margin-top: 10px;
+  }
+
   #lnb .m_box {
     min-height: 100%;
     clear: both;
@@ -543,19 +548,20 @@ body {
 
 .header {
   display: flex;
-  justify-content: end;
+  justify-content: space-between;
   align-items: center;
-  padding: 10px 40px;
-  height: 50px;
+  padding: 10px 45px;
+  height: 60px;
   border-bottom: 1px solid #ccd0d4;
 }
 
-.header .logo {
-  padding: 14px 0 0 48px;
+.header .logo img {
+  height: 45px;
 }
 
-.header .logo img {
-  display: block;
+.header .topmenu>ul {
+  display: flex;
+  align-items: center;
 }
 
 .header .topmenu>ul>li {
@@ -565,6 +571,11 @@ body {
   color: #5e636c;
   font-size: 14px;
   line-height: 14px;
+}
+
+.header .topmenu>ul>li.user {
+  font-size: 20px;
+  font-weight: 400;
 }
 
 .header .topmenu>ul>li>a {
@@ -593,12 +604,8 @@ body {
   display: none;
 }
 
-.header .topmenu .logout {
-  margin-top: -1px;
-}
-
 .header .topmenu .logout img {
-  margin: 0 8px 0 0;
+  height: 22px;
 }
 
 .header .topmenu .notice {
@@ -711,10 +718,6 @@ body {
   .header .topmenu .setting {
     margin: 0 0 0 30px;
   }
-
-  .header .logo {
-    padding: 14px 0 0 35px;
-  }
 }
 
 @media screen and (max-width: 1024px) {
@@ -737,6 +740,7 @@ body {
     right: 0;
     width: 100%;
     background-color: #f3f3f3;
+    padding: 10px 35px;
   }
 
   .header .topmenu {
@@ -764,6 +768,10 @@ body {
 }
 
 @media screen and (max-width: 768px) {
+  .header {
+    padding: 10px 25px;
+  }
+
   .header .topmenu {
     right: 25px;
   }
@@ -783,19 +791,15 @@ body {
   .header .topmenu .setting {
     margin: 0 0 0 25px;
   }
-
-  .header .logo {
-    padding: 14px 0 0 25px;
-  }
 }
 
 @media screen and (max-width: 640px) {
-  .header .topmenu {
-    right: 20px;
+  .header {
+    padding: 10px 20px;
   }
 
-  .header .logo {
-    padding: 14px 0 0 20px;
+  .header .topmenu {
+    right: 20px;
   }
 }
 

@@ -96,11 +96,13 @@
     <input type="hidden" id="returnMessage" value="{{ .Message }}" />
     <input type="hidden" id="returnStatusCode" value="{{ .Status }}" />
 
+    <div class="logo"><a href="/main"><img src="/assets/img/common/mcone_logo_simple.png" alt=""></a></div>
+
     <div class="topmenu">
       <ul>
         <li class="logout">
           <a href="javascript:void(0);" data-toggle="modal" data-target="#logout" onClick="commonConfirmOpen('Logout')">
-            <img src="/assets/img/common/icon_logout.png" alt="" /> Logout</a>
+            <img src="/assets/img/common/icon_logout_simple.png" alt="logout" /></a>
         </li>
         <!-- <li class="add">
 						<img src="/assets/img/common/icon_add.png" alt=""/>
@@ -211,6 +213,11 @@
         <li class="question">
           <a href="javascript:void(0);" onclick="showHelp()">
             <img src="/assets/img/common/icon_question.png" alt="Api call test" />
+          </a>
+        </li>
+        <li class="user">
+          <a href="javascript:void(0);">
+            <p>User ID : {{.LoginInfo.Username}}</p>
           </a>
         </li>
       </ul>
