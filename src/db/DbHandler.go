@@ -2,16 +2,18 @@ package db
 
 import (
 	"fmt"
+
 	"github.com/cloud-barista/cb-webtool/src/db/dbmodel"
 	"github.com/cloud-barista/cb-webtool/src/model"
 	tbcommon "github.com/cloud-barista/cb-webtool/src/model/tumblebug/common"
 	_ "github.com/go-sql-driver/mysql"
 
+	"log"
+	"os"
+
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"log"
-	"os"
 )
 
 var DB *gorm.DB
@@ -268,7 +270,7 @@ func ListNamespaceByUserId(userId string) ([]dbmodel.NamespaceInfo, model.WebSta
 	namespaceList := []dbmodel.NamespaceInfo{}
 	//err := DB.Model(&dbNsInfo).Select("namespace_infos.ns_id, namespace_infos.ns_name").Joins("INNER JOIN namespace_shares nss ON namespace_infos.ns_id = nss.ns_id").Joins("INNER JOIN USER_INFOS ui ON nss.member_no = ui.member_no").Scan(namespaceList).Error
 	//err := DB.Find(&namespaceList).Joins("INNER JOIN namespace_shares nss ON namespace_infos.ns_id = nss.ns_id").Joins("INNER JOIN USER_INFOS ui ON nss.member_no = ui.member_no").Where("ui.id = ?", "abc").Error
-	err := DB.Joins("INNER JOIN namespace_shares nss ON namespace_infos.ns_id = nss.ns_id").Joins("INNER JOIN USER_INFOS ui ON nss.member_no = ui.member_no").Where("ui.id = ?", "abc").Find(&namespaceList).Error
+	err := DB.Joins("INNER JOIN namespace_shares nss ON namespace_infos.ns_id = nss.ns_id").Joins("INNER JOIN USER_INFOS ui ON nss.member_no = ui.member_no").Where("ui.id = ?", userId).Find(&namespaceList).Error
 	fmt.Println("query result")
 	fmt.Println(namespaceList)
 	if err != nil {

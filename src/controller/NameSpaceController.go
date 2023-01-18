@@ -327,7 +327,7 @@ func SetNameSpace(c echo.Context) error {
 	// 		"message": "저장된 namespace가 없습니다.",
 	// 		"status":  "403",
 	// 	})
-	nsList, nsStatus := service.GetStoredNameSpaceList(c)
+	nsList, nsStatus := service.GetNameSpaceList()
 	if nsStatus.StatusCode != 200 && nsStatus.StatusCode != 201 {
 		return c.JSON(http.StatusOK, map[string]interface{}{
 			"message": "NameSpace 조회 오류.",
