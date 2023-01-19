@@ -1,6 +1,6 @@
-FROM golang:1.16-alpine as prod
+FROM golang:1.19.4-alpine as prod
 
-WORKDIR /go/src/github.com/cloud-barista/cb-webtool 
+WORKDIR /cb-webtool 
 COPY . .
 
 #RUN apk update && apk add git
@@ -12,8 +12,10 @@ RUN apk add --no-cache bash git gcc
 #RUN go get -u github.com/labstack/echo/...
 #RUN go get -u github.com/davecgh/go-spew/spew
 ENV GO111MODULE on
-RUN go get github.com/cespare/reflex
+RUN go get github.com/cespare/reflex@latest
+RUN go mod tidy
 
-EXPOSE 1234
+EXPOSE 1235
 
-CMD reflex -r '\.(html|go)' -s go run main.go
+ADD run.sh run.sh
+RUN chmod 755 run.sh
