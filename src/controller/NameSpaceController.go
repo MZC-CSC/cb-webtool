@@ -9,6 +9,7 @@ import (
 	// tbmcir "github.com/cloud-barista/cb-webtool/src/model/tumblebug/mcir"
 	// tbmcis "github.com/cloud-barista/cb-webtool/src/model/tumblebug/mcis"
 
+	db "github.com/cloud-barista/cb-webtool/src/db"
 	service "github.com/cloud-barista/cb-webtool/src/service"
 
 	// util "github.com/cloud-barista/cb-webtool/src/util"
@@ -253,6 +254,8 @@ func NameSpaceMngForm(c echo.Context) error {
 // 사용자의 namespace 목록 조회
 func GetNameSpaceList(c echo.Context) error {
 	fmt.Println("====== GET NAMESPACE LIST ========")
+
+	loginInfo := service.CallLoginInfo(c)
 	// store := echosession.FromContext(c)
 	// nameSpaceInfoList, nsStatus := service.GetNameSpaceList()
 
@@ -268,14 +271,25 @@ func GetNameSpaceList(c echo.Context) error {
 		}
 		return c.JSON(http.StatusOK, nameSpaceInfoList)
 	} else {
-		nameSpaceInfoList, nsStatus := service.GetNameSpaceListByOption(optionParam)
-		if nsStatus.StatusCode == 500 {
-			return c.JSON(http.StatusBadRequest, map[string]interface{}{
-				"message": nsStatus.Message,
-				"status":  nsStatus.StatusCode,
-			})
+		if loginInfo.UserID != "admin" {
+			nameSpaceInfoList, nsStatus := db.GetUserNamespaceList(loginInfo.UserID)
+			if nsStatus.StatusCode == 500 {
+				return c.JSON(http.StatusBadRequest, map[string]interface{}{
+					"message": nsStatus.Message,
+					"status":  nsStatus.StatusCode,
+				})
+			}
+			return c.JSON(http.StatusOK, nameSpaceInfoList)
+		} else {
+			nameSpaceInfoList, nsStatus := service.GetNameSpaceListByOption(optionParam)
+			if nsStatus.StatusCode == 500 {
+				return c.JSON(http.StatusBadRequest, map[string]interface{}{
+					"message": nsStatus.Message,
+					"status":  nsStatus.StatusCode,
+				})
+			}
+			return c.JSON(http.StatusOK, nameSpaceInfoList)
 		}
-		return c.JSON(http.StatusOK, nameSpaceInfoList)
 	}
 	//nameSpaceInfoList, nsStatus := service.GetStoredNameSpaceList(c)
 
@@ -313,7 +327,7 @@ func SetNameSpace(c echo.Context) error {
 	// 		"message": "저장된 namespace가 없습니다.",
 	// 		"status":  "403",
 	// 	})
-	nsList, nsStatus := service.GetStoredNameSpaceList(c)
+	nsList, nsStatus := service.GetNameSpaceList()
 	if nsStatus.StatusCode != 200 && nsStatus.StatusCode != 201 {
 		return c.JSON(http.StatusOK, map[string]interface{}{
 			"message": "NameSpace 조회 오류.",

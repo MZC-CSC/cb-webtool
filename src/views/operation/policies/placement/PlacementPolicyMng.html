@@ -1,34 +1,28 @@
-{{template "OperationTop" .}}
-<div id="lnb">
-			
-	<div class="bg"></div>
-		
-	<div class="m_box">
-		
+{{ template "OperationTop" .}}
+
+
+
+{{template "Header" .}}
+{{template "Modal" .}}
+
+<div id="contents">
+	<div id="lnb">
+
 		{{template "TopBox" .}}
 
 		{{template "LNBPopup" .}}
-		
-        <!-- menu -->
+
 		{{template "MenuLeft" .}}
-		<!-- //menu -->	
+		<div class="bottom"></div>
+		<a href="javascript:;" id="m_close"></a>
+
 	</div>
-	
-	
-	<div class="bottom"></div>
-	<a href="javascript:;" id="m_close"></a>
-	
+	<!-- contents -->
+	<div class="contbox">
+		placementPolicymng
+	</div>
 </div>
-{{template "Header" .}}
-{{template "Modal" .}}
-				<script>
-			
-				</script>
-				<!-- contents -->
-				<div class="contbox">
-					placementPolicymng
-                </div>
-				<!-- //contents -->
+<!-- //contents -->
 
 <script src="/assets/js/operation/policies/placement/placementpolicygmng.js"></script>
 {{template "Footer" .}}

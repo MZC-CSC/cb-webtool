@@ -1,57 +1,32 @@
 {{template "LoginTop" .}}
-<div class="loginarea">
-    <div class="logintop">
-        <div class="loginbox">
-            <input type="hidden" id="sel_ns" />
-            <div class="loginlogo"><img src="/assets/img/common/img_login_t.png" alt="Cloud Barista"></div>
-            <div class="title"><span>C</span>loud <span>B</span>arista</div>
-
-            <!-- Input -->
-            <div class="ipbox">
-                <ul>
-                    <li class="form-label-group"><label class>Account(ID)</label><input type="text" name="userid"
-                            id="userID" value="" placeholder="Input /Account(ID)" title="" autofocus /></li>
-                    <!-- <li class="form-label-group"><label class>Email</label><input type="text" name="" id="email" value="" placeholder="Email" title="" autofocus /></li> -->
-                    <li class="form-label-group"><label>Password</label><input type="password" name="password"
-                            id="password" value="" placeholder="Input /Password (*****)" title=""
-                            onkeydown="enterKeyForLogin();" /></li>
-                </ul>
-                <div class="ch"><input type="checkbox" name="" value="" id="ip_ch" title="" /><label
-                        for="ip_ch"><span></span> Remenber me</label></div>
-                <div class="btnbox">
-                    <div class="btn_pw"><a href="#" onclick="commonConfirmOpen('idpwLost')">Lost your password?</a>
-                        <span>I</span> <a href="#">Sign Up</a>
-                    </div>
-                    <button name="" value="" class="btn_login" data-toggle="modal" data-target
-                        id="sign_btn">Login</button>
-                </div>
+<div class="login-wrapper">
+    <div class="login-box">
+        <input type="hidden" id="sel_ns" />
+        <div class="login-form-wrapper">
+            <p class="title">Log in</p>
+            <div class="login-form">
+                <label class="form-label">ID</label><input type="text" name="userid" id="userID" value="" title=""
+                    autofocus />
+                <label class="form-label">Password</label><input type="password" name="password" id="password" value=""
+                    title="" onkeydown="enterKeyForLogin();" />
             </div>
-            <!-- //Input -->
+            <div class="login-remember">
+                <label class="check-container">
+                    <input type="checkbox">
+                    <span class="checkmark"></span>
+                    Remember me
+                </label>
+                <div><span class="forgot-pw" onclick="commonConfirmOpen('idpwLost')">Forgot password?</span></div>
+            </div>
+            <div class="login-btn-box">
+                <button name="" value="" class="login-btn" data-toggle="modal" data-target id="sign_btn">Log in</button>
+                <button name="" value="" class="login-btn google"><img src="/assets/img/common/login_logo_google.png"
+                        alt="google">Log in with google</button>
+            </div>
+            <div class="sign-up-box">Dont have an account? <span class="sign-up-link">Join free today</span></div>
         </div>
     </div>
-
-    <div class="login_footer">
-        <div class="infobox">
-            <div class="tit">Cloud-Barista Community</div>
-            <div class="listbox">
-                <div class="linkbox">
-                    <p>Homepage :</p>
-                    <div class="txt"><a href="https://cloud-barista.github.io"
-                            target="_blank">https://cloud-barista.github.io</a></div>
-                </div>
-                <div class="linkbox">
-                    <p>GitHub :</p>
-                    <div class="txt"><a href="https://github.com/cloud-barista"
-                            target="_blank">https://github.com/cloud-barista</a></div>
-                </div>
-            </div>
-            <div class="linkbox">
-                <p>E-mail :</p>
-                <div class="txt"><a href="mailto:contact-to-cloud-barista@googlegroups.com"
-                        target="_blank">contact-to-cloud-barista@googlegroups.com</a></div>
-            </div>
-        </div>
-    </div>
+    <div class="login-bg-img"><img src="/assets/img/common/bg_login_black.png" alt="mcOne"></div>
 </div>
 
 <!-- id/pw required -->

@@ -732,13 +732,13 @@ function getCommonMcisList(caller, isCallback, targetObjId, optionParam, filterK
         hasOptionParam = true
     }
 
-    if (filterKeyVal != "") {
-        if (hasOptionParam) {
-            url += "&" + filterKeyVal
-        } else {
-            url += "?" + filterKeyVal
-        }
-    }
+    // if (filterKeyVal != "") {
+    //     if (hasOptionParam) {
+    //         url += "&" + filterKeyVal
+    //     } else {
+    //         url += "?" + filterKeyVal
+    //     }
+    // }
     axios.get(url, {
         headers: {
             //'Content-Type': "application/json"
@@ -924,7 +924,7 @@ function getCommonFilterVmSpecListByRange(specFilterObj, caller) {
 
 // 모든 PMKS 목록 조회
 function getCommonAllPmksList(caller) {
-    var url = getWebToolUrl("PmksListOfNamespace")    
+    var url = getWebToolUrl("PmksListOfNamespace")
     axios.get(url, {
         headers: {
             //'Content-Type': "application/json"

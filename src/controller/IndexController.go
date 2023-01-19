@@ -4,6 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/cloud-barista/cb-webtool/src/db"
+	"github.com/cloud-barista/cb-webtool/src/db/dbmodel"
+	"golang.org/x/crypto/bcrypt"
+
 	// "github.com/davecgh/go-spew/spew"
 	"io/ioutil"
 	"log"
@@ -457,8 +461,32 @@ func LoginProc(c echo.Context) error {
 		println("body ", str)
 	}
 
+	userInfo, dbErr := db.GetUserFromDB(paramUserID, paramPass)
+	if dbErr != nil {
+		log.Println(" dbErr ", dbErr)
+		// user가 없으면 임시로 insert 한다.
+		dbUser := dbmodel.UserInfo{}
+		dbUser.UserName = paramUserID
+		dbUser.Id = paramUserID
+		dbUser.Passwd = paramPass
+		resultDbUserInfo, err := db.AddUserInfo(dbUser)
+		if err != nil {
+			log.Println(" AddUserInfo dbErr ", dbErr)
+			return c.JSON(http.StatusUnauthorized, map[string]interface{}{ //401
+				"message": " 유저 추가 실패." + err.Error(),
+				"status":  "fail",
+			})
+		}
+		log.Println("dbuser 추가 완료= ", resultDbUserInfo)
+
+		return c.JSON(http.StatusUnauthorized, map[string]interface{}{ //401
+			"message": " DB 정보조회 " + dbErr.Error(),
+			"status":  "fail",
+		})
+	}
+	log.Println(" userInfo  ", userInfo)
 	// echoSession에서 가져오기
-	storedUser, ok := util.GetUserInfo(c, paramUserID)
+	storedUser, ok := util.GetStoredUserInfo(c, paramUserID)
 	// result, ok := store.Get(paramUserID)
 
 	if !ok {
@@ -496,8 +524,13 @@ func LoginProc(c echo.Context) error {
 	// store.Save()
 
 	//////// 현재구조에서는 nsList 부분을 포함해야 함. TODO : 이부분 호출되는 화면에서 필요할 듯 한데.. 공통으로 뺄까?
-	nsList, nsStatus := service.GetNameSpaceList()
+	//nsList, nsStatus := service.GetNameSpaceList()
+
+	// db에서 사용가능한(namespace_shared 에 등록 된) namespace 목록 조회
+	nsList, nsStatus := db.GetUserNamespaceList(paramUserID)
 	log.Println(nsStatus)
+	log.Println(nsList)
+	log.Println("********************************** ", paramUserID)
 	if nsStatus.StatusCode == 500 {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": nsStatus.Message,
@@ -533,6 +566,7 @@ func LoginProc(c echo.Context) error {
 	if setNameSpaceErr != nil {
 		log.Println("setNameSpaceErr ", setNameSpaceErr)
 	}
+
 	//store.Set("namespacelist", nsList)
 	// util.SetStore(c, "namespacelist", nsList)
 	///////
@@ -621,7 +655,7 @@ func LoginToken(c echo.Context) error {
 	// fmt.Println("paramUser & getPass ---------: ", paramUserID, paramPass)
 
 	// echoSession에서 가져오기
-	storedUser, ok := util.GetUserInfo(c, paramUserID)
+	storedUser, ok := util.GetStoredUserInfo(c, paramUserID)
 
 	if !ok {
 		log.Println(" login proc err  ", ok)
@@ -902,4 +936,9 @@ func LogoutProc(c echo.Context) error {
 	// return c.Render(http.StatusOK, "login.html", nil)
 	return c.Redirect(http.StatusTemporaryRedirect, "/login")
 
+}
+
+func MakePassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	return string(bytes), err
 }

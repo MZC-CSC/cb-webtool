@@ -2,6 +2,8 @@ package controller
 
 import (
 	"fmt"
+	"github.com/cloud-barista/cb-webtool/src/db"
+	tbcommon "github.com/cloud-barista/cb-webtool/src/model/tumblebug/common"
 	"log"
 	"net/http"
 
@@ -33,7 +35,13 @@ func McisMonitoringMngForm(c echo.Context) error {
 	store := echosession.FromContext(c)
 
 	// 최신 namespacelist 가져오기
-	nsList, _ := service.GetNameSpaceList()
+	//nsList, _ := service.GetNameSpaceList()
+	nsList := []tbcommon.TbNsInfo{}
+	if loginInfo.UserID == "admin" {
+		nsList, _ = service.GetNameSpaceList()
+	} else {
+		nsList, _ = db.GetUserNamespaceList(loginInfo.UserID)
+	}
 	store.Set("namespace", nsList)
 	store.Save()
 	log.Println(" nsList  ", nsList)
@@ -76,7 +84,7 @@ func MornitoringListForm(c echo.Context) error {
 	return c.Redirect(http.StatusTemporaryRedirect, "/login")
 }
 
-///mcis/:mcisID/vm/:vmID/agent/mngform
+// /mcis/:mcisID/vm/:vmID/agent/mngform
 // vm에 monitoring Agent 등록 하는 폼.
 // TODO : 이거 지금 쓰는데가 없는데???
 func VmMonitoringAgentRegForm(c echo.Context) error {
@@ -169,7 +177,7 @@ func GetVmMonitoringInfoData(c echo.Context) error {
 	})
 }
 
-//////////////
+// ////////////
 // MCKS Monitoring 화면
 func McksMonitoringMngForm(c echo.Context) error {
 	fmt.Println("McksMonitoringMngForm ************ : ")
@@ -184,7 +192,13 @@ func McksMonitoringMngForm(c echo.Context) error {
 	store := echosession.FromContext(c)
 
 	// 최신 namespacelist 가져오기
-	nsList, _ := service.GetNameSpaceList()
+	//nsList, _ := service.GetNameSpaceList()
+	nsList := []tbcommon.TbNsInfo{}
+	if loginInfo.UserID == "admin" {
+		nsList, _ = service.GetNameSpaceList()
+	} else {
+		nsList, _ = db.GetUserNamespaceList(loginInfo.UserID)
+	}
 	store.Set("namespace", nsList)
 	store.Save()
 	log.Println(" nsList  ", nsList)

@@ -2,6 +2,8 @@ package controller
 
 import (
 	"fmt"
+	"github.com/cloud-barista/cb-webtool/src/db"
+	tbcommon "github.com/cloud-barista/cb-webtool/src/model/tumblebug/common"
 	"log"
 	"net/http"
 
@@ -33,7 +35,13 @@ func McisPolicyMngForm(c echo.Context) error {
 	store := echosession.FromContext(c)
 
 	// 최신 namespacelist 가져오기
-	nsList, _ := service.GetNameSpaceList()
+	//nsList, _ := service.GetNameSpaceList()
+	nsList := []tbcommon.TbNsInfo{}
+	if loginInfo.UserID == "admin" {
+		nsList, _ = service.GetNameSpaceList()
+	} else {
+		nsList, _ = db.GetUserNamespaceList(loginInfo.UserID)
+	}
 	store.Set("namespace", nsList)
 	store.Save()
 	log.Println(" nsList  ", nsList)

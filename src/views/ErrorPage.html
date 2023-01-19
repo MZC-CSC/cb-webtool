@@ -1,56 +1,54 @@
 {{ template "Top" .}}
-<div id="lnb">
-			
-	<div class="bg"></div>
-		
-	<div class="m_box">
-		
+{{template "Header" .}}
+{{template "Modal" .}}
+
+<div id="contents">
+	<div id="lnb">
+
 		{{template "TopBox" .}}
 
+		{{template "LNBPopup" .}}
+
 		{{template "MenuLeft" .}}
-		
+		<div class="bottom"></div>
+		<a href="javascript:;" id="m_close"></a>
+
 	</div>
-	
-	<div class="bottom"></div>
-	<a href="javascript:;" id="m_close"></a>
-	
-</div>
-{{template "Header" .}}
 
 
-				<!-- contents -->
-				<input type="hidden" id="message" />
-				<input type="hidden" id="statusCode" />
-				<input type="hidden" id="pageUrl" />
+	<!-- contents -->
+	<input type="hidden" id="message" />
+	<input type="hidden" id="statusCode" />
+	<input type="hidden" id="pageUrl" />
 
-				<div class="contbox">
-					
-					<div class="titlebox">
-						<div class="tit"><img src="/assets/img/common/icon_cont.png" alt=""/>Error Page </div>						
-					</div>
-					
-					<div class="dashboard">
-						
-						<div class="d_box box_1 box_1m">
-							<div class="titbox">
-								<div class="tit" >
-									<strong>This is Error Page</strong>
-								</div>
-								
-							</div>
-							
-							<div class="ds_cont" id="table_1">
-                                <div><strong>{{ .Message}}</strong></div>
-                                <div><strong>{{ .StatusCode}}</strong></div>
-                                <div><strong>{{ .PageUrl}}</strong></div>
-                            </div>
-						</div>
-						
-						
-						
+	<div class="contbox">
+
+		<div class="titlebox">
+			<div class="tit"><img src="/assets/img/common/icon_cont.png" alt="" />Error Page </div>
+		</div>
+
+		<div class="dashboard">
+
+			<div class="d_box box_1 box_1m">
+				<div class="titbox">
+					<div class="tit">
+						<strong>This is Error Page</strong>
 					</div>
 
-<!-- 					
+				</div>
+
+				<div class="ds_cont" id="table_1">
+					<div><strong>{{ .Message}}</strong></div>
+					<div><strong>{{ .StatusCode}}</strong></div>
+					<div><strong>{{ .PageUrl}}</strong></div>
+				</div>
+			</div>
+
+
+
+		</div>
+
+		<!-- 					
 					<div class="dashboard dashboard_cont">
 						
 						<div class="d_box box_b1">
@@ -69,9 +67,10 @@
 						</div>
 						
 					</div>				 -->
-					
-				</div>
-				<!-- //contents -->
+
+	</div>
+</div>
+<!-- //contents -->
 
 
 {{template "Footer" .}}

@@ -377,9 +377,7 @@ function setNS(nsid) {
         reqUrl = "/setting/namespaces/namespace/set/" + nsid;
         console.log(reqUrl);
         axios.get(reqUrl, {
-            headers: {
-                'Authorization': "{{ .apiInfo}}"
-            }
+
         }).then(result => {
             var data = result.data
             console.log(data);
