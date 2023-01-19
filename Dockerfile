@@ -16,4 +16,6 @@ RUN go get github.com/cespare/reflex@latest
 
 EXPOSE 1235
 
-CMD reflex -r '\.(html|go)' -s go run main.go
+ADD run.sh /
+RUN chmod +x /run.sh
+CMD ["/run.sh"]
