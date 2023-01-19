@@ -1,4 +1,4 @@
-FROM golang:1.19.4 as prod
+FROM golang:1.19.4-alpine as prod
 
 WORKDIR /cb-webtool 
 COPY . .
