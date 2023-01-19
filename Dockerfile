@@ -1,6 +1,6 @@
 FROM golang:1.16-alpine as prod
 
-WORKDIR /go/src/github.com/cloud-barista/cb-webtool 
+WORKDIR /cb-webtool 
 COPY . .
 
 #RUN apk update && apk add git
