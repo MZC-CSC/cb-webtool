@@ -16,6 +16,5 @@ RUN go get github.com/cespare/reflex@latest
 
 EXPOSE 1235
 
-ADD run.sh /
-RUN chmod +x /run.sh
-CMD ["/run.sh"]
+ADD run.sh run.sh
+RUN chmod 755 run.sh
