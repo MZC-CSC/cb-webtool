@@ -64,8 +64,8 @@ body {
 #lnb .topbox .info .txt_1 {
   display: none;
   color: #5e636c;
-  font-size: 20px;
-  font-weight: 400;
+  font-size: 14px;
+  font-weight: 300;
 }
 
 #lnb .topbox .info .txt_2 {
@@ -574,8 +574,8 @@ body {
 }
 
 .header .topmenu>ul>li.user {
-  font-size: 20px;
-  font-weight: 400;
+  font-size: 14px;
+  font-weight: 300;
 }
 
 .header .topmenu>ul>li>a {
