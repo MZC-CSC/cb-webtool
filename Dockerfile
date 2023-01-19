@@ -1,4 +1,4 @@
-FROM golang:alpine as prod
+FROM golang:1.19.4 as prod
 
 WORKDIR /cb-webtool 
 COPY . .
@@ -12,7 +12,7 @@ RUN apk add --no-cache bash git gcc
 #RUN go get -u github.com/labstack/echo/...
 #RUN go get -u github.com/davecgh/go-spew/spew
 ENV GO111MODULE on
-RUN go get github.com/cespare/reflex
+RUN go get github.com/cespare/reflex@latest
 
 EXPOSE 1235
 
