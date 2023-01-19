@@ -14,6 +14,7 @@ RUN apk add --no-cache bash git gcc
 ENV GO111MODULE on
 RUN go get github.com/cespare/reflex
 
-EXPOSE 1234
+EXPOSE 1235
 
-CMD reflex -r '\.(html|go)' -s go run main.go
+CMD source ./conf/setup.env
+CMD go run main.go
