@@ -13,6 +13,7 @@ RUN apk add --no-cache bash git gcc
 #RUN go get -u github.com/davecgh/go-spew/spew
 ENV GO111MODULE on
 RUN go get github.com/cespare/reflex@latest
+RUN go mod tidy
 
 EXPOSE 1235
 
