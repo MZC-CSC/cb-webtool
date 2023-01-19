@@ -16,5 +16,4 @@ RUN go get github.com/cespare/reflex
 
 EXPOSE 1235
 
-ENTRYPOINT ["source", "./conf/setup.env"]
-ENTRYPOINT ["go", "run", "main.go"]
+CMD reflex -r '\.(html|go)' -s go run main.go
