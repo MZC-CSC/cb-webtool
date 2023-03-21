@@ -738,7 +738,7 @@ function getRecommendVmInfo() {
 						{
 							"key": "coordinateClose",
 							"val": [
-								lon + "/" + lat
+								lat + "/" + lon
 							]
 						}
 					],
