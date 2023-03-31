@@ -52,7 +52,7 @@ function showServerListAndStatusArea(mcksID, mcksIndex) {
 
     var mcksNodes = "";
     //var mcksStatusIcon = "";
-    $("[id^='mcksNodeUID_']").each(function () {
+    $("[id^='mcksNodeName_']").each(function () {
         var mcksNode = $(this).attr("id").split("_")
         thisMcksIndex = mcksNode[1]
         nodeIndexOfMcks = mcksNode[2]
@@ -225,7 +225,7 @@ function nodeDetailInfo(mcksIndex, nodeIndex) {
     // hidden 값 setting. 삭제 등에서 사용
     $("#node_name").val(nodeName);
 
-    $("#mcks_node_txt").text(nodeName + " / " + nodeUID);
+    $("#mcks_node_txt").text("[ " + nodeName + " ]");
 
     $("#mcks_node_name").val(nodeName);
     $("#mcks_node_kind").val(nodeKind);
