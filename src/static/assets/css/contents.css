@@ -847,7 +847,7 @@
 	margin: 0;
 	float: right;
 	padding: 0 20px 0 0;
-	min-width: 316.04px;
+	min-width: 250px;
 }
 
 .dashboard .box_cont .cbox ul {
@@ -1931,7 +1931,7 @@ table tbody tr {
 }
 
 
-@media screen and (max-width:1785px) {
+@media screen and (max-width:1400px) {
 	.dashboard .d_box.box_1 {
 		width: 70%;
 	}
@@ -1994,7 +1994,7 @@ table tbody tr {
 	}
 }
 
-@media screen and (max-width:1600px) {
+@media screen and (max-width:992px) {
 	.dashboard .titbox .txt_ip {
 		text-align: left;
 		margin: 0;
@@ -2009,7 +2009,7 @@ table tbody tr {
 	}
 }
 
-@media screen and (max-width:1400px) {
+@media screen and (max-width:768px) {
 	.dashboard .d_box.box_m1 {
 		width: 49.7%;
 		margin: 0;
@@ -2031,7 +2031,7 @@ table tbody tr {
 	}
 }
 
-@media screen and (max-width:1200px) {
+@media screen and (max-width:576px) {
 	.dashboard .titbox .tit {
 		left: 30px;
 	}
