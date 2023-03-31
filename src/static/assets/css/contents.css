@@ -351,7 +351,7 @@
 }
 
 .provider_icon {
-	width: calc(100% / 5 - 15px / 5);
+	width: clamp(25px, calc(100% / 5 - 15px / 5), 35px);
 }
 
 .provider_icon:not(:last-of-type) {
@@ -1460,8 +1460,8 @@ table thead {
 	/* display: block; */
 	/* width: calc(100% - 0.91em); */
 	/* width: calc(100% - 1.4em); */
-	width: calc(100% - 1.2em);
-	/* width: 100%; */
+	/* width: calc(100% - 1.2em); */
+	width: 100%;
 }
 
 table thead tr {
@@ -2557,7 +2557,8 @@ table tbody tr {
 
 .dataTable tbody td img.icon {
 	display: inline-block;
-	margin: 0 5px 0 0;
+	width: 35px;
+    object-fit: contain;
 }
 
 .dataTable tbody tr:hover td,

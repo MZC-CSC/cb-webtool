@@ -980,7 +980,7 @@ function vmDetailInfo(mcisID, mcisName, vmID) {
     $("#server_detail_view_server_status").val(vmStatus);
     // $("#server_info_status_img").empty()
     // $("#server_info_status_img").append(vmBadge)
-    $("#server_info_status_icon_img\n").attr("src", vmStatusIcon);
+    $("#service_status_icon_img").attr("src", "/assets/img/contents/" + vmStatusIcon);
 
     $("#server_info_name").val(vmName + "/" + vmID)
     $("#server_info_desc").val(vmDescription)
@@ -2090,8 +2090,8 @@ function setMcisListTableRow(aMcisData, mcisIndex) {
     try {
         mcisTableRow += '<tr onclick="clickListOfMcis(\'' + aMcisData.id + '\');" id="server_info_tr_' + mcisIndex + '" item="' + aMcisData.id + '|' + mcisIndex + '">'
 
-        mcisTableRow += '<td class="overlay hidden td_left column-20percent" data-th="Status">'
-        mcisTableRow += '   <div style="display: flex; align-items: center;"><img id="mcisInfo_mcisStatus_icon_' + mcisIndex + '" src="/assets/img/contents/icon_' + mcisDispStatus + '.png" class="icon" alt=""/><span id="mcisInfo_mcisstatus_' + mcisIndex + '">' + mcisStatus + '</span><span class="ov off"></span></div>'
+        mcisTableRow += '<td class="overlay hidden column-80px" data-th="Status">'
+        mcisTableRow += '   <div><img id="mcisInfo_mcisStatus_icon_' + mcisIndex + '" src="/assets/img/contents/icon_' + mcisDispStatus + '.png" class="icon" alt=""/><span class="ov off"></span></div>'
         mcisTableRow += '</td>'
         mcisTableRow += '<td class="btn_mtd ovm column-20percent" data-th="Name">'
         mcisTableRow += '   <div style="display: inline-flex; align-items: center;">'
@@ -2226,7 +2226,6 @@ function displayMcisInfoArea(mcisData) {
 
         // 초기화 후 set해야하나?
 
-        $("#server_info_status_icon_img").attr("src", mcisStatusIcon);
         $("#mcis_info_name").val(mcisName + " / " + mcisID);
         $("#mcis_info_id").val(mcisID);
         $("#mcis_info_description").val(mcisDescription);
@@ -2234,6 +2233,7 @@ function displayMcisInfoArea(mcisData) {
         $("#mcis_info_targetAction").val(mcisTargetAction);
         $("#mcis_info_cloud_connection").empty();
         $("#mcis_info_cloud_connection").append(mcisProviderNames);    //
+        $("#mcis_info_status_icon_img").attr("src", "/assets/img/contents/" + mcisStatusIcon)
 
         $("#mcis_name").val(mcisName)
 

@@ -279,13 +279,13 @@ function getVmStatusClass(vmDispStatus) {
 }
 function getVmStatusIcon(vmDispStatus) {
 	var vmStatusIcon = "icon_running_db.png";
-	if (vmDispStatus == "running") {
+	if (vmDispStatus == "Running") {
 		vmStatusIcon = "icon_running_db.png";
-	} else if (vmDispStatus == "stop") {
+	} else if (vmDispStatus == "Stop") {
 		vmStatusIcon = "icon_stop_db.png";
-	} else if (vmDispStatus == "suspended") {
+	} else if (vmDispStatus == "Suspended") {
 		vmStatusIcon = "icon_stop_db.png";
-	} else if (vmDispStatus == "terminate") {
+	} else if (vmDispStatus == "Terminated") {
 		vmStatusIcon = "icon_terminate_db.png";
 	} else {
 		vmStatusIcon = "icon_stop_db.png";

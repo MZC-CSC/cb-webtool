@@ -82,7 +82,8 @@
 					<thead>
 						<tr>
 							<th class="column-80px">Status</th>
-							<th>Name</th>
+							<th class="column-20percent">Name</th>
+							<th class="column-14percent">Provider</th>
 							<th>Total Infra</th>
 							<th>Nodes<span>Control Plane / Worker</span></th>
 							<th>NetworkCni</th>
@@ -109,10 +110,11 @@
 							<td class="overlay hidden column-80px" data-th="Status">
 								<!--													<img src="/assets/img/contents/icon_{{$clusterItem.McksStatus}}.png" class="icon" alt=""/>{{$clusterItem.Status}}<span class="ov off"></span>-->
 								<img src="/assets/img/contents/icon_running.png" class="icon"
-									alt="" />{{$clusterItem.Status}}<span class="ov off"></span>
+									alt="" /><span class="ov off"></span>
 
 							</td>
-							<td class="btn_mtd ovm" data-th="Name">{{$clusterItem.Name}}<span class="ov"></span></td>
+							<td class="btn_mtd ovm column-20percent" data-th="Name">{{$clusterItem.Name}}<span class="ov"></span></td>
+							<td class="overlay hidden column-14percent" data-th="Provider"><img class="provider_icon" src="/assets/img/contents/img_logo_aws.png" alt="AWS"/><img class="provider_icon" src="/assets/img/contents/img_logo_gcp.png" alt="GCP"/></td>
 							<td class="btn_mtd ovm" data-th="TotalNodeCount">{{$clusterItem.TotalNodeCount}}<span
 									class="ov"></span></td>
 							<td class="btn_mtd ovm" data-th="Name">

@@ -209,6 +209,14 @@ function addClusterData(item, index) {
 
     html +=
         "<tr onclick=\"clickListOfCluster('" + clusterID + "', " + index + ");\">"
+
+        + '<td class="btn_mtd ovm column-80px" data-th="status"><img id="cluster_status_icon_' + index + '" src="/assets/img/contents/icon_' + 'running' + '.png" class="icon" alt=""/><span class="ov off"></span></td>'
+        + '<td class="overlay hidden column-20percent" data-th="clusterName">' + clusterID + "</td>"
+        + '<td class="btn_mtd ovm column-100px" data-th="provider"><img class="provider_icon" src="/assets/img/contents/img_logo_' + clusterProviderName.toLowerCase() + '.png" alt="' + clusterProviderName + '"/></td>'
+        + '<td class="overlay hidden" data-th="vpc">' + vpcId + "</td>"
+        + '<td class="overlay hidden" data-th="subnet">' + subnetIds + "</td>"
+        + '<td class="overlay hidden" data-th="securityGroup">' + securityGroupIds + "</td>"
+        + '<td class="overlay hidden" data-th="nodeGroup">' + nodeGroupIds + "</td>"
         + '<td class="overlay hidden column-50px" data-th="">'
         + '<input type="hidden" id="cluster_info_' + index + '" value="' + clusterID + '"/>'
         + '<input type="hidden" id="cluster_systemid_' + index + '" value="' + clusterSystemID + '"/>'
@@ -226,17 +234,8 @@ function addClusterData(item, index) {
 
         + '<input type="hidden" id="cluster_nodegrouplist_' + index + '" value="' + nodeGroupIds.join() + '"/>'
 
-
         + '<input type="checkbox" name="clusterchk" value="' + clusterID + '" id="cluster_ch_td_' + index + '" title="" /><label for="td_ch1"></label> <span class="ov off"></span></td>'
-
-        + '<td class="btn_mtd ovm column-80px" data-th="status">' + clusterStatus + "</td>"
-        + '<td class="overlay hidden" data-th="clusterName">' + clusterID + "</td>"
-        + '<td class="btn_mtd ovm" data-th="provider">' + clusterProviderName + "</td>"
-
-        + '<td class="overlay hidden" data-th="vpc">' + vpcId + "</td>"
-        + '<td class="overlay hidden" data-th="subnet">' + subnetIds + "</td>"
-        + '<td class="overlay hidden" data-th="securityGroup">' + securityGroupIds + "</td>"
-        + '<td class="overlay hidden" data-th="nodeGroup">' + nodeGroupIds + "</td>"
+        
         + "</tr>"
     return html
 }
