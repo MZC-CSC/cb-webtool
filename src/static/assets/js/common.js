@@ -149,8 +149,10 @@ function getMcisStatusDisp(mcisFullStatus) {
 	} else if (mcisFullStatus.toLowerCase().indexOf("terminate") > -1) {
 		returnStatus = "terminate"
 		// TODO : partial도 있는데... 처리를 어떻게 하지??
-	} else {
+	} else if (mcisFullStatus.toLowerCase().indexOf("failed") > -1) {
 		returnStatus = "terminate"
+	} else {
+		returnStatus = "update"
 	}
 	console.log("after status " + returnStatus)
 	return returnStatus
@@ -486,7 +488,7 @@ $(function () {
 		var badge = $btn.find('.badge');
 		$btn.click(function () {
 			list.fadeToggle(300, function () {
-				badge.innerHTML = "0";
+				// badge.innerHTML = "0";
 				badge.hide();
 			});
 		});

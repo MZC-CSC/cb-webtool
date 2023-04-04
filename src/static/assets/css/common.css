@@ -589,15 +589,16 @@ body {
 
 .header .topmenu>ul>li span {
   position: absolute;
-  right: -8px;
-  top: -7px;
-  padding: 3px 6px;
+  right: -5px;
+  top: -6px;
+  padding: 6px;
   background-color: #fc1656;
   font-size: 10px;
   line-height: 10px;
   color: #fff;
+  border: 2px solid #f3f3f3;
   font-weight: 500;
-  border-radius: 20px;
+  border-radius: 50%;
 }
 
 .header .topmenu>ul>li span #badge {
@@ -628,6 +629,7 @@ body {
   transform: translateX(15%);
   background-color: #5e636c;
   border-radius: 8px;
+  z-index: 1;
 }
 
 .header .topmenu .infobox .box {

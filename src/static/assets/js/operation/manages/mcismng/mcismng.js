@@ -99,7 +99,7 @@ $(document).ready(function () {
     // getCommonVirtualMachineSpecList("mcismng")
 
     // //
-    getCommonMcisList("mcismngready", true, "", "simple")
+    getCommonMcisList("mcismngready", true, "", "status")
 });
 
 // server info 영역 보이기/숨기기
