@@ -10570,6 +10570,10 @@ table tbody tr {
 	border-radius: 0px;
 }
 
+.tooltip {
+	cursor: pointer;
+}
+
 @media screen and (max-width:1800px) {
 	.popup_CreateTabBox .scrollbar-inner {
 		max-width: 100%;
