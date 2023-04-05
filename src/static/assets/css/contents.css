@@ -847,7 +847,7 @@
 	margin: 0;
 	float: right;
 	padding: 0 20px 0 0;
-	min-width: 250px;
+	min-width: 330px;
 }
 
 .dashboard .box_cont .cbox ul {
@@ -1931,7 +1931,7 @@ table tbody tr {
 }
 
 
-@media screen and (max-width:1400px) {
+@media screen and (max-width:1650px) {
 	.dashboard .d_box.box_1 {
 		width: 70%;
 	}

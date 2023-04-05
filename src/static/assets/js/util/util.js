@@ -1602,3 +1602,22 @@ function CommonTableRowNodata(colspanCount) {
     return html
 }
 
+function sliderInit(settings) {
+    var $Slider_list = $("#" + settings.id)
+    var $Slider_div = $Slider_list.find('.slider_bar')
+    var $min_input = $Slider_list.find("[id$='min']")
+    var $max_input = $Slider_list.find("[id$='max']")
+    $Slider_div.slider({
+        range: true,
+        min: settings.min,
+        max: settings.max,
+        step: settings.step,
+        values: settings.values,
+        slide: function (event, ui) {
+            $min_input.val(ui.values[0].toString())
+            $max_input.val(ui.values[1].toString())
+        }
+    });
+    $min_input.val($Slider_div.slider("values",0))
+    $max_input.val($Slider_div.slider("values",1))
+}

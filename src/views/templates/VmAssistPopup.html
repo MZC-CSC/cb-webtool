@@ -1822,9 +1822,9 @@
 
 											<li>
 												<label>Memory</label>
-												<div class="s_slider_box">
+												<div class="s_slider_box" id="slider_memory">
 													<input type="text" id="num_memory_min"
-														name="assist_max_num_memory_min" value="0" placeholder="1"
+														name="assist_max_num_memory_min" value="0" placeholder="0"
 														class="components_input txt_ipbox" title="" />
 													<div class="slider_ip">
 														<button class="btn_s btn_s_minus">-</button>
@@ -1837,7 +1837,7 @@
 														<button class="btn_s btn_s_plus">+</button>
 													</div>
 													<input type="text" id="num_memory_max"
-														name="assist_max_num_memory_min" value="1024" placeholder="1"
+														name="assist_max_num_memory_min" value="512" placeholder="512"
 														class="components_input txt_ipbox" title="" />
 												</div>
 												<span class="stxt">GB</span>
@@ -1850,7 +1850,7 @@
 										<ul>
 											<li>
 												<label>CPU</label>
-												<div class="s_slider_box">
+												<div class="s_slider_box" id="slider_cpu">
 													<input type="text" id="num_vCPU_min" name="assist_num_vCPU_min"
 														value="0" placeholder="0" class="components_input txt_ipbox"
 														title="" />
@@ -1865,7 +1865,7 @@
 														<button class="btn_s btn_s_plus">+</button>
 													</div>
 													<input type="text" id="num_vCPU_max" name="assist_num_vCPU_max"
-														value="100" placeholder="0" class="components_input txt_ipbox"
+														value="512" placeholder="512" class="components_input txt_ipbox"
 														title="" />
 												</div>
 												<span class="stxt">Unit</span>
@@ -1877,7 +1877,7 @@
 										<ul>
 											<li>
 												<label>COST</label>
-												<div class="s_slider_box">
+												<div class="s_slider_box" id="slider_cost">
 													<input type="text" id="num_cost_min" name="assist_num_vCPU_min"
 														value="0" placeholder="0" class="components_input txt_ipbox"
 														title="" />
@@ -2209,27 +2209,37 @@
 <script src="/assets/js/operation/manages/mcismng/vmassistpopup.js"></script>
 
 <script>
-
+	
 	$(function () {
-		$(".spec_box .s_slider_box").each(function () {
-			var $Slider_list = $(this);
-			var $Slider_div = $Slider_list.find('.slider_bar');
-			var $min_input = $Slider_list.find("[id$='min']");
-			var $max_input = $Slider_list.find("[id$='max']");
-			var $btn_plus = $Slider_list.find('.btn_s_plus');
-			var $btn_minus = $Slider_list.find('.btn_s_minus');
-			$Slider_div.slider({
-				range: true,
-				min: 0,
-				max: 100,
-				step: 1,
-				values: [0, 100],
-				slide: function (event, ui) {
-					$min_input.val(ui.values[0].toString());
-					$max_input.val(ui.values[1].toString());
-				}
-			});
-		})
+
+		var slider_memory_setting = {
+			id: "slider_memory",
+			min: 0,
+			max: 128,
+			step: 1,
+			values: [0, 32],
+		}
+
+		var slider_cpu_setting = {
+			id: "slider_cpu",
+			min: 0,
+			max: 128,
+			step: 1,
+			values: [0, 16],
+		}
+
+		var slider_cost_setting = {
+			id: "slider_cost",
+			min: 0,
+			max: 1,
+			step: 0.1,
+			values: [0, 1],
+		}
+
+		sliderInit(slider_memory_setting)
+		sliderInit(slider_cpu_setting)
+		sliderInit(slider_cost_setting)
+		
 	})
 
 
