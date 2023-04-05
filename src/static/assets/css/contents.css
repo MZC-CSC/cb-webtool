@@ -11269,7 +11269,6 @@ table tbody tr {
 	position: relative;
 	display: inline-block;
 	padding: 0 !important;
-	width: auto !important;
 }
 
 .btnbox .amount_add input[type="text"] {
@@ -11422,7 +11421,7 @@ table tbody tr {
 .s_slider_box {
 	position: relative;
 	padding: 0 80px 0 0;
-	width: 236px;
+	width: 260px;
 }
 
 .s_slider_box .slider_ip {

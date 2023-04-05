@@ -40,6 +40,18 @@ body {
   font-family: "Noto Sans KR";
 }
 
+.wrapper-align-right {
+  text-align: right;
+}
+
+.wrapper-align-left {
+  text-align: left;
+}
+
+.wrapper-align-center {
+  text-align: center;
+}
+
 #contents {
   display: flex;
 }
