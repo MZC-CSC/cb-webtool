@@ -1,5 +1,5 @@
 
-$(document).ready(function () {
+$(function () {
 	//btn_spec
 	// #ID 에 .클래스명_assist
 	//	대상 class명.toggleClass
@@ -35,22 +35,10 @@ function sleep(ms) {
 
 var JZMap;
 function showMap() {
-	// //
-	//
-	// var locationInfo = new Object();
-	// locationInfo.id = "1"
-	// locationInfo.name = "pin"
-	// locationInfo.cloudType = "aws";
-	// locationInfo.latitude = "34.3800";
-	// locationInfo.longitude = "131.7000"
-	// locationInfo.markerIndex = 1
-	// setMap(locationInfo)
-
 	$("#recommend_map").empty()
-	clearLayers(JZMap)
+	$("#recommendSpecSetting").addClass("flexbox")
+	$('#recommend_map').show();
 	JZMap = map_init_target("recommend_map")
-	addClickPin(JZMap)
-	console.log(JZMap)
 }
 
 // Map 관련 설정
@@ -662,9 +650,6 @@ function showRecommendSpecSetting(option) {
 
 	if (option == "location") {
 		showMap()
-		console.log("show map");
-		$("#recommendSpecSetting").addClass("flexbox")
-		$("#recommend_map").css("display", "block")
 	}
 }
 

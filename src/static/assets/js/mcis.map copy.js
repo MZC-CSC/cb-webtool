@@ -90,26 +90,26 @@ function getGeoLocationInfo(mcis_id,map){
        
     })
 }
-function map_init_target(target){
+// function map_init_target(target){
  
-  const osmLayer = new ol.layer.Tile({
-    source: new ol.source.OSM(),
-  });
+//   const osmLayer = new ol.layer.Tile({
+//     source: new ol.source.OSM(),
+//   });
   
 
-var m = new ol.Map({
-    target: target,
-    layers: [
-      osmLayer
-    ],
-    view: new ol.View({
-      center: [0,0],
-      zoom: 1
-    })
-  });
+// var m = new ol.Map({
+//     target: target,
+//     layers: [
+//       osmLayer
+//     ],
+//     view: new ol.View({
+//       center: [0,0],
+//       zoom: 1
+//     })
+//   });
  
-return m;
-}
+// return m;
+// }
 function map_init(){
  
     const osmLayer = new ol.layer.Tile({

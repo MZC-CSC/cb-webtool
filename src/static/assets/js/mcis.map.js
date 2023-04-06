@@ -68,11 +68,6 @@ function map_init_target(target) {
         source: new ol.source.OSM(),
     });
 
-    // const source = new ol.source.OSM()
-
-    // const layer = new ol.layer.Tile()
-
-
     var m = new ol.Map({
         target: target,
         layers: [
@@ -83,7 +78,6 @@ function map_init_target(target) {
             zoom: 1
         })
     });
-    var JZMap = m;
 
     // JZMap.on('click', function (evt) {
     //     // var element = document.getElementById('map_pop2');
@@ -436,8 +430,6 @@ function drawPoligon(JZMap, polygon, polygonId, colorIndex) {
 var layersMap = new Map();//polygon layer들이 생성되면 넣는 map
 //function clearPolygon(JZMap){
 function clearLayers(JZMap) {
-    console.log("clearPolygon");
-
     layersMap.forEach((value, key) => {
         console.log("clearPolygon = " + key)
         console.log(value)
