@@ -39,6 +39,7 @@ function showMap() {
 	$("#recommendSpecSetting").addClass("flexbox")
 	$('#recommend_map').show();
 	JZMap = map_init_target("recommend_map")
+	addClickPin(JZMap)
 }
 
 // Map 관련 설정
