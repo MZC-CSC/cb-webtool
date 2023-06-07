@@ -170,6 +170,11 @@ body {
   font-weight: 400;
 }
 
+#lnb .topbox .info .txt_2 .infobox .box>ul>li #menuNameSpaceList {
+  height: 200px;
+  overflow-y: auto;
+}
+
 #lnb .topbox .info .txt_2 .infobox .box>ul>li>ul {
   padding: 0 0 0 12px;
 }
@@ -583,11 +588,13 @@ body {
   color: #5e636c;
   font-size: 14px;
   line-height: 14px;
+  cursor: pointer;
 }
 
 .header .topmenu>ul>li.user {
   font-size: 14px;
   font-weight: 300;
+  cursor: default;
 }
 
 .header .topmenu>ul>li>a {

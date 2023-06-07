@@ -100,6 +100,7 @@ $(document).ready(function () {
 
     // //
     getCommonMcisList("mcismngready", true, "", "status")
+    $('[title]').tooltipster();
 });
 
 // server info 영역 보이기/숨기기
@@ -252,6 +253,7 @@ function setMcisData(mcisInfo, mcisIndex) {
     console.log("mcisProviderNames=" + mcisProviderNames)
     // table
     $("#mcisInfo_mcisStatus_icon_" + mcisIndex).attr("src", mcisStatusImg);
+    $("#mcisInfo_mcisStatus_icon_" + mcisIndex).attr("title", mcisStatus);
     $("#mcisInfo_mcisName_" + mcisIndex).text(mcisInfo.name);
     $("#mcisInfo_mcisProviderNames_" + mcisIndex).text(mcisProviderNames);
     $("#mcisInfo_totalVmCountOfMcis_" + mcisIndex).text(totalVmCountOfMcis)
@@ -2051,6 +2053,7 @@ function displayMcisListTable() {
         }// end of mcis loop
         $("#mcisList").empty();
         $("#mcisList").append(addMcis);
+        $('[title]').tooltipster();
 
     } else {
         var addMcis = "";
@@ -2091,7 +2094,7 @@ function setMcisListTableRow(aMcisData, mcisIndex) {
         mcisTableRow += '<tr onclick="clickListOfMcis(\'' + aMcisData.id + '\');" id="server_info_tr_' + mcisIndex + '" item="' + aMcisData.id + '|' + mcisIndex + '">'
 
         mcisTableRow += '<td class="overlay hidden column-80px" data-th="Status">'
-        mcisTableRow += '   <div><img id="mcisInfo_mcisStatus_icon_' + mcisIndex + '" src="/assets/img/contents/icon_' + mcisDispStatus + '.png" class="icon" alt=""/><span class="ov off"></span></div>'
+        mcisTableRow += '   <div><img id="mcisInfo_mcisStatus_icon_' + mcisIndex + '" src="/assets/img/contents/icon_' + mcisDispStatus + '.png" class="icon" title="' + mcisStatus + '" alt=""/><span class="ov off"></span></div>'
         mcisTableRow += '</td>'
         mcisTableRow += '<td class="btn_mtd ovm column-20percent" data-th="Name">'
         mcisTableRow += '   <div style="display: inline-flex; align-items: center;">'

@@ -4305,6 +4305,12 @@ table tbody tr {
 
 .dashboard .tabbox .tab-content .graph_list {
 	margin: 45px -10px 0 -10px;
+	display: flex;
+	flex-flow: wrap;
+}
+
+.dashboard .tabbox .tab-content .graph_list .graphbox {
+	width: calc(100% / 2);
 }
 
 .dashboard .tabbox .tab-content .graph_list:after {
@@ -4599,6 +4605,9 @@ table tbody tr {
 }
 
 @media screen and (max-width:1830px) {
+	.dashboard .tabbox .tab-content .graph_list .graphbox {
+		width: 100%;
+	}
 	.dashboard .g_detail_view .view_ip li.m1 {
 		width: 100%;
 	}
@@ -4791,6 +4800,7 @@ table tbody tr {
 }
 
 @media screen and (max-width:1024px) {
+
 	.dashboard .tabbox .tab-content {
 		padding: 30px 35px;
 	}
@@ -5774,6 +5784,7 @@ table tbody tr {
 }
 
 @media screen and (max-width:480px) {
+
 	.ds_cont_mbox {
 		padding: 20px 15px;
 	}

@@ -779,7 +779,7 @@ function recommendVmSpecListCallbackSuccess(data) {
 				+ '     <input type="hidden" id="recommendVmAssist_connectionName_' + index + '" value="' + item.connectionName + '"/>'
 				+ '     <input type="hidden" id="recommendVmAssist_name_' + index + '" value="' + item.name + '"/>'
 				+ '     <input type="hidden" id="recommendVmAssist_cspSpec_' + index + '" value="' + item.cspSpecName + '"/>'
-				+ '<td class="overlay hidden column-50px" data-th=""><input type="checkbox" name="chk" value="' + item.name + '" id="' + index + '" title=""></td>'
+				+ '<td class="overlay hidden column-50px" data-th=""><input type="radio" name="chk" value="' + item.name + '" id="' + index + '" title=""></td>'
 				+ '<td class="overlay hidden" data-th="provider">' + item.providerName + '</td>'
 				+ '<td class="overlay hidden" data-th="region">' + item.regionName + '</td>'
 				// + '<td class="btn_mtd ovm" data-th="name ">' + item.name + '<span class="ov"></span></td>'
