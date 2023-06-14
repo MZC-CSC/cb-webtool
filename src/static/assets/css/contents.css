@@ -381,7 +381,7 @@
 }
 
 .dashboard {
-	margin-top: 2.5%;
+	margin-top: clamp(20px, 2.5%, 30px);
 }
 
 .dashboard:after {
@@ -395,7 +395,7 @@
 .dashboard .d_box {
 	float: left;
 	min-height: 260px;
-	margin: 0 0 0 2.5%;
+	margin: 0 0 0 clamp(20px, 2.5%, 30px);
 	background-color: #fff;
 	border-radius: 8px;
 	/*box-shadow: 5px 5px 8px 0 #d7dcde, 0 -5px 8px 0 #d7dcde;*/
@@ -1013,7 +1013,7 @@
 }
 
 .dashboard.dashboard_cont {
-	margin: 2.5% 0 0 0;
+	margin: clamp(20px, 2.5%, 30px) 0 0 0;
 }
 
 .dashboard.dashboard_cont .d_box.box_b1 {
