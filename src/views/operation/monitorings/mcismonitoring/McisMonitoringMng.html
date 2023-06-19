@@ -246,7 +246,7 @@
 									<div class="mvbox v_ip2">
 										<ul>
 											<li class="mt_2" id="m_hidden_div">
-												<span class="sbox">
+												<div>
 													<label>Duration</label>
 													<span class="sel_w1">
 														<input type="text" name="" value="5" placeholder="" title=""
@@ -257,15 +257,15 @@
 															<option value="d">Day</option>
 														</select>
 													</span>
-												</span>
-												<span class="sbox">
+												</div>
+												<div>
 													<label>Period</label>
 													<select class="selectbox white" id="vm_period">
 														<option value="m" selected>per Minutely</option>
 														<option value="h">per Hourly</option>
 														<option value="d">per Daily</option>
 													</select>
-												</span>
+												</div>
 											</li>
 											<li class="mt_1">
 												<!-- <label>Type</label> -->
@@ -301,13 +301,14 @@
 								});
 							</script>
 
+						
 							<div class="graphbox">
 								<canvas id="canvas_vm"></canvas>
+								<img id="fallback_vm" src="/assets/img/contents/img_graph_placeholder.png" alt="sample graph" style="display:none;">
 								<!-- <img src="/assets/img/contents/img_graph_4.jpg" alt=""> -->
 
 							</div>
-
-						</div>
+						
 					</div>
 					<!-- //Monitoring view -->
 				</div>

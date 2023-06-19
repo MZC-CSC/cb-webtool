@@ -22,9 +22,9 @@ function showMonitoring(mcis_id, vm_id){
      var duration = "10m";
      var statisticsCriteria = "last";
      
-     for (var i in arr){
-       var chart_target = "canvas_"+i;
-        getMetric(chart_target,arr[i],mcis_id,vm_id,arr[i],periodType,statisticsCriteria,duration);
+     for (var idx in arr){
+       var chart_target = "canvas_"+idx;
+        getMetric(idx,chart_target,mcis_id,vm_id,arr[i],periodType,statisticsCriteria,duration);
   
      }
 }
@@ -52,7 +52,7 @@ function showMonitoring(mcis_id, vm_id, metric, periodType, duration){
 	$("#canvas_vm").empty();
 	var statisticsCriteria = "last";
     
-	getVmMetric(vmChart,"canvas_vm",metric,mcis_id,vm_id,metric,periodType,statisticsCriteria,duration);
+	getVmMetric(vmChart,"canvas_vm",mcis_id,vm_id,metric,periodType,statisticsCriteria,duration);
 }
 function genChartFmt(chart_target){
 
@@ -96,19 +96,19 @@ function genChartFmt(chart_target){
 	return chart;
 }
 
-function getMetric(chart_target,target, mcis_id, vm_id, metric, periodType,statisticsCriteria, duration){
+function getMetric(index,target, mcis_id, vm_id, metric, periodType,statisticsCriteria, duration){
 	console.log("====== Start GetMetric ====== ")
 	var color = "";
     var metric_size ="";
     
 	
 	
-    var nsid = NAMESPACE;
-    console.log("get metric namespace : ",nsid);
-	var url = DragonFlyURL+"/ns/"+nsid+"/mcis/"+mcis_id+"/vm/"+vm_id+"/metric/"+metric+"/info?periodType="+periodType+"&statisticsCriteria="+statisticsCriteria+"&duration="+duration;
+    // var nsid = NAMESPACE;
+    // console.log("get metric namespace : ",nsid);
+	var url = "/operation/manages/mcismng/proc/vmmonitoring"
     console.log("Request URL : ",url)
     
-    var ctx = document.getElementById(chart_target).getContext('2d')
+    var ctx = document.getElementById(target).getContext('2d')
     var chart = new Chart(ctx,{
         type:"line",
         data:{},
@@ -116,7 +116,7 @@ function getMetric(chart_target,target, mcis_id, vm_id, metric, periodType,stati
             responsive: true,
             title: {
                 display: true,
-                text: target
+                text: metric
             },
             tooltips: {
                 mode: 'index',
@@ -145,50 +145,80 @@ function getMetric(chart_target,target, mcis_id, vm_id, metric, periodType,stati
         }
     });
 	chart.clear()
-	$.ajax({
-		url: url,
-		async:false,
-		type:'GET',
-		success : function(result){
-			var data = result
-			console.log("Get Monitoring Data : ",data)
-			console.log("info items : ", target);
-            console.log("======== start mapping data ======");
-            $("#"+chart_target).empty();
-           
-    
-            //data sets
-            var key =[]
-            var values = data.values[0]
-            for(var i in values){                
-                key.push(i)
-            }
-            console.log("Key values time except:",key);
-	
-            var labels = key;
-            var datasets = data.values;
-            // 각 값의 배열 데이터들
-            //console.log("info labels : ",labels);
-            console.log("info datasets : ",datasets);
+	axios.post(url,{
+        McisID:mcis_id,
+        VmID:vm_id,
+        Metric:metric,
+        PeriodType:periodType,
+        StatisticsCriteria:statisticsCriteria,
+        Duration:duration
+    }).then(result=>{    
+        console.log(result)    
 
-            var obj = {}
-            obj.columns = labels
-	        obj.values = datasets
+        var statusCode = result.data.status;
+        var message = result.data.message;
+        
+        if( statusCode != 200 && statusCode != 201) {
+            $("#fallback_" + index).css("display", "block");
+            commonAlert(message +"(" + statusCode + ")");
+            return;
+        }
 
-			var time_obj = time_arr(obj,target);
-			console.log("chart_target :",chart_target);
-			console.log("info datasets : ", time_obj);
-			
-			// var myChart = new Chart(ctx, time_obj);
-			chart.data = time_obj;
-			chart.update();
-            
-		},
-		error : function(request,status, error){
-			console.log(request.status, request.responseText,error)
-		}
-		
-	})
+        var data = result.data.VMMonitoringInfo
+        console.log("Get Monitoring Data : ",data)
+        console.log("info items : ", target);
+        console.log("======== start mapping data ======");
+        $("#"+target).empty();       
+
+        //data sets
+        var key =[]
+        var values = data.values[0]
+        for(var i in values){                
+            key.push(i)
+        }
+        console.log("Key values time except:",key);
+
+        var labels = key;
+        var datasets = data.values;
+        // 각 값의 배열 데이터들
+        //console.log("info labels : ",labels);
+        console.log("info datasets : ",datasets);
+
+        var obj = {}
+        obj.columns = labels
+        obj.values = datasets
+
+        var timeObj = xAxisSet(obj,target);
+        console.log("chart_target :",target);
+        console.log("info datasets : ", timeObj);			
+        
+        chart.data = timeObj;
+        chart.update();
+
+        // 데이터가 없을 때
+        if (chart.data.datasets[0].data.length === 0) {
+            $("#fallback_" + index).css("display", "block");
+        } else {
+            $("#fallback_" + index).css("display", "none");
+        }
+ 
+    }).catch((error) => {
+        console.warn(error);
+        console.log(error.response)
+        
+
+        try{
+            var statusCode = error.response.data.status;
+            var errorMessage = error.response.data.error;
+           commonErrorAlert(statusCode, errorMessage + " " + metric + " 조회실패") 
+        }catch(e){
+            var statusCode1 = error.response.status;
+            var errorMessage1 = error.response.statusText;
+           commonErrorAlert(statusCode1, errorMessage1 + " " + metric + " 조회실패") 
+        }
+
+        $("#fallback_" + index).css("display", "block");
+    });
 }
 
 // function getMetric(chart_target,target, mcis_id, vm_id, metric, periodType,statisticsCriteria, duration){
@@ -525,7 +555,7 @@ window.chartColors = {
 
 
 //vm 의 통계조회
-function getVmMetric(vmChart, chartTarget,target, mcisID, vmID, metric, periodType,statisticsCriteria, duration){
+function getVmMetric(vmChart, chartTarget,mcisID, vmID, metric, periodType,statisticsCriteria, duration){
 	console.log("====== Start GetMetric ====== ")
 	var color = "";
     var metric_size ="";
@@ -533,7 +563,7 @@ function getVmMetric(vmChart, chartTarget,target, mcisID, vmID, metric, periodTy
     if( vmChart){
         vmChart.destroy();
     }
-    vmChart = setVmChartInit(vmChart, chartTarget, target);
+    vmChart = setVmChartInit(vmChart, chartTarget, metric);
     // var vmChart = setVmChart(chartTarget,target);
 	// vmChart.clear()
     
@@ -554,13 +584,14 @@ function getVmMetric(vmChart, chartTarget,target, mcisID, vmID, metric, periodTy
         var message = result.data.message;
         
         if( statusCode != 200 && statusCode != 201) {
+            $("#fallback_vm").css("display", "block");
             commonAlert(message +"(" + statusCode + ")");
             return;
         }
 
         var data = result.data.VMMonitoringInfo
         console.log("Get Monitoring Data : ",data)
-        console.log("info items : ", target);
+        console.log("info items : ", metric);
         console.log("======== start mapping data ======");
         $("#"+chartTarget).empty();       
 
@@ -582,12 +613,19 @@ function getVmMetric(vmChart, chartTarget,target, mcisID, vmID, metric, periodTy
         obj.columns = labels
         obj.values = datasets
 
-        var timeObj = xAxisSet(obj,target);
+        var timeObj = xAxisSet(obj,metric);
         console.log("chart_target :",chartTarget);
         console.log("info datasets : ", timeObj);			
         
         vmChart.data = timeObj;
         vmChart.update();
+
+        // 데이터가 없을 때
+        if (vmChart.data.datasets[0].data.length === 0) {
+            $("#fallback_vm").css("display", "block");
+        } else {
+            $("#fallback_vm").css("display", "none");
+        }
     // }).catch(function(error){
     //     var statusCode = error.response.data.status;
     //     var message = error.response.data.message;
@@ -606,6 +644,8 @@ function getVmMetric(vmChart, chartTarget,target, mcisID, vmID, metric, periodTy
             var errorMessage1 = error.response.statusText;
             commonErrorAlert(statusCode1, errorMessage1 + " " + metric + " 조회실패") 
         }
+
+        $("#fallback_vm").css("display", "block");
     });
 	
 }

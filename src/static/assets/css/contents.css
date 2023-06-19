@@ -4307,10 +4307,19 @@ table tbody tr {
 	margin: 45px -10px 0 -10px;
 	display: flex;
 	flex-flow: wrap;
+	gap: 10px;
 }
 
 .dashboard .tabbox .tab-content .graph_list .graphbox {
-	width: calc(100% / 2);
+	width: calc((100% - 10px) / 2);
+	position: relative;
+}
+
+.dashboard .tabbox .tab-content .graph_list .graphbox img {
+	width: 100%;
+	position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .dashboard .tabbox .tab-content .graph_list:after {
@@ -4425,7 +4434,7 @@ table tbody tr {
 
 .dashboard .g_detail_view .view_ip>ul>li {
 	float: left;
-	margin: 3px 0 0 0;
+	/* margin: 3px 0 0 0; */
 	text-align: right;
 }
 
@@ -4547,11 +4556,14 @@ table tbody tr {
 	margin: 30px 0 0 0;
 	background-color: #f8f9fa;
 	border-radius: 10px;
+	position: relative;
 }
 
 .dashboard .g_detail_view .view_ipbox .graphbox img {
 	width: 100%;
-	border-radius: 10px;
+	position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .dashboard .g_detail_view .view_ip .mvbox {
@@ -4576,11 +4588,12 @@ table tbody tr {
 
 .dashboard .g_detail_view .view_ip .mvbox.v_ip2 ul {
 	display: flex;
+	gap: 15px;
 }
 
 .dashboard .g_detail_view .view_ip .mvbox.v_ip2 ul li {
 	display: flex;
-	margin-left: 15px;
+	gap: 15px;
 }
 
 .dashboard .g_detail_view .view_ip .mvbox .selectbox {
@@ -5631,6 +5644,8 @@ table tbody tr {
 
 .ds_cont_mbox.g_detail_view .view-cont {
 	display: flex;
+	gap: 15px;
+	align-items: center;
 }
 
 .ds_cont_mbox.g_detail_view .view_ip {
