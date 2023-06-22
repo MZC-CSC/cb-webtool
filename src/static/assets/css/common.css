@@ -733,6 +733,7 @@ body {
   background-color: #06a9b7;
   color: #fff;
   border: none;
+  outline: none;
   border-radius: 8px;
 }
 
