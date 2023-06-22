@@ -112,82 +112,100 @@
 					</li> -->
         <li class="notice">
           <img src="/assets/img/common/icon_notice.png" alt="" />
-          <span class="badge badge-icon" id="badge"></span>
+          <span class="badge-icon" id="badge"></span>
           <div class="infobox">
-            <div class="notice_table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Time</th>
-                    <th>Type</th>
-                    <th id="thDescription">Description</th>
-                  </tr>
-                </thead>
-                <tbody id="callTime">
-                  <script>
-                    var previous = "0";
-                    var badgeIdx = 0;
-                    var maxProcessTime = new Date("0").valueOf();
-                    let lastCallTimeValue = new Date(lastCallTime / 1000).valueOf();
-                    var out = document.getElementById("callTime");
-                    var badge = document.getElementById("badge");
-                    setInterval(function () {
-                      // console.log("lastcalltime:", lastCallTime);
-                      // console.log("lastcalltimevalue:", lastCallTimeValue);
-                      // console.log(messageData);
-
-                      var maxIdx = 0;
-                      if (messageData.length === 0) { return; } //메세지 없음
-
-                      console.log("append data")
-                      for (idx in messageData) {
-                        let processTime = new Date(messageData[idx].processTime).valueOf();
-                        if (maxProcessTime < processTime) {
-                          maxProcessTime = new Date(messageData[idx].processTime).valueOf();
-                          maxIdx = idx;
-                        }
-                        console.log("compare time ::: " + lastCallTimeValue + " : " + processTime);
-                        if (processTime > lastCallTimeValue) {
-                          var tr = document.createElement("tr");
-                          var th = document.createElement("th");
-                          var tdType = document.createElement("td");
-                          var tdDescription = document.createElement("td");
-                          tdDescription.setAttribute("id", "tdDescription");
-                          out.appendChild(tr);
-                          tr.appendChild(th);
-                          tr.appendChild(tdType);
-                          tr.appendChild(tdDescription);
-                          th.innerHTML = yyyymmddhh24miss(new Date(messageData[idx].processTime))
-                          tdType.innerHTML = messageData[idx].taskType;
-                          var splited = messageData[idx].taskKey.split("||");
-                          var splitedIdx = splited.length - 1;
-                          tdDescription.innerHTML = splited[splitedIdx] + " " + messageData[idx].lifeCycle + " " + messageData[idx].status;
-
-                          // 처음 open시에는 badge표시 안함
-                          // if (lastCallTimeValue == 0) { continue; }
-
-                          // badge.innerHTML = ++badgeIdx;
-                          badge.style.display = "inline-block";
-                        }
-
-
-                      };
-                      //td.innerHTML = valueString
-                      // var valueString = messageData.taskType + " : " + messageData.lifeCycle + " : " + messageData.status
-                      // valueString += "<br> taskKey : " + messageData.taskKey
-                      // valueString += "<br> " + messageData.processTime
-                      // td.innerHTML = valueString
-                      lastCallTimeValue = new Date(messageData[maxIdx].processTime).valueOf();
-                      messageData = "";
-
-
-
-                    }, 1000);
-                  </script>
-                </tbody>
-              </table>
+            <div class="notice_modal">
+                <p class="notice_title">Notifications</p>
+                <div id="nodata_divider" class="divider my-20"></div>
+                <div id="nodata_text" class="nodata">No Notification</div>
+                <div id="noti_list">
+                </div>
+                <button class="view_all_btn">View all notifications</button>
             </div>
           </div>
+          <script>
+            
+            var previous = "0";
+            var maxProcessTime = new Date("0").valueOf();
+            let lastCallTimeValue = new Date(lastCallTime / 1000).valueOf();
+            var badge = document.getElementById("badge");
+            setInterval(function () {
+
+              var maxIdx = 0;
+              if (messageData.length == 0) { 
+                $("#nodata_divider").css("display", "block");
+                $("#nodata_text").css("display", "flex");
+                $("#noti_list").css("display", "none");
+                $("#badge").css("display", "none");
+              } else {
+                $("#nodata_divider").css("display", "none");
+                $("#nodata_text").css("display", "none");
+                $("#noti_list").css("display", "block")
+
+                console.log("append data", messageData)
+                for (idx in messageData) {
+                  console.log("idx", idx)
+                  let processTime = new Date(messageData[idx].processTime).valueOf();
+                  if (maxProcessTime < processTime) {
+                    maxProcessTime = new Date(messageData[idx].processTime).valueOf();
+                    maxIdx = idx;
+                  }
+                  console.log("compare time ::: " + lastCallTimeValue + " : " + processTime);
+                  if (processTime > lastCallTimeValue) {
+                    var list = document.getElementById("noti_list");
+                    var divider = document.createElement("div");
+                    var noti_item = document.createElement("div");
+                    var noti_info = document.createElement("div");
+                    var noti_type = document.createElement("p");
+                    var noti_time = document.createElement("p");
+                    var noti_icon = document.createElement("span");
+
+                    divider.classList.add("divider");
+                    divider.classList.add("my-20");
+                    noti_item.classList.add("noti_item");
+                    noti_info.classList.add("noti_info");
+                    noti_type.classList.add("noti_type");
+                    noti_time.classList.add("noti_time");
+                    noti_icon.classList.add("material-icons-outlined");
+                    noti_icon.classList.add("md-36");
+                  
+                    list.appendChild(divider);
+                    list.appendChild(noti_item);
+                    noti_item.appendChild(noti_icon);
+                    noti_item.appendChild(noti_info);
+                    noti_info.appendChild(noti_type);
+                    noti_info.appendChild(noti_time);
+                    noti_icon.innerHTML = "pending";
+                    badge.style.display = "inline-block";
+                    var splited = messageData[idx].taskKey.split("||");
+                    var splitedIdx = splited.length - 1;
+                    noti_time.innerHTML = yyyymmddhh24miss(new Date(messageData[idx].processTime));
+                    noti_type.innerHTML = messageData[idx].taskType + " : " + splited[splitedIdx] + " " + messageData[idx].lifeCycle + " " + messageData[idx].status;
+                    
+                    if (messageData[idx].status === "completed") {
+                      noti_icon.innerHTML = "check_circle";
+                      noti_icon.classList.add("completed");
+                    } else if (messageData[idx].status === "failed") {
+                      noti_icon.innerHTML = "cancel";
+                      noti_icon.classList.add("failed");
+                    }
+              
+                  }
+
+
+                };
+                  //td.innerHTML = valueString
+                  // var valueString = messageData.taskType + " : " + messageData.lifeCycle + " : " + messageData.status
+                  // valueString += "<br> taskKey : " + messageData.taskKey
+                  // valueString += "<br> " + messageData.processTime
+                  // td.innerHTML = valueString
+                  lastCallTimeValue = new Date(messageData[maxIdx].processTime).valueOf();
+                  // messageData = "";
+                }
+
+                
+            }, 1000);
+          </script>
         </li>
         <!-- <li class="email">
 						<img src="/assets/img/common/icon_email.png" alt=""/><span>7</span>

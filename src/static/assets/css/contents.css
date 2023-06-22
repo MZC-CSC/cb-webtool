@@ -120,6 +120,13 @@
 
 }
 
+.divider.my-20 {
+	height: 1px;
+	margin: 20px 0;
+	overflow: hidden;
+	background-color: #999ea7;
+}
+
 #api_mng_list {
 	height: auto;
 }
