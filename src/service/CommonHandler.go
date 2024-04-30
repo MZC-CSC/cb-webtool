@@ -20,6 +20,7 @@ var SpiderURL = os.Getenv("SPIDER_URL")
 var TumbleBugURL = os.Getenv("TUMBLE_URL")
 var DragonFlyURL = os.Getenv("DRAGONFLY_URL")
 var LadyBugURL = os.Getenv("LADYBUG_URL")
+var CicadaURL = os.Getenv("CICADA_URL")
 
 // type CredentialInfo struct {
 // 	Username string
@@ -30,6 +31,7 @@ type CommonURL struct {
 	TumbleBugURL string
 	DragonFlyURL string
 	LadyBugURL   string
+	CicadaURL   string
 }
 
 func GetCommonURL() CommonURL {
@@ -38,6 +40,7 @@ func GetCommonURL() CommonURL {
 		TumbleBugURL: os.Getenv("TUMBLE_URL"),
 		DragonFlyURL: os.Getenv("DRAGONFLY_URL"),
 		LadyBugURL:   os.Getenv("LADYBUG_URL"),
+		CicadaURL:   os.Getenv("CICADA_URL"),
 	}
 	return common_url
 }

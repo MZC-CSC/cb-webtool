@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	// "github.com/davecgh/go-spew/spew"
-	"io/ioutil"
+	// "io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -429,33 +429,33 @@ func LoginForm(c echo.Context) error {
 func LoginProc(c echo.Context) error {
 	fmt.Println("============== Login proc ===============")
 
-	// reqInfo := new(model.ReqInfo)
-	// if err := c.Bind(reqInfo); err != nil {
-	// 	return c.JSON(http.StatusBadRequest, map[string]interface{}{
-	// 		"message": "fail",
-	// 		"status":  "fail",
-	// 	})
+	reqInfo := new(model.ReqInfo)
+	if err := c.Bind(reqInfo); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "fail",
+			"status":  "fail",
+		})
+	}
+
+	paramUserID := strings.TrimSpace(reqInfo.UserID)
+	// paramEmail := strings.TrimSpace(reqInfo.Email)
+	paramPass := strings.TrimSpace(reqInfo.Password)
+
+	// paramUserID := c.FormValue("userID")
+	// paramPass := c.FormValue("password")
+	// fmt.Println("paramUser & getPass : ", paramUserID, paramPass)
+	// params := echo.Map{}
+	// if err := c.Bind(&params); err != nil {
+	// 	fmt.Println("err = ", err) // bind Error는 나지만 크게 상관없는 듯.
 	// }
-
-	// paramUserID := strings.TrimSpace(reqInfo.UserID)
-	// // paramEmail := strings.TrimSpace(reqInfo.Email)
-	// paramPass := strings.TrimSpace(reqInfo.Password)
-
-	paramUserID := c.FormValue("userID")
-	paramPass := c.FormValue("password")
-	fmt.Println("paramUser & getPass : ", paramUserID, paramPass)
-	params := echo.Map{}
-	if err := c.Bind(&params); err != nil {
-		fmt.Println("err = ", err) // bind Error는 나지만 크게 상관없는 듯.
-	}
-	fmt.Println(params)
-	// spew.Dump(c.Request().Body)
-	var bodyBytes []byte
-	if c.Request().Body != nil {
-		bodyBytes, _ = ioutil.ReadAll(c.Request().Body)
-		str := string(bodyBytes)
-		println("body ", str)
-	}
+	// fmt.Println(params)
+	// // spew.Dump(c.Request().Body)
+	// var bodyBytes []byte
+	// if c.Request().Body != nil {
+	// 	bodyBytes, _ = ioutil.ReadAll(c.Request().Body)
+	// 	str := string(bodyBytes)
+	// 	println("body ", str)
+	// }
 
 	// echoSession에서 가져오기
 	storedUser, ok := util.GetUserInfo(c, paramUserID)

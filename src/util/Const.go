@@ -15,6 +15,7 @@ var SPIDER = os.Getenv("SPIDER_URL")
 var TUMBLEBUG = os.Getenv("TUMBLE_URL")
 var DRAGONFLY = os.Getenv("DRAGONFLY_URL")
 var LADYBUG = os.Getenv("LADYBUG_URL")
+var CICADA = os.Getenv("CICADA_URL")
 
 //var MCKS = os.Getenv("MCKS_URL")
 
@@ -110,6 +111,7 @@ var TASK_TYPE_MONITORINGTHRESHOLD_EVENTHANDLER = "monitoringthresholdeventhandle
 var TASK_TYPE_NLB = "nlb"
 var TASK_TYPE_PMKS = "pmks"
 var TASK_TYPE_DISK = "disk"
+var TASK_TYPE_WORKFLOW = "workflow"
 
 // 요청상태 : socket 으로 전달하는 요청 상태
 var TASK_STATUS_REQUEST = "requested"
@@ -140,3 +142,9 @@ var DISK_LIFECYCLE_CREATE = "create"
 var DISK_LIFECYCLE_ATTACHED = "attached"
 var DISK_LIFECYCLE_DETACHED = "detached"
 var DISK_LIFECYCLE_DELETE = "delete"
+
+
+var WORKFLOW_LIFECYCLE_CREATE = "create"
+var WORKFLOW_LIFECYCLE_RUNNING = "running"
+var WORKFLOW_LIFECYCLE_DONE = "done"
+var WORKFLOW_LIFECYCLE_DELETE = "delete"
