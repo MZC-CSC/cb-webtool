@@ -582,8 +582,12 @@ func main() {
 	// // Dashboard
 	// e.GET("/Dashboard/Global", controller.GlobalDashBoard)
 	// e.GET("/Dashboard/NS", controller.NSDashBoard)
-	dashboardGroup := e.Group("/operation/dashboards", dashboardTemplate)
+	workflowGroup := e.Group("/operation/workflow", dashboardTemplate)
+	workflowGroup.GET("/default/mngform", controller.WorkflowDefaultMngForm)
+	workflowGroup.GET("/fullscreen/mngform", controller.WorkflowFullscreenMngForm)
+	workflowGroup.GET("/:targetFile/mngform", controller.WorkflowDemoMngForm)
 
+	dashboardGroup := e.Group("/operation/dashboards", dashboardTemplate)
 	dashboardGroup.GET("/dashboardnamespace/mngform", controller.DashBoardByNameSpaceMngForm)
 	dashboardGroup.GET("/dashboardglobalnamespace/mngform", controller.GlobalDashBoardMngForm)
 

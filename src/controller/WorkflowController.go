@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 
-	
 	//"github.com/cloud-barista/cb-webtool/src/model/tumblebug/mcis"
 
 	// model "github.com/cloud-barista/cb-webtool/src/model"
@@ -34,7 +33,7 @@ import (
 // }
 
 func WorkflowRegForm(c echo.Context) error {
-	
+
 	loginInfo := service.CallLoginInfo(c)
 	if loginInfo.UserID == "" {
 		return c.Redirect(http.StatusTemporaryRedirect, "/login")
@@ -54,9 +53,8 @@ func WorkflowRegForm(c echo.Context) error {
 		map[string]interface{}{
 			"DefaultNameSpaceID": defaultNameSpaceID,
 			"NameSpaceList":      nsList,
-			
-			"TaskComponentList":             taskComponentList,
-			
+
+			"TaskComponentList": taskComponentList,
 		})
 }
 
@@ -72,7 +70,7 @@ func GetWorkflowList(c echo.Context) error {
 	optionParam := c.QueryParam("option")
 	filterKeyParam := c.QueryParam("filterKey")
 	filterValParam := c.QueryParam("filterVal")
-	
+
 	workflowList, respStatus := service.GetWorkflowList(defaultNameSpaceID, optionParam, filterKeyParam, filterValParam)
 	if respStatus.StatusCode != 200 && respStatus.StatusCode != 201 {
 		return c.JSON(respStatus.StatusCode, map[string]interface{}{
@@ -85,9 +83,9 @@ func GetWorkflowList(c echo.Context) error {
 		"message":            "success",
 		"status":             respStatus.StatusCode,
 		"DefaultNameSpaceID": defaultNameSpaceID,
-		"WorkflowList":           workflowList,
+		"WorkflowList":       workflowList,
 	})
-	
+
 }
 
 // Workflow 등록
@@ -110,12 +108,12 @@ func WorkflowRegProc(c echo.Context) error {
 	log.Println(workflowReqInfo)
 
 	defaultNameSpaceID := loginInfo.DefaultNameSpaceID
-	
+
 	taskKey := defaultNameSpaceID + "||" + "workflow" + "||" + workflowReqInfo.Name
-	
+
 	service.StoreWebsocketMessage(util.TASK_TYPE_WORKFLOW, taskKey, util.WORKFLOW_LIFECYCLE_CREATE, util.TASK_STATUS_REQUEST, c) // session에 작업내용 저장
 
-	// // go routin, channel	
+	// // go routin, channel
 	go service.RegWorkflowByAsync(defaultNameSpaceID, workflowReqInfo, c)
 	// 원래는 호출 결과를 return하나 go routine으로 바꾸면서 요청성공으로 return
 	log.Println("before return")
@@ -204,7 +202,7 @@ func WorkflowDelProc(c echo.Context) error {
 	}
 
 	defaultNameSpaceID := loginInfo.DefaultNameSpaceID
-	
+
 	workflowID := c.Param("workflowID")
 	//optionParam := c.QueryParam("option")
 	log.Println("workflowID= " + workflowID)
@@ -223,7 +221,6 @@ func WorkflowDelProc(c echo.Context) error {
 	})
 }
 
-
 // GetWorkflowInfoData
 func GetWorkflowInfoData(c echo.Context) error {
 	log.Println("GetWorkflowInfoData")
@@ -241,9 +238,47 @@ func GetWorkflowInfoData(c echo.Context) error {
 	resultWorkflowInfo, _ := service.GetWorkflowData(defaultNameSpaceID, workflowID)
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message":  "success",
-		"status":   200,
+		"message":      "success",
+		"status":       200,
 		"WorkflowInfo": resultWorkflowInfo,
 	})
 }
 
+func WorkflowDefaultMngForm(c echo.Context) error {
+	loginInfo := service.CallLoginInfo(c)
+	if loginInfo.UserID == "" {
+		return c.Redirect(http.StatusTemporaryRedirect, "/login")
+	}
+	return echotemplate.Render(c, http.StatusOK,
+		"operation/workflow/SequentialWorkflowDesigner",
+		map[string]interface{}{
+			"LoginInfo": loginInfo,
+		})
+}
+
+func WorkflowFullscreenMngForm(c echo.Context) error {
+	loginInfo := service.CallLoginInfo(c)
+	if loginInfo.UserID == "" {
+		return c.Redirect(http.StatusTemporaryRedirect, "/login")
+	}
+	return echotemplate.Render(c, http.StatusOK,
+		"operation/workflow/SequentialWorkflowDesignerFullScreen",
+		map[string]interface{}{
+			"LoginInfo": loginInfo,
+		})
+}
+
+func WorkflowDemoMngForm(c echo.Context) error {
+	loginInfo := service.CallLoginInfo(c)
+	if loginInfo.UserID == "" {
+		return c.Redirect(http.StatusTemporaryRedirect, "/login")
+	}
+
+	targetFile := c.Param("targetFile")
+
+	return echotemplate.Render(c, http.StatusOK,
+		"operation/workflow/"+targetFile,
+		map[string]interface{}{
+			"LoginInfo": loginInfo,
+		})
+}

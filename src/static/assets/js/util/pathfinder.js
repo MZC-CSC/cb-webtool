@@ -79,6 +79,9 @@ function getWebToolUrl(controllerKeyName) {
             ["NlbMngForm", "/operation/services/nlb/mngform"],
             ["NlbRegForm", "/operation/services/nlb/regform"],
 
+            ["WorkflowDefaultMngForm", "/operation/workflow/default/mngform"],
+            ["WorkflowFullscreenMngForm", "/operation/workflow/fullscreen/mngform"],
+
             ["AboutForm", "/operation/about/about"],
 
         ]
