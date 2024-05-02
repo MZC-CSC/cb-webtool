@@ -58,6 +58,21 @@ func WorkflowRegForm(c echo.Context) error {
 		})
 }
 
+
+// 
+func WorkflowMngForm(c echo.Context) error {
+	loginInfo := service.CallLoginInfo(c)
+	if loginInfo.UserID == "" {
+		return c.Redirect(http.StatusTemporaryRedirect, "/login")
+	}
+	return echotemplate.Render(c, http.StatusOK,
+		"operation/migrations/workflowmng/WorkflowMng", // 파일명
+		
+		map[string]interface{}{
+			"LoginInfo": loginInfo,
+		})
+}
+
 // Workflow 목록 조회
 func GetWorkflowList(c echo.Context) error {
 	log.Println("GetMcisList : ")
@@ -244,6 +259,7 @@ func GetWorkflowInfoData(c echo.Context) error {
 	})
 }
 
+// Sample Form 1
 func WorkflowDefaultMngForm(c echo.Context) error {
 	loginInfo := service.CallLoginInfo(c)
 	if loginInfo.UserID == "" {
@@ -256,6 +272,7 @@ func WorkflowDefaultMngForm(c echo.Context) error {
 		})
 }
 
+// Sample form 2
 func WorkflowFullscreenMngForm(c echo.Context) error {
 	loginInfo := service.CallLoginInfo(c)
 	if loginInfo.UserID == "" {
@@ -268,6 +285,7 @@ func WorkflowFullscreenMngForm(c echo.Context) error {
 		})
 }
 
+// Sample form 3 : from org site.
 func WorkflowDemoMngForm(c echo.Context) error {
 	loginInfo := service.CallLoginInfo(c)
 	if loginInfo.UserID == "" {

@@ -499,6 +499,123 @@ func main() {
 		DisableCache: true,
 	})
 
+	// SourceModel 목록 form Template
+	sourceModelMngTemplate := echotemplate.NewMiddleware(echotemplate.TemplateConfig{
+		Root:      "src/views",
+		Extension: ".html",
+		// Master:    "operation/pmks/pmksmng",
+		Partials: []string{
+			"templates/OperationTop", // 불러오는 css, javascript 가 setting 과 다름
+			"templates/TopBox",
+			"templates/LNBPopup",
+			"templates/Modal",
+			"templates/Header",
+			"templates/MenuLeft",
+			"templates/Footer",
+
+			"operation/migrations/sourcemodelmng/SourceModelList",
+			"operation/migrations/sourcemodelmng/SourceModelInfo",			
+		},
+		DisableCache: true,
+	})
+
+	// SourceModel 등록 form Template
+	sourceModelRegTemplate := echotemplate.NewMiddleware(echotemplate.TemplateConfig{
+		Root:      "src/views",
+		Extension: ".html",
+		// Master:    "operation/pmks/pmksmng",
+		Partials: []string{
+			"templates/OperationTop", // 불러오는 css, javascript 가 setting 과 다름
+			"templates/TopBox",
+			"templates/LNBPopup",
+			"templates/Modal",
+			"templates/Header",
+			"templates/MenuLeft",
+			"templates/Footer",
+			"operation/migrations/sourcemodelmng/SourceModelInfo",
+			"operation/migrations/sourcemodelmng/SourceModelCreate",
+		},
+		DisableCache: true,
+	})
+	// TargetModel 목록 form Template
+	targetModelMngTemplate := echotemplate.NewMiddleware(echotemplate.TemplateConfig{
+		Root:      "src/views",
+		Extension: ".html",
+		// Master:    "operation/pmks/pmksmng",
+		Partials: []string{
+			"templates/OperationTop", // 불러오는 css, javascript 가 setting 과 다름
+			"templates/TopBox",
+			"templates/LNBPopup",
+			"templates/Modal",
+			"templates/Header",
+			"templates/MenuLeft",
+			"templates/Footer",
+
+			"operation/migrations/targetmodelmng/TargetModelList",
+			"operation/migrations/targetmodelmng/TargetModelInfo",			
+		},
+		DisableCache: true,
+	})
+
+	// TargetModel 등록 form Template
+	targetModelRegTemplate := echotemplate.NewMiddleware(echotemplate.TemplateConfig{
+		Root:      "src/views",
+		Extension: ".html",
+		// Master:    "operation/pmks/pmksmng",
+		Partials: []string{
+			"templates/OperationTop", // 불러오는 css, javascript 가 setting 과 다름
+			"templates/TopBox",
+			"templates/LNBPopup",
+			"templates/Modal",
+			"templates/Header",
+			"templates/MenuLeft",
+			"templates/Footer",
+			"operation/migrations/targetmodelmng/TargetModelInfo",
+			"operation/migrations/targetmodelmng/TargetModelCreate",
+		},
+		DisableCache: true,
+	})
+	// Workflow 목록 form Template
+	workflowMngTemplate := echotemplate.NewMiddleware(echotemplate.TemplateConfig{
+		Root:      "src/views",
+		Extension: ".html",
+		// Master:    "operation/pmks/pmksmng",
+		Partials: []string{
+			"templates/OperationTop", // 불러오는 css, javascript 가 setting 과 다름
+			"templates/TopBox",
+			"templates/LNBPopup",
+			"templates/Modal",
+			"templates/Header",
+			"templates/MenuLeft",
+			"templates/Footer",
+
+			"operation/migrations/workflowmng/WorkflowList",
+			"operation/migrations/workflowmng/WorkflowInfo",
+			"operation/migrations/workflowmng/WorkflowViewer",
+			
+		},
+		DisableCache: true,
+	})
+
+	// Workflow 등록 form Template
+	workflowRegTemplate := echotemplate.NewMiddleware(echotemplate.TemplateConfig{
+		Root:      "src/views",
+		Extension: ".html",
+		// Master:    "operation/pmks/pmksmng",
+		Partials: []string{
+			"templates/OperationTop", // 불러오는 css, javascript 가 setting 과 다름
+			"templates/TopBox",
+			"templates/LNBPopup",
+			"templates/Modal",
+			"templates/Header",
+			"templates/MenuLeft",
+			"templates/Footer",
+			"operation/migrations/workflowmng/WorkflowInfo",
+			"operation/migrations/workflowmng/WorkflowCreate",
+		},
+		DisableCache: true,
+	})
+
 	// "setting/connections/CloudConnectionModal", --> Region, Credential, Driver modal로 쪼개짐
 
 	// // mcis 매핑할 middleware 추가
@@ -881,6 +998,25 @@ func main() {
 	// e.GET("/operation/policies/monitoring/list", controller.GetPolicyMonitoringList)
 	// e.POST("/operation/policies/monitoring/reg/proc", controller.PolicyMonitoringRegProc)
 
+	sourceModelRegGroup := e.Group("/operation/migrations/sourcemodel/regform", sourceModelRegTemplate)
+	sourceModelRegGroup.GET("", controller.SourceModelRegForm)
+
+	sourceModelMngGroup := e.Group("/operation/migrations/sourcemodel/mngform", sourceModelMngTemplate)
+	sourceModelMngGroup.GET("", controller.SourceModelMngForm)
+
+	targetModelRegGroup := e.Group("/operation/migrations/targetmodel/regform", targetModelRegTemplate)
+	targetModelRegGroup.GET("", controller.TargetModelRegForm)
+
+	targetModelMngGroup := e.Group("/operation/migrations/targetmodel/mngform", targetModelMngTemplate)
+	targetModelMngGroup.GET("", controller.TargetModelMngForm)
+
+	workflowRegGroup := e.Group("/operation/migrations/workflow/regform", workflowRegTemplate)
+	workflowRegGroup.GET("", controller.WorkflowRegForm)
+
+	workflowMngGroup := e.Group("/operation/migrations/workflow/mngform", workflowMngTemplate)
+	workflowMngGroup.GET("", controller.WorkflowMngForm)
+
+	
 	/////////////////////////////////////
 
 	// e.GET("/SecurityGroup/list", controller.SecurityGroupListForm)

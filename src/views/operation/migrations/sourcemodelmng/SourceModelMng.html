@@ -1,9 +1,3 @@
-<!-- 
-// workflow 관리화면
-// workflow 목록 table
-// workflow 상세 : viewer
-//      task viewer 
--->
 {{ template "OperationTop" .}}
 <div id="lnb">
 			
@@ -31,23 +25,20 @@
 				<div class="contbox">
 					
 					<div class="titlebox">
-						<div class="tit"><img src="/assets/img/common/icon_cont.png" alt=""/>Migration / <strong>Workflow</strong></div>
-						<div class="location">Home  <span>></span>  Operation  <span>></span>  Migration  <span>></span>  <strong>Workflow</strong></div>
+						<div class="tit"><img src="/assets/img/common/icon_cont.png" alt=""/>Migration / <strong>Source Model</strong></div>
+						<div class="location">Home  <span>></span>  Operation  <span>></span>  Migration  <span>></span>  <strong>Source Model</strong></div>
 					</div>
 					
 					<!-- list -->
-					{{template "WorkflowList" .}}
+					{{template "SourceModelList" .}}
 					<!-- //list -->
 					
 					<!-- Info -->
-					{{template "WorkflowInfo" .}}
+					{{template "SourceModelInfo" .}}
 					<!-- //Info -->
+				
 					
-					<!-- Viewer -->
-					{{template "WorkflowViewer" .}}
-					<!-- //Viewer -->
 				</div>
 				<!-- //contents -->
 
 {{template "Footer" .}}
-
