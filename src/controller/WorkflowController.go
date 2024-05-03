@@ -279,7 +279,7 @@ func WorkflowFullscreenMngForm(c echo.Context) error {
 		return c.Redirect(http.StatusTemporaryRedirect, "/login")
 	}
 	return echotemplate.Render(c, http.StatusOK,
-		"operation/workflow/SequentialWorkflowDesignerFullScreen",
+		"operation/workflow/fullscreen",
 		map[string]interface{}{
 			"LoginInfo": loginInfo,
 		})

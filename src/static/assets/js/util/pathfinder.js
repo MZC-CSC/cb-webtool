@@ -89,6 +89,8 @@ function getWebToolUrl(controllerKeyName) {
 
             ["WorkflowDefaultMngForm", "/operation/workflow/default/mngform"],
             ["WorkflowFullscreenMngForm", "/operation/workflow/fullscreen/mngform"],
+            ["SequentialWorkflowDesigner", "/operation/workflow/SequentialWorkflowDesigner/mngform"],
+            
 
             ["AboutForm", "/operation/about/about"],
 
