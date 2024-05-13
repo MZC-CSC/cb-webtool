@@ -611,7 +611,7 @@ func main() {
 			"templates/MenuLeft",
 			"templates/Footer",
 			"operation/migrations/workflowmng/WorkflowInfo",
-			"operation/migrations/workflowmng/WorkflowCreate",
+			"operation/migrations/workflowmng/WorkflowEditor",
 		},
 		DisableCache: true,
 	})

@@ -1,7 +1,9 @@
-// workflow editor
-// load save, update workflow 
 
 {{ template "OperationTop" .}}
+<!-- 
+	// workflow editor
+	// load save, update workflow  
+-->
 
 <div id="lnb">
 
@@ -16,6 +18,13 @@
 		{{template "MenuLeft" .}}
 
 	</div>
+	
+	<!-- 필수요소 -->
+	<script src="/assets/js/sequential-workflow-designer/dist/index.umd.js"></script>
+	<link rel="stylesheet" href="/assets/js/sequential-workflow-designer/css/common.css">
+	<link rel="stylesheet" href="/assets/js/sequential-workflow-designer/css/designer.css">
+	<link rel="stylesheet" href="/assets/js/sequential-workflow-designer/css/designer-light.css">
+	<link rel="stylesheet" href="/assets/js/sequential-workflow-designer/css/designer-dark.css">
 
 
 	<div class="bottom"></div>
@@ -36,15 +45,14 @@
 						<div class="tit"><img src="/assets/img/common/icon_cont.png" alt=""/>Regist / <strong>Workflow</strong></div>
 						<div class="location">Home  <span>></span>  Operation  <span>></span>  Migration  <span>></span>  <strong>Workflow</strong></div>
 					</div>
-					
-					
-					{{template "WorkflowEditor" .}}
-					
-				
+										
+					{{template "WorkflowEditor" .}}				
 					
 				</div>
 				<!-- //contents -->
 
+<script type="text/javascript" src="/assets/js/operation/migrations/workflowmng/workflowutil.js"></script>
+<script type="text/javascript" src="/assets/js/operation/migrations/workflowmng/taskcomponents.js"></script>
 <script type="text/javascript" src="/assets/js/operation/migrations/workflowmng/workflowcreate.js"></script>
 
 {{template "Footer" .}}

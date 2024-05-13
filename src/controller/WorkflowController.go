@@ -65,11 +65,16 @@ func WorkflowMngForm(c echo.Context) error {
 	if loginInfo.UserID == "" {
 		return c.Redirect(http.StatusTemporaryRedirect, "/login")
 	}
+
+	defaultNameSpaceID := loginInfo.DefaultNameSpaceID
+
+	workflowList, _ := service.GetWorkflowList(defaultNameSpaceID, "", "", "")
 	return echotemplate.Render(c, http.StatusOK,
 		"operation/migrations/workflowmng/WorkflowMng", // 파일명
 		
 		map[string]interface{}{
 			"LoginInfo": loginInfo,
+			"WorkflowList": workflowList,
 		})
 }
 

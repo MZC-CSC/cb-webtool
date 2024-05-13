@@ -1,3 +1,5 @@
+
+
 //
 // div 설정 : workflowplaceholder
 // workflow 저장
@@ -15,295 +17,403 @@
 
 
 //////////////////////////
-// mng는 id로 조회해여 보여준다.
-// 최초에는 defaultDefinition()
 
 //////////////////////////
 
 // 워크flowId를 가지고 조회하여 data를 표시.
+
 const placeholder = document.getElementById('workflowplaceholder');
-const localStorageKey = 'sqdFullscreen';
+const localStorageKey = 'sqdCreateScreen';
+const confState = editableState();
+let designer;
 
-const initialState = defaultState();
-function defaultState() {
-	definition: getStartDefinition()	
-}
+// sequencial designer 설정
 
-// workflowId로 조회
-function loadState(workflowId) {
-    alert("get workflow ", workflowId)
-	// const state = localStorage[localStorageKey];
-	// if (state) {
-	// 	return JSON.parse(state);
-	// }
-	// return {
-	// 	definition: getStartDefinition()
-	// }
-}
-
-// wor
-const configuration = {
-	undoStackSize: 20,
-	undoStack: initialState.undoStack,
-
-	toolbox: {
-		groups: [
-			toolboxGroup('Main'),
-			toolboxGroup('File system'),
-			toolboxGroup('E-mail')
-		]
-	},
-
-	controlBar: true,
-
-	steps: {
-		isDuplicable: () => true,
-		iconUrlProvider: (_, type) => {
-			return `/assets/js/sequential-workflow-designer/ico/icon-${type}.svg`
-		},
-	},
-
-	validator: {
-		step: (step) => {
-			return !step.properties['isInvalid'];
-		}
-	},
-
-	editors: {
-		rootEditorProvider: (definition, _context, isReadonly) => {
-			const root = document.createElement('div');
-			root.className = 'definition-json';
-			root.innerHTML = '<textarea style="width: 100%; border: 0;" rows="50"></textarea>';
-			const textarea = root.getElementsByTagName('textarea')[0];
-			if (isReadonly) {
-				textarea.setAttribute('readonly', 'readonly');
-			}
-			textarea.value = JSON.stringify(definition, null, 2);
-			return root;
-		},
-
-		stepEditorProvider: (step, editorContext, _definition, isReadonly) => {
-			const root = document.createElement('div');
-
-			appendCheckbox(root, 'Is invalid', isReadonly, !!step.properties['isInvalid'], (checked) => {
-				step.properties['isInvalid'] = checked;
-				editorContext.notifyPropertiesChanged();
-			});
-
-			if (step.type === 'if') {
-				appendCheckbox(root, 'Catch branch', isReadonly, !!step.branches['catch'], (checked) => {
-					if (checked) {
-						step.branches['catch'] = [];
-					} else {
-						delete step.branches['catch'];
-					}
-					editorContext.notifyChildrenChanged();
-				});
-			}
-
-			appendPath(root, step);
-			return root;
-		}
+function initDesigner() {
+    console.log("initDesigner")
+	if (designer) {
+        console.log("designer.destroy() ")
+		designer.destroy();
 	}
-};
-
-function getStartDefinition() {
-	return {
-		properties: {},
-		sequence: [
-			createIfStep('00000000000000000000000000000001',
-				[ createTaskStep('00000000000000000000000000000002', 'save', 'Save file', { isInvalid: true }) ],
-				[ createTaskStep('00000000000000000000000000000003', 'text', 'Send email') ]
-			),
-			createContainerStep('00000000000000000000000000000004', [
-				createTaskStep('00000000000000000000000000000005', 'task', 'Create task')
-			])
-		]
-	};
-}
-//const placeholder = document.getElementById('designer');
-document.addEventListener('DOMContentLoaded', function() {
-    
-    console.log("DOMContentLoaded ")
-
-    const definition = {
-    properties: {
-        'myProperty': 'my-value',
-        // root properties...
-    },
-    sequence: [
-        // steps...
-    ]
-    };
-    console.log("workflow definition ")
-
-    // const configuration = {
-    // theme: 'light', // optional, default: 'light'
-    // isReadonly: false, // optional, default: false
-    // undoStackSize: 10, // optional, default: 0 - disabled, 1+ - enabled
-
-    // steps: {
-    //     // all properties in this section are optional
-
-    //     iconUrlProvider: (componentType, type) => {
-    //     return `icon-${componentType}-${type}.svg`;
-    //     },
-
-    //     isDraggable: (step, parentSequence) => {
-    //     return step.name !== 'y';
-    //     },
-    //     isDeletable: (step, parentSequence) => {
-    //     return step.properties['isDeletable'];
-    //     },
-    //     isDuplicable: (step, parentSequence) => {
-    //         return true;
-    //     },
-    //     canInsertStep: (step, targetSequence, targetIndex) => {
-    //     return targetSequence.length < 5;
-    //     },
-    //     canMoveStep: (sourceSequence, step, targetSequence, targetIndex) => {
-    //     return !step.properties['isLocked'];
-    //     },
-    //     canDeleteStep: (step, parentSequence) => {
-    //     return step.name !== 'x';
-    //     }
-    // },
-
-    // validator: {
-    //     // all validators are optional
-
-    //     step: (step, parentSequence, definition) => {
-    //     return /^[a-z]+$/.test(step.name);
-    //     },
-    //     root: (definition) => {
-    //     return definition.properties['memory'] > 256;
-    //     }
-    // },
-
-    // toolbox: {
-    //     isCollapsed: false,
-    //     groups: [
-    //     {
-    //         name: 'Files',
-    //         steps: [
-    //         // steps for the toolbox's group
-    //         ]
-    //     },
-    //     {
-    //         name: 'Notification',
-    //         steps: [
-    //         // steps for the toolbox's group
-    //         ]
-    //     }
-    //     ]
-    // },
-
-    // editors: {
-    //     isCollapsed: false,
-    //     rootEditorProvider: (definition, rootContext, isReadonly) => {
-    //     const editor = document.createElement('div');
-    //     // ...
-    //     return editor;
-    //     },
-    //     stepEditorProvider: (step, stepContext, definition, isReadonly) => {
-    //     const editor = document.createElement('div');
-    //     // ...
-    //     return editor;
-    //     }
-    // },
-
-    // controlBar: true,
-    // contextMenu: true,
-    // };
-    console.log("workflow configuration ")
-    const designer = sequentialWorkflowDesigner.Designer.create(placeholder, definition, configuration);
+    console.log("destroyed ", designer)
+    //const definition = getStartDefinition();
+    const definition = confState.definition
+    const configuration = confState.configuration
+    designer = sequentialWorkflowDesigner.Designer.create(placeholder, definition, configuration);
     designer.onDefinitionChanged.subscribe((newDefinition) => {
-        console.log("workflow designer.onDefinitionChanged ")
-    // ...
+        refreshValidationStatus();
+        saveState();
+        console.log('the definition has changed 11111 ', newDefinition);
     });
+    console.log("created")
+}
 
-    console.log("workflow designer created ")
+// designer를 다시 설정할 때
+// 기존에 designer가 정의되어 있으면 destroy 후 새로 set.
+function resetDesigner(definition, configuration) {
+    console.log("redrawDesigner")
+	if (designer) {
+        console.log("designer.destroy() ")
+		designer.destroy();
+	}
+    
+    if(!definition ){
+        definition = getStartDefinition();
+    }
+    //sequence : request_body
+    if(!configuration ){
+        configuration = confState.configuration
+    }    
+    
+    designer = sequentialWorkflowDesigner.Designer.create(placeholder, definition, configuration);
+    designer.onDefinitionChanged.subscribe((newDefinition) => {
+        refreshValidationStatus();
+        saveState();
+        console.log('the definition has changed 222222 ', newDefinition);
+    });
+    console.log("created")
+}
+
+
+// validation 결과 표시
+function refreshValidationStatus() {
+    console.log("refreshValidationStatus called ")
+	//validationStatusText.innerText = designer.isValid() ? 'Definition is valid' : 'Definition is invalid';
+}
+
+
+// // workflowId로 조회
+// function loadState(workflowId) {
+//     alert("get workflow ", workflowId)
+// 	const state = localStorage[localStorageKey];
+// 	// if (state) {
+// 	// 	return JSON.parse(state);
+// 	// }
+// 	// return {
+// 	// 	definition: getStartDefinition()
+// 	// }
+
+    
+//     // 불러온 definition set.
+//     console.log("DOMContentLoaded ")
+//     const definition = {
+//     properties: {
+//         'myProperty': 'my-value',
+//         // root properties...
+//     },
+//     sequence: [
+//         // steps...
+//     ]
+//     };
+//     console.log("workflow definition ")
+
+//     // const configuration = {
+//     // theme: 'light', // optional, default: 'light'
+//     // isReadonly: false, // optional, default: false
+//     // undoStackSize: 10, // optional, default: 0 - disabled, 1+ - enabled
+
+//     // 
+
+//     // validator: {
+//     //     // all validators are optional
+
+//     //     step: (step, parentSequence, definition) => {
+//     //     return /^[a-z]+$/.test(step.name);
+//     //     },
+//     //     root: (definition) => {
+//     //     return definition.properties['memory'] > 256;
+//     //     }
+//     // },
+
+
+
+//     // controlBar: true,
+//     // contextMenu: true,
+//     // };
+//     console.log("workflow configuration ")
+    
+//     designer.onDefinitionChanged.subscribe((newDefinition) => {
+//         console.log("workflow designer.onDefinitionChanged ")
+//     // ...
+//     });
+
+//     console.log("workflow designer created ")    
+// }
+
+
+
+document.addEventListener('DOMContentLoaded', function() {    //     
+    console.log("Dom Loaded")
+    console.log("confState.definition", confState.definition)
+    console.log("confState.configuration", confState.configuration)
+    designer = sequentialWorkflowDesigner.Designer.create(placeholder, confState.definition, confState.configuration);
+    designer.onDefinitionChanged.subscribe((newDefinition) => {
+        refreshValidationStatus();
+        saveState();
+        console.log('the definition has changed', newDefinition);
+    });
+    console.log(" designer init")
+    
+    // resetDesigner(null, null)
+    // console.log("workflow designer created ")
 });
 
-
-
-
-
-///////////////////
-function createTaskStep(id, type, name, properties) {
-	return {
-		id,
-		componentType: 'task',
-		type,
-		name,
-		properties: properties || {}
-	};
-}
-
-function createIfStep(id, _true, _false) {
-	return {
-		id,
-		componentType: 'switch',
-		type: 'if',
-		name: 'If',
-		branches: {
-			'true': _true,
-			'false': _false
-		},
-		properties: {}
-	};
-}
-
-function createContainerStep(id, steps) {
-	return {
-		id,
-		componentType: 'container',
-		type: 'loop',
-		name: 'Loop',
-		properties: {},
-		sequence: steps
-	};
-}
-
-function toolboxGroup(name) {
-	return {
-		name,
-		steps: [
-			createTaskStep(null, 'save', 'Save file'),
-			createTaskStep(null, 'text', 'Send email'),
-			createTaskStep(null, 'task', 'Create task'),
-			createIfStep(null, [], []),
-			createContainerStep(null, [])
-		]
-	};
-}
 
 function reloadChangeReadonlyButtonText() {
 	changeReadonlyButton.innerText = 'Readonly: ' + (designer.isReadonly() ? 'ON' : 'OFF');
 }
 
-function appendCheckbox(root, label, isReadonly, isChecked, onClick) {
-	const item = document.createElement('div');
-	item.innerHTML = '<div><h3></h3> <input type="checkbox" /></div>';
-	const h3 = item.getElementsByTagName('h3')[0];
-	h3.innerText = label;
-	const input = item.getElementsByTagName('input')[0];
-	input.checked = isChecked;
-	if (isReadonly) {
-		input.setAttribute('disabled', 'disabled');
-	}
-	input.addEventListener('click', () => {
-		onClick(input.checked);
-	});
-	root.appendChild(item);
+
+
+
+/////////////
+var sample1json = {
+	"dag_id" : "dag_factory",
+	"default_args" : { "owner" : "ish"},
+	"tasks":[
+	   { 
+		   "task_name" : "infra_task_start",
+		   "operator" : "airflow.operators.bash.BashOperator"
+	   },
+	   { 
+		   "task_name" : "infra_task_end",
+		   "operator" : "airflow.operators.bash.BashOperator",
+		   "dependencies": ["infra_task_start"]
+	   }
+	]};
+
+// cicada의 workflowData를 canvas에 그릴 수 있게 definition으로 추출    
+function convertToDiagram(workflowData){	
+
+	// json에서 요소 추출
+	// task_groups
+
+	// tasks
+
+	// 순번에 따라 workflow 정의
+	// task를 돌면서 task group이 있으면 -> task group 생성.
+	//				dependencies 가 있으면 순번을 앞으로
+
+	// task의 task_group_name이 없으면 단독 task.
+	// task의 depencencies가 없는게 2개 이상이면 parallel
+	// task의 dependencies가 있으면 자기 앞 순번으로 
+
+	// 각 task를 map으로 넣고 단계별로 합친다????
+	// if task.task_group_name >>> task_group에 append(  --> 안에 요소가 없으면 add, 있으면 dependencies를 비교하여 순번)
+		// taskgroup의 요소를 비교해서 dependence 자체가 없으면 0번째, dependencies가 있으면 dependencies에 속한 task의 index 찾고
+		// 해당 index + 1로 insert.
+
+	//var taskGroup = []
+	var rootObj = {};
+	var root = new Map();
+	var taskGroup = [];
+	
+	// 모든 Task는 기본적으로 sequence라는 array의 한 요소이다.
+
+	// dependency가 없는 task들만 추출한다.
+	//	parallel로 설정한다.
+
+	// taskGroup을 만든다.
+	
+	// taskGroup 속한 task들을 추출해 넣는다. // jsonTask에서 제거.
+
+	// taskGroup에 upstream에 따라 계층구조 및 순서를 만든다.
+	
+	// 남은 Task들은 모두 root의 항목이므로 dependency에 따라 순서대로 정렬시킨다.
+
+	
+    ///// TODO : TOBE 만들어야할 형상.
+    // properties : workflow에 설정할 요소들
+    // sequence : task들이 순서대로 array에 담겨있음.
+    // definition : properties, sequence 정의 후 resetDesigner 호출하면 됨.
+    // template 조회
+
+    // ex) 
+    // var taskProperties = {body: request_body};
+    // // getWorkflowTemplateInfo(templateId)
+
+    // // 가져온 data 변환
+    // var templateDefinition = {
+    //     properties: {},
+    //     sequence: [
+    //         // templateId가 없으면 edit 불가하므로 taskId 까지 입력한다.
+    //         defineTaskStepDynamicMcis('00000000000000000000000000000002', 'tem-mig01', taskProperties )
+    //     ]
+    // }
+    // console.log("templateDefinition : ", templateDefinition)
+    
+    // // 가져온 template을 canvas에 표시.
+    // resetDesigner(templateDefinition)
+
+	var sequenceTaskGroupMap = new Map();// 가장 바깥의 TaskGroup들의 sequence로 key는 index, value는 taskGroup
+	
+	
+	// taskGroupMap.set("_root_", {sequence:[]});
+	// // task group 추출	
+	// if( dagJson.task_groups ){
+	// 	dagJson.task_groups.map(function(taskGroup) {
+	// 		//console.log(taskGroup);
+	// 		taskGroupMap.set(taskGroup.task_group_name, { name: taskGroup.task_group_name, sequence:[]} );
+	// 	});
+	// }
+
+	// for( var i = 0; i < dagJson.tasks.length; i++){
+	// 	var aTask = dagJson.tasks[i];
+		
+	// 	// task group 
+	// 	var aTaskGroup = taskGroupMap.get(aTask.task_group_name)
+	// 		console.log(aTaskGroup)
+	// 	if(aTaskGroup){
+	// 		aTaskGroup.sequence.push(aTask)
+	// 	}else{
+	// 		var rootTaskGroup = taskGroupMap.get("_root_")			
+	// 		rootTaskGroup.sequence.push(aTask)			
+	// 	}		
+	// }// task group 별로 모든 task가 들어 감.
+
+	// // task group 내 dependency set.
+	// console.log("before ", taskGroupMap)
+	// for (var [tgKey, tg] of taskGroupMap) {
+	// 	console.log("tgKey ", tgKey)
+	// 	console.log(tg)
+	// 	if( tg.sequence){
+			
+	// 		var sortedSequenceList = sortTasksByDependencies(tg.sequence)
+	// 		tg.sequence = sortedSequenceList;
+	// 		continue;
+	// 	}
+		
+	// 	// dependency 
+	// }
+	
+	// console.log("after ", taskGroupMap)
+	
 }
 
-function appendPath(root, step) {
-	const parents = designer.getStepParents(step);
-	const path = document.createElement('div');
-	path.className = 'step-path';
-	path.innerText = 'Step path: ' + parents.map((parent) => {
-		return typeof parent === 'string' ? parent : parent.name;
-	}).join('/');
-	root.appendChild(path);
+
+// workflow template 선택시 해당 workflow template 정보를 조회한다.
+// 조회된 결과를 canvas에 그린다.
+function setWorkflowTemplate(selectedOption){
+    var templateId = selectedOption.value;
+    // switch (templateId) {
+    //     case 'wft01': 
+    //         break;        
+    // }
+    if(templateId){
+        // template 조회
+        var taskProperties = {body: request_body};
+        // getWorkflowTemplateInfo(templateId)
+
+        // 가져온 data 변환
+        var templateDefinition = {
+            properties: {},
+            sequence: [
+                // templateId가 없으면 edit 불가하므로 taskId 까지 입력한다.
+                defineTaskStepDynamicMcis('00000000000000000000000000000002', 'tem-mig01', taskProperties )
+            ]
+        }
+        console.log("templateDefinition : ", templateDefinition)
+        
+        // 가져온 template을 canvas에 표시.
+        resetDesigner(templateDefinition)
+    }
+}
+
+// workflow template 목록 조회
+function getWorkflowTemplateList(){
+    var url = "/operation/migrations/workflowmng/workflowtemplate/";
+    console.log("WorkflowTemplateList URL : ", url)
+
+    return axios.get(url, {
+        
+    }).then(result => {
+        console.log(result);
+        console.log(result.data);
+        
+    }).catch(function (error) {
+        console.log("getWorkflowTemplateList error : ", error);
+    });
+}
+
+// workflow 조회.
+function getWorkflow(){
+    var selectedWorkflowId = document.getElementById("workflowId").value;
+
+    if( selectedWorkflowId == undefined || selectedWorkflowId == ""){
+        commonAlert("Please a Workflow save first");
+        return;
+    }
+
+    var url = "/operation/migrations/workflowmng/workflow/{workflowId}";
+    console.log("getWorkflow URL : ", url)
+
+    return axios.get(url, {
+        
+    }).then(result => {
+        console.log(result);
+        console.log(result.data);
+        
+    }).catch(function (error) {
+        console.log("getWorkflow error : ", error);
+    });
+}
+
+// 저장 된 workflow 실행.
+function runWorkflow(){
+    console.log("runWorkflow")
+    var selectedWorkflowId = document.getElementById("workflowId").value;
+    console.log("selectedWorkflowId ", selectedWorkflowId)
+    //
+    if( selectedWorkflowId == undefined || selectedWorkflowId == ""){
+        commonAlert("Please a Workflow save first");
+        return;
+    }
+
+    // 
+
+}
+
+// workflow 저장
+// TODO : sequentialWorkflow의 값을 cicada의 workflow로 변경하여 저장 호출.
+function saveWorkflow(){
+    var workflowDefinition = designer.getDefinition()
+    console.log("save workflow definition ", designer.getDefinition())
+
+    //validateWorkflow()
+    
+    // request 객체에 Set.
+    // sequence가 전체 순서임.
+    workflowDefinition.sequence.forEach(step => {
+        console.log("step ", step)
+        
+		switch (step.type) {
+            case 'DynamicMcis':
+                if( validateTask(taskType, step) ){
+
+                }else{
+                    // validation is false.
+                }
+                break;
+        }
+    });
+
+    
+    // cicada api 호출
+
+    // 결과 return.
+}
+
+// workflow validation check
+function validateWorkflow(){
+    return true;
+}
+
+// TASK validation check
+function validateTask(taskType, step){
+    switch (taskType) {
+        case "DynamicMcis":
+            // step 필수값 check
+            break;
+    }
+    return true
 }

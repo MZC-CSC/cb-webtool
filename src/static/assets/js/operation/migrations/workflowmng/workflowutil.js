@@ -1,13 +1,123 @@
+//////////////////////// Config 정의 영역 ////////////////////
+// ToolBox 정의
+function getToolBoxGroups(){
+	return { groups : [
+		toolboxGroup('BuiltIn'),// if, loop			
+		toolboxGroup('Components')// custom components
+	]};
+}
+
+//toolboxGroup('BuiltIn'),// if, loop, parellel	
+//추가되는 taskComponent는 Main아래로
+function toolboxGroup(name) {    
+    if( name == "BuiltIn"){
+        return {
+            name,
+            steps: [
+                createIfStep(null, [], []),
+                createContainerStep(null, [])
+				// parellel
+            ]
+        }
+    
+    }else if( name == "Components") {
+        return {
+            name,
+            steps: [
+				// 현재 정의된 TaskComponent
+                //createTaskStepDynamicMcis(null, 'task', 'Dynamic Mcis'),	
+				defineTaskStepDynamicMcis(null, 'Dynamic Mcis')
+            ]
+        };
+    }
+}
+
+// Step 기본 속성 정의
+function getStepConf(){
+
+	return {
+		isDuplicable: () => true,
+		iconUrlProvider: (_, type) => {
+			console.log("getStep Conf ", type)
+			//return `/assets/js/sequential-workflow-designer/ico/icon-${type}.svg`
+			return `/assets/js/sequential-workflow-designer/ico/icon-task.svg`
+		}
+}
+
+	
+//     // all properties in this section are optional
+
+//     iconUrlProvider: (componentType, type) => {
+//     return `icon-${componentType}-${type}.svg`;
+//     },
+
+//     isDraggable: (step, parentSequence) => {
+//     return step.name !== 'y';
+//     },
+//     isDeletable: (step, parentSequence) => {
+//     return step.properties['isDeletable'];
+//     },
+//     isDuplicable: (step, parentSequence) => {
+//         return true;
+//     },
+//     canInsertStep: (step, targetSequence, targetIndex) => {
+//     return targetSequence.length < 5;
+//     },
+//     canMoveStep: (sourceSequence, step, targetSequence, targetIndex) => {
+//     return !step.properties['isLocked'];
+//     },
+//     canDeleteStep: (step, parentSequence) => {
+//     return step.name !== 'x';
+//     }
+
+};
+
+// Validator 기본 속성 정의 : step의 properties['isInvalid'] 여부로 판단.
+const validatorConf = {
+	step: (step) => {
+		return !step.properties['isInvalid'];
+	}
+
+	
+};
+
+
+
 //////////////////////// Canvas 정의 영역 ////////////////////
-function defaultState() {
-	return {definition: getDefaultDefinition()}
-    // return {
-    //     definition: getStartDefinition()
-    // }
+function readOnlyState() {
+	return {
+		undoStackSize : 20,
+		undoStack : 0,// optional, default: 0 - disabled, 1+ - enabled
+		definition: getEmptyDefinition(),// 기본으로 보여질 workflow
+		configuration: getReadOnlyConfiguration()		
+	}   
+}
+function editableState() {
+	return {
+		undoStackSize : 20,
+		undoStack : 0,//1,// optional, default: 0 - disabled, 1+ - enabled
+		definition: getEmptyDefinition(),// 기본으로 보여질 workflow
+		configuration: getEditableConfiguration()		
+	}   
+}
+
+// undo를 위한 상태저장
+function saveState(localStorageKey) {
+	console.log("save definition ", designer.getDefinition())
+	localStorage[localStorageKey] = JSON.stringify({
+		definition: designer.getDefinition(),
+		undoStack: designer.dumpUndoStack()
+	});
+}
+function loadState(localStorageKey) {
+	localStorage[localStorageKey] = JSON.stringify({
+		definition: designer.getDefinition(),
+		undoStack: designer.dumpUndoStack()
+	});
 }
 
 // workflow 기본 정의 : 비어있는 workflow
-function getDefaultDefinition() {
+function getEmptyDefinition() {
 	return {
 		properties: {
             'workflow': 'myworkflow',
@@ -18,398 +128,170 @@ function getDefaultDefinition() {
 
 // sample workflow
 function getStartDefinition() {
+	var startProperties = {provider: 'defaultProvider'}
+	//sequence : request_body
 	return {
 		properties: {},
 		sequence: [
-			createIfStep('00000000000000000000000000000001',
-				[ createTaskStep('00000000000000000000000000000002', 'save', 'Save file', { isInvalid: true }) ],
-				[ createTaskStep('00000000000000000000000000000003', 'text', 'Send email') ]
-			),
-			createContainerStep('00000000000000000000000000000004', [
-				createTaskStep('00000000000000000000000000000005', 'task', 'Create task')
-			])
+			//createTaskStepDynamicMcis('00000000000000000000000000000001', 'McisDynamic', 'mig01', startProperties )
+			defineTaskStepDynamicMcis('00000000000000000000000000000001', 'mig01', startProperties )
 		]
 	};
 }
-//////////////////////// Canvas 정의 영역 ////////////////////
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // editor와 view에서 사용할 function들 
-
-// // Task 생성 
-// //createTaskStep('task', 'task1')
-// function createTaskStep(id, type, name, properties) {
-// 	console.log("createTaskStep ", properties)
-// 	return {
-// 		id: id,
-// 		componentType: 'task',
-// 		type,
-// 		name,
-// 		properties: properties || ''
-// 	};
-// }
-
-// // Airflow Taks는 provider + options 로 되어 있어 대응하는 Task
-// // createAirflowTaskStep(null, 'write', 'task'),
-// function createAirflowTaskStep(id, type, name, properties) {
-// 	console.log("createAirflowTaskStep ", properties)
-// 	return {
-// 		id: id,
-// 		componentType: 'task',
-// 		type,
-// 		name,
-// 		properties: properties || {
-// 			provider: 'defaultProvider',
-// 			options: '{}'
-
-// 		}
-// 	};
-// }
-
-// // TODO : 속성을 읽어서 TASK에 필요한 항목으로 정의.( name, json 으로 할까?)
-// // 지정형식이 아닌 형태의 TASK를 모델로 추가.
-// // 사용은 어떻게?? // getToolboxGroup 에서 사용할 task model을 create 함.
-// // task에 필요한 속성정의
-// function createAnyTaskStep(id, name, properties){
-// 	console.log("createAnyTaskStep ", properties)
-// }
-
-// // container 로 감싸는 것으로 포함할 step들을 넘김. 빈값도 가능
-// function createContainerStep(id, containerName, steps) {
-// 	console.log("createContainerStep")
-// 	return {
-// 		id: id,
-// 		componentType: 'container',
-// 		type: 'loop',
-// 		name: containerName || 'Task Group',
-// 		properties: {},
-// 		sequence: steps
-// 	};
-// }
-
-// // if step : truestep과 falsestep을 인자로 받음. 빈값도 가능,  세가지 조건(true, false, extra) 가능
-// function createIfStep(id, trueSteps, falseSteps, extraSteps) {
-// 	console.log("createIfStep")
-
-// 	// 기본은 true, false 두개임. 
-// 	let childBranches = {
-// 		'true': trueSteps || [],
-// 		'false': falseSteps || [],
-// 	}
-
-// 	if( extraSteps){
-// 		childBranches['extra'] = extraSteps;
-// 	}
-
-// 	return {
-// 		id: id,
-// 		componentType: 'switch',
-// 		type: 'if',
-// 		name: 'If',
-// 		branches: childBranches,
-// 		properties: {}
-// 	};
-// }
-
-// // parallel step : 병렬 step으로 children 만큼 병렬로 진행
-// // child branch와 child condition은 쌍으로 존재해야 함. 맞지 않으면 수정할 때 에러 남.
-// function createParallelStep(id, name, children) {
-// 	console.log("createParallelStep")
-// 	let childrenBranches = {}
-// 	let childrenConditions = {}
-
-// 	// branches는 최소 1개 필요.
-// 	if(children && children.length > 0){
-// 		for (let i = 0; i < children.length; i++) {
-// 			childrenBranches[`Condition ${String.fromCharCode(65 + i)}`] = [children[i]];
-// 			childrenConditions[`Condition ${String.fromCharCode(65 + i)}`] = [children[i].name];
-// 		}
-// 	}else{// branch는 기본 3개.
-// 		childrenBranches[`Condition1`] = [];
-// 		childrenBranches[`Condition2`] = [];
-// 		childrenBranches[`Condition3`] = [];
+// workflowmng 에서는 readonly만.
+function getReadOnlyConfiguration(){
+	return {
+		isReadonly: true,
 		
-// 		childrenConditions[`Condition1`] = 'Condition1Value';
-// 		childrenConditions[`Condition2`] = 'Condition2Value';
-// 		childrenConditions[`Condition3`] = 'Condition3Value';
-// 	}
-		
-// 	const parallel = {
-// 		id: id,
-// 		componentType: 'switch',
-// 		type: 'parallel',		
-// 		name,
-// 		properties: {
-// 			conditions: childrenConditions,
-// 		},
-// 		// properties: {
-// 			//conditions: childrenConditions
-// 			// "Condition1": "1",
-// 			// "Condition2": "2",
-// 			// "Condition3": "3",
-// 		// },
-// 		branches: childrenBranches
-// 		// branches: {
-// 		// 	"Condition1": [],
-// 		// 	// "Condition2": [],
-// 		// 	// "Condition3": [],
-// 		// }
-// 	}
-// 	//console.log(parallel)
-// 	return parallel;
-// }
+		//toolbox: {}, // toolbox가 false가 아닌 경우에는 비어있으면 안됨.
+		toolbox: false,
+		//contextMenu: false,
+		controlBar: false,
+		steps: {
+			isDuplicable: () => true,
+			iconUrlProvider: (_, type) => {
+				return `/assets/js/sequential-workflow-designer/ico/icon-${type}.svg`
+			},
+		},
 
-// // Readonly 설정 표시 : editor는 설정변경하지 않음.
-// // function reloadChangeReadonlyButtonText() {
-// // 	changeReadonlyButton.innerText = 'Readonly: ' + (designer.isReadonly() ? 'ON' : 'OFF');
-// // }
+		validator: {
+			step: (step) => {
+				return !step.properties['isInvalid'];
+			}
+		},
 
-// // 상세창에 checkbox 표시
-// function appendCheckbox(root, label, isReadonly, isChecked, onClick) {
-// 	const item = document.createElement('div');
-// 	item.innerHTML = '<div><h3></h3> <input type="checkbox" /></div>';
-// 	const h3 = item.getElementsByTagName('h3')[0];
-// 	h3.innerText = label;
-// 	const input = item.getElementsByTagName('input')[0];
-// 	input.checked = isChecked;
-// 	if (isReadonly) {
-// 		input.setAttribute('disabled', 'disabled');
-// 	}
-// 	input.addEventListener('click', () => {
-// 		onClick(input.checked);
-// 	});
-// 	root.appendChild(item);
-// }
+		// root와 step provider를 지정하며 parameter에서 isReadonly 속성으로 구분가능.    
+		editors : {
+			//isCollapsed: true,
+			// isCollapsed: false,
+			// rootEditorProvider:(definition, _context, isReadonly) => {
+			// 	const root = document.createElement('div');
+			// 	root.className = 'definition-json';
+			// 	root.innerHTML = '<textarea style="width: 100%; border: 0;" rows="50"></textarea>';
+			// 	const textarea = root.getElementsByTagName('textarea')[0];
+			// 	textarea.setAttribute('readonly', 'readonly');			
+			// 	textarea.value = JSON.stringify(definition, null, 2);
+			// 	return root;
+			// },
+			// stepEditorProvider: (step, editorContext, _definition, isReadonly) => {
+			// 	const root = document.createElement('div');
 
-// // 상세 창에 선택된 항목의 title 표시 및 event set
-// // isReadonly=false일 때 변경과 동시에 바로 반영
-// function appendTitlebox(root, step, isReadonly, editorContext) {	
-// 	const item = document.createElement('div');	
+			// 	appendStepEdit(root, step, isReadonly, editorContext);
+				
+			// 	appendPath(root, step);
+			// 	return root;
+			// }
+			defaultRootEditorProvider,
+			defaultStepEditorProvider,
+		},
+	}
+};
 
-// 	let titleLabel = ""
-// 	let titleText = step.name
-// 	if (step.componentType === 'container' && step.type === 'loop') {
-// 		titleLabel = "Task Group"		
-// 	}else if (step.componentType === 'task'){
-// 		titleLabel = "Task"
-// 	}else if (step.componentType === 'switch' && step.type === 'if'){
-// 		titleLabel = "IF"
-// 	}else if (step.componentType === 'switch' && step.type === 'parallel'){
-// 		titleLabel = "Parallel"
-// 	}else{
-// 		titleLabel = step.componentType + " : " + step.type
-// 	}
+// 수정가능한 환경
+const startDefinition = {
+	properties: {},
+	sequence: []
+};
 
-// 	const childTitle = document.createElement('h2');
-// 	childTitle.innerText = titleLabel;
+// 기본 rootEditor 영역 정의 : definition 내용 전체 표시
+function defaultRootEditorProvider(definition, editorContext, isReadonly){
 
-// 	const childParamInput = document.createElement('input');
-// 	childParamInput.type = 'text';
-// 	childParamInput.name = 'titleParam';
-// 	childParamInput.value = titleText;
+	const rootEditorContainer = document.createElement('div');
+	rootEditorContainer.className = 'definition-json';
+	rootEditorContainer.innerHTML = '<textarea style="width: 100%; border: 0;" rows="50"></textarea>';
+	const textarea = rootEditorContainer.getElementsByTagName('textarea')[0];
+	textarea.setAttribute('readonly', 'readonly');			
+	textarea.value = JSON.stringify(definition, null, 2);
 
-// 	if (isReadonly) {
-// 		childParamInput.setAttribute('disabled', 'disabled');
-// 	}else{
-// 		// 수정 모드일 때 event listener 설정
-// 		childParamInput.addEventListener('input', () => {
-// 			console.log("eventListener ", childParamInput.value)
-// 				step.name = childParamInput.value;
-// 				editorContext.notifyNameChanged();
-// 		});
-// 	}	
+	// TODO : definition을 cicada에서 보는 형태로 변환하여 표시
+	return rootEditorContainer;
 
-// 	item.append(childTitle);
-// 	item.append(childParamInput);
+}
+// stepEditor 선택 영역 정의
+function defaultStepEditorProvider(step, editorContext, _definition, isReadonly){
+	console.log("in defaultStepEditorProvider")
+	console.log("step ", step)
+	console.log("editorContext ", editorContext)
+	console.log("isReadonly", isReadonly)
+	console.log("_definition ", _definition)
 
-// 	root.appendChild(item);
-// }
+	const stepEditorContainer = document.createElement('div');
+	
+	appendStepEdit(stepEditorContainer, step, isReadonly, editorContext);
+	const parents = designer.getStepParents(step);
+	appendPath(stepEditorContainer, parents, step);// parents 있고 없고의 차이를 모르겠음.	
+
+	return stepEditorContainer;
+}
+
+// 
+function getEditableConfiguration(){
+	console.log("in getEditableConfiguration")
+	return {
+		toolbox: getToolBoxGroups(),	
+		steps: getStepConf(),
+
+		undoStackSize: 20,
+		undoStack: 0,// optional, default: 0 - disabled, 1+ - enabled
+
+		editors: {
+			// rootEditorProvider: defaultRootEditorProvider(),
+			// stepEditorProvider: defaultStepEditorProvider()
+			isCollapsed: true,
+			rootEditorProvider: (definition, editorContext, isReadonly) => {
+				return defaultRootEditorProvider(definition, editorContext, isReadonly);
+			},
+			stepEditorProvider: (step, editorContext, _definition, isReadonly) => {
+				// step 종류에 따라 Editor Provider를 달리 한다.
+				console.log("stepEditorProvider ", step)
+				return defaultStepEditorProvider(step, editorContext, _definition, isReadonly);
+			}
+			
+		},
+
+		controlBar: true
+	}
+};
+
+
+/////////////////// Task Component 정의 영역 end  //////////////////////
+
+
+
+///////////////////////////////////////////////////////////////////////
+
+var request_body = {
+	name: "recommended-infra01",    
+	installMonAgent: "no",    
+	label: "DynamicVM",    
+	systemLabel: "",    
+	description: "Made in CB-TB",    
+	vm: [
+		    {
+				name: "recommended-vm01",
+				subGroupSize: "3",            
+				label: "DynamicVM",            
+				description: "Description",            
+				commonSpec: "azure-koreacentral-standard-b4ms",            
+				commonImage: "ubuntu22-04",            
+				rootDiskType: "default",            
+				rootDiskSize: "default",            
+				vmUserPassword: "test",            
+				connectionName: "azure-koreacentral"        
+			}    
+		]}
+///////////////////////////
+
+
+
+
 
 // // TASK Group 은 이름만 변경.
 // // TASK 는 이름 변경, properties 변경
 // // IF 는 이름 변경, true조건, false 조건
 // // ...
-// function appendTaskPropertiesbox(root, step, isReadonly, editorContext){
-
-// 	const item = document.createElement('div');
-
-// 	console.log("appendTaskPropertiesbox")
-// 	console.log(step)
-
-// 	// 기본 상항으로 사용할 provider와 option
-
-// 	// provider : input
-// 	const providerInput = document.createElement('input');
-// 	providerInput.type = 'text';
-// 	providerInput.name = 'inputParam';
-// 	providerInput.value = step.properties.provider;
-// 	if (isReadonly) {
-// 		providerInput.setAttribute('disabled', 'disabled');
-// 	}
-
-// 	const providerLabel = document.createElement('label');
-// 	providerLabel.textContent = "Provider";
-// 	providerLabel.htmlFor = providerInput.name;
-		
-// 	item.append(providerLabel);
-// 	item.append(providerInput);
-
-// 	// options : text area => json format
-// 	const options = document.createElement('textarea');
-// 	options.name = 'optionParams';
-// 	options.rows = 4;
-// 	options.cols = 10
-// 	options.value = step.properties.options;
-// 	if (isReadonly) {
-// 		options.setAttribute('disabled', 'disabled');
-// 	}
-
-// 	const optionsLabel = document.createElement('label');
-// 	optionsLabel.textContent = "Options";
-// 	optionsLabel.htmlFor = options.name;
-	
-	
-// 	item.append(optionsLabel);
-// 	item.append(options);
-
-
-// 	root.appendChild(item)
-// }
-
-// // IF 는 이름 변경, true조건, false 조건
-// // branches 아래에 true:[], false[] 가 들어있고 properties: {} 가 있음.
-// function appendIfbox(root, step, isReadonly, editorContext){
-// 	const item = document.createElement('div');
-
-// 	console.log("appendIfbox")
-// 	console.log(step)
-
-// 	// true
-// 	const trueInput = document.createElement('input');
-// 	trueInput.type = 'text';
-// 	trueInput.name = 'trueParam';
-// 	//trueInput.value = step.properties.provider;
-// 	if (isReadonly) {
-// 		trueInput.setAttribute('disabled', 'disabled');
-// 	}
-
-// 	const trueLabel = document.createElement('label');
-// 	trueLabel.textContent = "True";
-// 	trueLabel.htmlFor = trueInput.name;
-
-// 	item.append(trueLabel);
-// 	item.append(trueInput);
-
-// 	item.append(document.createElement('br'));
-	
-// 	// false
-// 	const falseInput = document.createElement('input');
-// 	falseInput.type = 'text';
-// 	falseInput.name = 'trueParam';
-// 	//trueInput.value = step.properties.provider;
-
-// 	const falseLabel = document.createElement('label');
-// 	falseLabel.textContent = "False";
-// 	falseLabel.htmlFor = falseInput.name;
-
-// 	item.append(falseLabel);
-// 	item.append(falseInput);
-
-
-// 	root.appendChild(item)
-// }
-
-// // branch를 삭제할 수 있는 delete branch
-// // 새로운 branch를 추가할 수 있는 add branch 
-// function appendParallelbox(root, step, isReadonly, editorContext){
-
-// 	function deleteBranch(branch, name) {
-// 		root.removeChild(branch);
-// 		delete step.branches[name];
-// 		editorContext.notifyChildrenChanged();
-// 	}
-
-// 	// parallel 안에서 branch 추가
-// 	function appendBranch(name) {
-// 		const newBranch = document.createElement('div');
-// 		newBranch.className = 'switch-branch';
-
-// 		const newBranchTitle = document.createElement('h4');
-// 		newBranchTitle.innerText = name;
-
-// 		const newBranchLabel = document.createElement('label');
-// 		newBranchLabel.innerText = 'Condition: ';
-
-// 		newBranch.appendChild(newBranchTitle);
-// 		newBranch.appendChild(newBranchLabel);
-// 		console.log("addBranch " , step.properties)
-// 		appendConditionEditor(newBranch, step.properties.conditions[name], value => {
-// 			step.properties.conditions[name] = value;
-// 			editorContext.notifyPropertiesChanged();
-// 		});
-
-// 		const deleteButton = createButton('Delete branch', () => {
-// 			if (Object.keys(step.branches).length <= 1) {
-// 				window.alert('You cannot delete the last branch.');
-// 				return;
-// 			}
-// 			if (!window.confirm('Are you sure?')) {
-// 				return;
-// 			}
-// 			deleteBranch(newBranch, name);
-// 		});
-// 		newBranch.appendChild(deleteButton);
-// 		root.appendChild(newBranch);
-// 	}
-
-// 	function addBranch(name) {
-// 		step.properties.conditions[name] = "add condition";
-// 		step.branches[name] = [];
-// 		editorContext.notifyChildrenChanged();
-// 		appendBranch(name);
-// 	}
-
-// 	const item = document.createElement('div');
-
-// 	if (!isReadonly) {// 수정mode일 때, branch 추가버튼		
-// 		const addBranchButton = createButton('Add branch', () => {
-// 			const branchName = window.prompt('Enter branch name');
-// 			if (branchName) {
-// 				addBranch(branchName);
-// 			}
-// 		});	
-
-// 		appendPropertyTitle(root, 'Branches');
-// 		root.appendChild(addBranchButton);
-// 	}
-
-// 	for (const initialBranchName of Object.keys(step.branches)) {
-// 		appendBranch(initialBranchName);
-// 	}
-
-// 	console.log("appendParallelbox")
-// 	console.log(step)
-// }
 
 // // 상세 창에 inputbox 표시
 // function appendInputbox(root, label, isReadonly, textValue) {
