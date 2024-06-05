@@ -3,7 +3,7 @@ package controller
 import (
 	// "bytes"
 	// "encoding/json"
-	"fmt"
+	//"fmt"
 	// "github.com/davecgh/go-spew/spew"
 	// "io/ioutil"
 	"log"
@@ -36,9 +36,9 @@ func ApiLogin(c echo.Context) error {
 
 	params := make(map[string]string)
 	if err := c.Bind(&params); err != nil {
-		fmt.Println("err = ", err) // bind Error는 나지만 크게 상관없는 듯.
+		log.Println("err = ", err) // bind Error는 나지만 크게 상관없는 듯.
 	}
-	fmt.Println(params)
+	log.Println(params)
 
 	storedUser, ok := util.GetUserInfo(c, params["userID"])
 	if !ok {
@@ -99,9 +99,9 @@ func ApiUserInfo(c echo.Context) error {
 		Username: name,
 	}
 
-	fmt.Println("name="+name+", isAdmin %v ", isAdmin)
+	log.Println("name="+name+", isAdmin %v ", isAdmin)
 	if name == "admin" && isAdmin {
-		fmt.Println("admin userinfo set")
+		log.Println("admin userinfo set")
 
 		// 	nsList, nsStatus := service.GetNameSpaceList()
 		// 	return c.JSON(http.StatusOK, map[string]interface{}{
@@ -128,6 +128,41 @@ func ApiNamespaceList(c echo.Context) error {
 		"message":       nsStatus.Message,
 		"status":        nsStatus.StatusCode,
 		"NamespaceList": nsList,
+	})
+
+}
+
+
+// 연관 framework의 readyz 호출 결과 return
+func GetReadyz(c echo.Context) error {
+	log.Println("GetReadyz : ")
+	//loginInfo := service.CallLoginInfo(c)
+	// log.Println("loginInfo : ", loginInfo)
+	// if loginInfo.UserID == "" {
+	// 	return c.Redirect(http.StatusTemporaryRedirect, "/login")
+	// }
+
+	//defaultNameSpaceID := loginInfo.DefaultNameSpaceID
+
+	respStatus := model.WebStatus{}
+	optionParam := c.QueryParam("option")// 대상 framework
+	switch optionParam {
+		case "honeybee":
+			respStatus = service.GetHoneyBeeReadyz()
+		break
+		case "cicada":
+			respStatus = service.GetCicadaReadyz()
+			break
+		default :
+			respStatus.StatusCode = 500
+			respStatus.Message = "there is no framework status yet. "
+			break
+	}	
+	
+	
+	return c.JSON(respStatus.StatusCode, map[string]interface{}{
+		"error":  respStatus.Message,
+		"status": respStatus.StatusCode,
 	})
 
 }

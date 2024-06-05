@@ -1016,7 +1016,23 @@ func main() {
 	workflowMngGroup := e.Group("/operation/migrations/workflow/mngform", workflowMngTemplate)
 	workflowMngGroup.GET("", controller.WorkflowMngForm)
 
+	e.POST("/operation/migrations/workflowmng/workflow", controller.WorkflowRegProc)
+	e.GET("/operation/migrations/workflowmng/workflow/list", controller.GetWorkflowList)
+	e.GET("/operation/migrations/workflowmng/workflow/id/:workflowID", controller.GetWorkflowInfoData)
 	
+	e.GET("/operation/migrations/workflowmng/workflowtemplate", controller.GetWorkflowTemplateList)
+	e.GET("/operation/migrations/workflowmng/workflowtemplate/id/:workflowTemplateID", controller.GetWorkflowTemplateData)
+
+	e.GET("/operation/migrations/workflowmng/taskcomponent", controller.GetTaskComponentList)
+	e.GET("/operation/migrations/workflowmng/taskcomponent/id/:taskcomponentID", controller.GetTaskComponentData)
+	
+	
+	////// readyz
+	e.GET("/readyz", controller.GetReadyz)
+
+	
+	
+
 	/////////////////////////////////////
 
 	// e.GET("/SecurityGroup/list", controller.SecurityGroupListForm)

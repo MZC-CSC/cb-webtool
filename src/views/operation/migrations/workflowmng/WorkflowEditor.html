@@ -20,12 +20,23 @@
                     <div class="ipbox ipbox1">
                         <ul>
                             <li class="reg_1">
+                                <label>Target Model</label>
+                                <select class="selectbox white pline sel_1" name="targetModel"
+                                    id="targetModel" onchange="setTargetModel(this)">
+                                    <option value="" selected>Select a Target Model</option>
+                                    <option value="tm01">Web Server</option>
+                                    <option value="tm02">DB Server</option>
+                                </select>
+                            </li>
+                            <li class="reg_1">
                                 <label>Workflow Template</label>
                                 <select class="selectbox white pline sel_1" name="workflowTemplate"
-                                    id="workflowTemplate" onchange="setWorkflowTemplate(this)">
+                                    id="selWorkflowTemplate" onchange="setWorkflowTemplate(this)">
                                     <option value="" selected>Select a Workflow Template</option>
-                                    <option value="wft01">DynamicMcisTemplate</option>
-                                    <option value="wft02">DynamicMcksTemplate</option>
+                                    <!-- 
+                                        <option value="wft01">DynamicMcisTemplate</option>
+                                        <option value="wft02">DynamicMcksTemplate</option>
+                                     -->
                                 </select>
                             </li>
                         </ul>

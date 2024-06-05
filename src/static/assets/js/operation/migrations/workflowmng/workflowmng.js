@@ -1,5 +1,26 @@
-$(document).ready(function () {
+const placeholder = document.getElementById('workflowplaceholder');
+const localStorageKey = 'sqdMngScreen';
+const confState = readOnlyState();
+let designer;
+
+document.addEventListener('DOMContentLoaded', function() {
+    
+    console.log("DOMContentLoaded ")
+    
+    // console.log("workflow definition ", confState.definition)
+
+    // console.log("workflow configuration ", confState.configuration)
+    // console.log("placeholder ", placeholder)
+    // console.log("workflow designer created ")
+
+    // workflow 목록 조회
     order_type = "name"
+    getWorkflowList(order_type);
+});
+
+
+$(document).ready(function () {
+    
     //checkbox all
     $("#th_chall").click(function () {
         if ($("#th_chall").prop("checked")) {
@@ -21,6 +42,7 @@ $(document).ready(function () {
 
         setTableHeightForScroll('workflowListTable', 300);
     });
+    
 });
 
 function deleteWorkflow() {
@@ -72,9 +94,10 @@ function deleteWorkflow() {
     });
 }
 
+// workflow 목록 조회
 function getWorkflowList(sort_type) {
     console.log(sort_type);
-    var url = "/operation/migrations/workflow/list";
+    var url = "/operation/migrations/workflowmng/workflow/list";
     axios.get(url, {
         headers: {
             'Content-Type': "application/json"
@@ -92,13 +115,12 @@ function getWorkflowList(sort_type) {
 
             $("#workflowList").empty()
             $("#workflowList").append(html)
-
-            ModalDetail()
+            //ModalDetail()
         } else {
             if (data.length) {
                 if (sort_type) {
                     cnt++;
-                    console.log("check : ", sort_type);
+                    
                     data.filter(list => list.Name !== "").sort((a, b) => (a[sort_type] < b[sort_type] ? - 1 : a[sort_type] > b[sort_type] ? 1 : 0)).map((item, index) => (
                         html += addWorkflowRow(item, index)                        
                     ))
@@ -107,11 +129,11 @@ function getWorkflowList(sort_type) {
                         html += addWorkflowRow(item, index)
                     ))
                 }
+                
+                $("#workflowList").empty()
+                $("#workflowList").append(html)
 
-                $("#vpcList").empty()
-                $("#vpcList").append(html)
-
-                ModalDetail()
+                //ModalDetail()
             }
         }
 
@@ -124,20 +146,19 @@ function getWorkflowList(sort_type) {
     });
 }
 
-// VNet목록에 Item 추가
+// Workflow 목록에 Item 추가
 function addWorkflowRow(item, index) {
     console.log("addWorkflowRow " + index);
     console.log(item)
     var html = ""
-    html += '<tr onclick="showWorkflowInfo(\'' + item.name + '\');">'
+    html += '<tr onclick="showWorkflowInfo(\'' + item.id + '\');">'
         + '<td class="overlay hidden column-50px" data-th="">'
-        + '<input type="hidden" id="sg_info_' + index + '" value="' + item.name + '"/>'
-        + '<input type="checkbox" name="chk" value="' + item.name + '" id="raw_' + index + '" title="" /><label for="td_ch1"></label> <span class="ov off"></span>'
-        // + '<input type="hidden" value="' + item.systemLabel + '"/>'
+        + '<input type="hidden" id="wf_info_' + index + '" value="' + item.id + '"/>'
+        + '<input type="checkbox" name="chk" value="' + item.id + '" id="raw_' + index + '" title="" /><label for="td_ch1"></label> <span class="ov off"></span>'
         + '</td>'
         + '<td class="btn_mtd ovm" data-th="name">' + item.name + '<span class="ov"></span></td>'
-        + '<td class="overlay hidden" data-th="targetModel">' + item.TargetModel + '</td>'
-        + '<td class="overlay hidden" data-th="description">' + item.description + '</td>'
+        + '<td class="btn_mtd ovm" data-th="name">tergetModel<span class="ov"></span></td>'
+        + '<td class="btn_mtd ovm" data-th="name">description<span class="ov"></span></td>'
         + '</tr>'
     return html;
 }
@@ -207,9 +228,10 @@ function displayWorkflowInfo(targetAction) {
 
 }
 
+// workflow 조회 : 특정 workflow 를 조회하여 화면에 표시
 function showWorkflowInfo(workflowId) {
-    var url = "/operation/migrations" + "/workflow/" + workflowId;
-    console.log("vnet detail URL : ", url)
+    var url = "/operation/migrations/workflow/id/" + workflowId;
+    console.log("workflow detail URL : ", url)
 
     return axios.get(url, {
 
@@ -219,35 +241,42 @@ function showWorkflowInfo(workflowId) {
         var data = result.data.WorkflowInfo
         console.log("Show Data : ", data);
 
-        var dtlWorkflowName = data.name;
-        var dtlDescription = data.description;
-        var dtlTargetModel = data.TargetModel;
-
-
-        $("#dtlWorkflowName").empty();
+        var workflowId = data.id;
+        var workspaceDescription = data.data.description
+        $("#workflow_info_txt").empty();
         $("#dtlDescription").empty();
-        $("#dtlTargetModel").empty();
         
-        $("#dtlWorkflowName").val(dtlWorkflowName);
-        $("#dtlDescription").val(dtlDescription);
-        $("#dtlTargetModel").val(dtlConnectionName);
-        
-        $('#workflowName').text(dtlWorkflowName)
+        $("#workflow_info_txt").text(workflowId);
+        $("#dtlDescription").val(workspaceDescription);
 
+        // 가져온 정보에서 designer
+        var taskGroupArr = data.data.task_groups;
+        var taskGroup = taskGroupArr[0];
+        var taskGroupId = taskGroup.id
+        var taskArr = taskGroup.tasks;
+        var task0 = taskArr[0];
+        var taskId = task0.id;
+        var taskName = task0.id;
+        var taskComponent = task0.task_component;
+        var taskProperties = {body: task0.options.request_body};
+        
+        //workflowplaceholder
+
+        var templateDefinition = {
+            properties: {},
+            sequence: [
+                // templateId가 없으면 edit 불가하므로 taskId 까지 입력한다.
+                //defineTaskStepDynamicMcis(taskId, taskName, taskProperties )
+                defineTaskStepInfraMigration(taskId, taskName, taskProperties)
+            ]
+        }
+        console.log("templateDefinition : ", templateDefinition)
+        resetDesigner(templateDefinition)
+        
     }).catch(function (error) {
         console.log("Network detail error : ", error);
     });
 }
-
-
-// function displaySubnetRegModal(isShow) {
-//     if (isShow) {
-//         $("#subnetRegisterBox").modal();
-//         $('.dtbox.scrollbar-inner').scrollbar();
-//     } else {
-//         $("#vnetCreateBox").toggleClass("active");
-//     }
-// }
 
 
 
@@ -278,10 +307,7 @@ function showWorkflowInfo(workflowId) {
 
 // workflowId로 조회
 function loadWorkflow(workflowId) {
-    
-    // alert("get workflow ", workflowId)
-    // getCommonCloudConnectionList("mcismng", true)
-    console.log("loadState getCommonCloudConnectionList")
+    console.log("loadState ")
 	// const state = localStorage[localStorageKey];
 	// if (state) {
 	// 	return JSON.parse(state);
@@ -291,52 +317,43 @@ function loadWorkflow(workflowId) {
 	// }
     alert("Workflow loaded")
 }
-function saveWorkflow() {
-    alert("workflow saved")
-	// localStorage[localStorageKey] = JSON.stringify({
-	// 	definition: designer.getDefinition(),
-	// 	undoStack: designer.dumpUndoStack()
-	// });
-}
 
+function resetDesigner(definition, configuration) {
+    console.log("redrawDesigner")
+	if (designer) {
+        console.log("designer.destroy() ")
+		designer.destroy();
+	}
+    console.log("designer destroy")
+    if(!definition ){
+        definition = getStartDefinition();
+    }
+    console.log("designer definition ", definition)
+    //sequence : request_body
+    if(!configuration ){
+        configuration = confState.configuration
+    }    
+    console.log("designer configuration ", configuration)
+
+    designer = sequentialWorkflowDesigner.Designer.create(placeholder, definition, configuration);
+    
+    console.log("created")
+}
 
 function refreshValidationStatus() {
 	validationStatusText.innerText = designer.isValid() ? 'Definition is valid' : 'Definition is invalid';
 }
 
 
-const placeholder = document.getElementById('workflowplaceholder');
-const localStorageKey = 'sqdMngScreen';
-const confState = readOnlyState();
-const designer = sequentialWorkflowDesigner.Designer.create(placeholder, confState.definition, confState.configuration);
 
-document.addEventListener('DOMContentLoaded', function() {
-    
-    console.log("DOMContentLoaded ")
-    
-    console.log("workflow definition ", confState.definition)
 
-    console.log("workflow configuration ", confState.configuration)
-    console.log("placeholder ", placeholder)
-    
-    designer.onDefinitionChanged.subscribe((newDefinition) => {
-        refreshValidationStatus();
-        saveWorkflow();
-        console.log('the definition has changed', newDefinition);
-    });
-
-    console.log("workflow designer created ")
-
-    // workflow 불러오기
-    loadWorkflow("w01");
-});
 
 
 
 
 
 ///////////////////
-// TODO : readonly인데 toolbox가 필요있나?
+// TODO : readonly인데 toolbox가 필요있나?-> 없음
 function toolboxGroup(name) {
 	return {
 		name,

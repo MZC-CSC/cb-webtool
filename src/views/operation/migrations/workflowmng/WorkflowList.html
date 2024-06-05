@@ -72,27 +72,12 @@
 								<!-- <th class="column-60px"></th> -->
 							</tr>
 						</thead>
-						<tbody id="vpcList">
-							{{ $length := len .WorkflowList }}
-							{{ if eq $length 0 }}
+						<tbody id="workflowList">
+							
 							<tr>
 								<td class="overlay hidden" data-th="" colspan="5">No Data</td>
 							</tr>
-							{{ end }}
-							{{range $index, $item := .WorkflowList}}
-							<tr onclick="showWorkflowInfo('{{$item.Name}}');">
-								<td class="overlay hidden column-50px" data-th="">
-									<input type="hidden" id="wf_info_{{$index}}" value="{{$item.Name}}" />
-									<input type="checkbox" name="chk" value="{{$item.Name}}" id="raw_{{$index}}"
-										title="" />
-									<label for="raw_{{$index}}"></label> <span class="ov off"></span>
-									<input type="hidden" value="{{$item.SystemLabel}}" /><!-- SystemLabel -->
-								</td>
-								<td class="btn_mtd ovm" data-th="name">{{$item.Name}}<span class="ov"></span></td>
-								<td class="overlay hidden" data-th="targetModel">{{$item.TargetModel}}</td>
-								<td class="overlay hidden" data-th="description">{{$item.Description}}</td>
-							</tr>
-							{{ end }}
+							
 						</tbody>
 					</table>
 				</div>

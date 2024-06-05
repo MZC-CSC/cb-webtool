@@ -27,26 +27,28 @@ const localStorageKey = 'sqdCreateScreen';
 const confState = editableState();
 let designer;
 
+let workflowTemplateList = [];//
+
 // sequencial designer 설정
 
-function initDesigner() {
-    console.log("initDesigner")
-	if (designer) {
-        console.log("designer.destroy() ")
-		designer.destroy();
-	}
-    console.log("destroyed ", designer)
-    //const definition = getStartDefinition();
-    const definition = confState.definition
-    const configuration = confState.configuration
-    designer = sequentialWorkflowDesigner.Designer.create(placeholder, definition, configuration);
-    designer.onDefinitionChanged.subscribe((newDefinition) => {
-        refreshValidationStatus();
-        saveState();
-        console.log('the definition has changed 11111 ', newDefinition);
-    });
-    console.log("created")
-}
+// function initDesigner() {
+//     console.log("initDesigner")
+// 	if (designer) {
+//         console.log("designer.destroy() ")
+// 		designer.destroy();
+// 	}
+//     console.log("destroyed ", designer)
+//     //const definition = getStartDefinition();
+//     const definition = confState.definition
+//     const configuration = confState.configuration
+//     designer = sequentialWorkflowDesigner.Designer.create(placeholder, definition, configuration);
+//     designer.onDefinitionChanged.subscribe((newDefinition) => {
+//         refreshValidationStatus();
+//         saveState();
+//         console.log('the definition has changed 11111 ', newDefinition);
+//     });
+//     console.log("created")
+// }
 
 // designer를 다시 설정할 때
 // 기존에 designer가 정의되어 있으면 destroy 후 새로 set.
@@ -83,6 +85,7 @@ function refreshValidationStatus() {
 
 
 // // workflowId로 조회
+// TODO : onload시 체크. workflowId를 받으면 해당 workflowId를 조회하여 canvas에 표시한다.
 // function loadState(workflowId) {
 //     alert("get workflow ", workflowId)
 // 	const state = localStorage[localStorageKey];
@@ -156,6 +159,8 @@ document.addEventListener('DOMContentLoaded', function() {    //
     
     // resetDesigner(null, null)
     // console.log("workflow designer created ")
+
+    getWorkflowTemplateList();
 });
 
 
@@ -167,23 +172,11 @@ function reloadChangeReadonlyButtonText() {
 
 
 /////////////
-var sample1json = {
-	"dag_id" : "dag_factory",
-	"default_args" : { "owner" : "ish"},
-	"tasks":[
-	   { 
-		   "task_name" : "infra_task_start",
-		   "operator" : "airflow.operators.bash.BashOperator"
-	   },
-	   { 
-		   "task_name" : "infra_task_end",
-		   "operator" : "airflow.operators.bash.BashOperator",
-		   "dependencies": ["infra_task_start"]
-	   }
-	]};
+
 
 // cicada의 workflowData를 canvas에 그릴 수 있게 definition으로 추출    
 function convertToDiagram(workflowData){	
+    // task 순서 => sequence로 변경
 
 	// json에서 요소 추출
 	// task_groups
@@ -291,44 +284,90 @@ function convertToDiagram(workflowData){
 }
 
 
-// workflow template 선택시 해당 workflow template 정보를 조회한다.
-// 조회된 결과를 canvas에 그린다.
+// workflow template 선택시 해당 workflow template 정보를 canvas에 그린다.
 function setWorkflowTemplate(selectedOption){
+    
+    
     var templateId = selectedOption.value;
     // switch (templateId) {
     //     case 'wft01': 
     //         break;        
     // }
     if(templateId){
-        // template 조회
-        var taskProperties = {body: request_body};
-        // getWorkflowTemplateInfo(templateId)
+        console.log("templateId", templateId)
+        var taskSequence = [];
+        try{
+            for(var i in workflowTemplateList){
+                console.log("workflowTemplateList[i].id", workflowTemplateList[i].id)
+                if( templateId == workflowTemplateList[i].id){
+                    var templateData = workflowTemplateList[i].data
+                    var templateTaskGroups = templateData.task_groups
+                    for(var j in templateTaskGroups){
+                        console.log("templateTaskGroups ", templateData.task_groups[j])
+                        var tasks = templateData.task_groups[j].tasks;
+
+                        for(var k in tasks){
+                            console.log("task ", tasks[k])
+                            var taskId = tasks[k].id ? "" : "wf_task_" + k;
+                            var taskComponent = tasks[k].task_component;
+                            console.log("taskId ", taskId)
+                            console.log("taskComponent ", taskComponent)
+                            if( taskComponent == "beetle_task_infra_migration"){
+                                var taskName = "tem-mig01"
+                                // json객체로 한번 더 형변환 : "request_body": "{\n   \"name\": \"recommended-infra01\", 형태임
+                                var request_body_str = tasks[k].request_body
+                                const requestBody = JSON.parse(request_body_str);
+                                var taskProperties = {body: requestBody};
+                                
+                                taskSequence.push(defineTaskStepInfraMigration(taskId, taskName, taskProperties ))            
+                            }
+                        }
+                    }
+                    break;//task component set
+                }
+            }
+
+        }catch(e){
+            console.log("templateDefinition Err : ", e)
+        }
 
         // 가져온 data 변환
         var templateDefinition = {
             properties: {},
-            sequence: [
-                // templateId가 없으면 edit 불가하므로 taskId 까지 입력한다.
-                defineTaskStepDynamicMcis('00000000000000000000000000000002', 'tem-mig01', taskProperties )
-            ]
+            sequence: taskSequence
         }
         console.log("templateDefinition : ", templateDefinition)
-        
+
         // 가져온 template을 canvas에 표시.
         resetDesigner(templateDefinition)
+
     }
 }
 
 // workflow template 목록 조회
 function getWorkflowTemplateList(){
-    var url = "/operation/migrations/workflowmng/workflowtemplate/";
+    var url = "/operation/migrations/workflowmng/workflowtemplate";
     console.log("WorkflowTemplateList URL : ", url)
 
     return axios.get(url, {
         
     }).then(result => {
-        console.log(result);
+        console.log("getWorkflowTemplateList");
+        //console.log(result);
         console.log(result.data);
+        workflowTemplateList = result.data.WorkflowTemplateList;
+        
+        var addWorkflowTemplate = "";
+        addWorkflowTemplate += '<option>Choose a Workflow Template</option>';
+        if(!isEmpty(workflowTemplateList) && workflowTemplateList.length > 0 ){
+            
+            for(var i in workflowTemplateList){                
+                addWorkflowTemplate +='<option value="'+workflowTemplateList[i].id+'">'+workflowTemplateList[i].id + '</option>';
+            }
+            $("#selWorkflowTemplate").empty()
+            $("#selWorkflowTemplate").append(addWorkflowTemplate)
+            
+        }
         
     }).catch(function (error) {
         console.log("getWorkflowTemplateList error : ", error);
@@ -344,7 +383,7 @@ function getWorkflow(){
         return;
     }
 
-    var url = "/operation/migrations/workflowmng/workflow/{workflowId}";
+    var url = "/operation/migrations/workflowmng/workflow/id/{workflowId}";
     console.log("getWorkflow URL : ", url)
 
     return axios.get(url, {
@@ -383,21 +422,41 @@ function saveWorkflow(){
     
     // request 객체에 Set.
     // sequence가 전체 순서임.
+    var aTaskGroup = {}
     workflowDefinition.sequence.forEach(step => {
         console.log("step ", step)
         
 		switch (step.type) {
-            case 'DynamicMcis':
-                if( validateTask(taskType, step) ){
-
-                }else{
-                    // validation is false.
-                }
+            case 'InfraMigration':
+                //if( validateTask(taskType, step) ){
+                    aTaskGroup.id="mig_infra_task_group"
+                    var tasks = []
+                    var aTask = {id, options, task_component, dependencies};
+                    aTask.id = "mig_infra_task_01"
+                    aTask.task_component = "beetle_task_infra_migration"
+                    aTask.options.request_body = step.properties.body;
+                    tasks.push(aTask)
+                    aTaskGroup.tasks = tasks;
+                // }else{
+                //     // validation is false.
+                // }
                 break;
         }
     });
 
-    
+    var cicadaWorkflow = {}    
+    var cicadaData = {}    
+    var cicadaTaskGroup = aTaskGroup;
+
+    cicadaData.task_group = cicadaTaskGroup;
+    cicadaData.description = "data desc"
+
+    cicadaWorkflow.name = "my01"
+    cicadaWorkflow.data = cicadaData;
+
+    console.log("cicadaWorkflow ", cicadaWorkflow)
+    //TaskGroups []TaskGroup `json:"task_groups"`
+	
     // cicada api 호출
 
     // 결과 return.

@@ -183,8 +183,18 @@ function getReadOnlyConfiguration(){
 			// 	appendPath(root, step);
 			// 	return root;
 			// }
-			defaultRootEditorProvider,
-			defaultStepEditorProvider,
+
+			//defaultRootEditorProvider,
+			rootEditorProvider: (definition, editorContext, isReadonly) => {
+				return defaultRootEditorProvider(definition, editorContext, isReadonly);
+			},
+			// defaultStepEditorProvider,
+			stepEditorProvider: (step, editorContext, _definition, isReadonly) => {
+				// step 종류에 따라 Editor Provider를 달리 한다.
+				console.log("stepEditorProvider ", step)
+				
+				return defaultStepEditorProvider(step, editorContext, _definition, isReadonly);
+			}
 		},
 	}
 };
@@ -226,6 +236,22 @@ function defaultStepEditorProvider(step, editorContext, _definition, isReadonly)
 	return stepEditorContainer;
 }
 
+// custom task edit provider 정의
+function infraMigrationStepEditorProvider(step, editorContext, _definition, isReadonly){
+	console.log("in infraMigrationStepEditorProvider")
+	console.log("step ", step)
+	console.log("editorContext ", editorContext)
+	console.log("isReadonly", isReadonly)
+	console.log("_definition ", _definition)
+
+	const stepEditorContainer = document.createElement('div');
+	
+	appendStepEdit(stepEditorContainer, step, isReadonly, editorContext);
+	const parents = designer.getStepParents(step);
+	appendPath(stepEditorContainer, parents, step);// parents 있고 없고의 차이를 모르겠음.	
+
+	return stepEditorContainer;
+}
 // 
 function getEditableConfiguration(){
 	console.log("in getEditableConfiguration")

@@ -9,11 +9,17 @@ import (
 	"os"
 	"strconv"
 	"time"
+	"encoding/json"
+	"net/http"
 
 	echosession "github.com/go-session/echo-session"
 	"github.com/labstack/echo"
 
 	"github.com/cloud-barista/cb-webtool/src/model"
+	util "github.com/cloud-barista/cb-webtool/src/util"
+
+	cicada_common "github.com/cloud-barista/cb-webtool/src/model/cicada/common"
+	//cicada "github.com/cloud-barista/cb-webtool/src/model/cicada/workflow"
 )
 
 var SpiderURL = os.Getenv("SPIDER_URL")
@@ -21,6 +27,7 @@ var TumbleBugURL = os.Getenv("TUMBLE_URL")
 var DragonFlyURL = os.Getenv("DRAGONFLY_URL")
 var LadyBugURL = os.Getenv("LADYBUG_URL")
 var CicadaURL = os.Getenv("CICADA_URL")
+var HoneyBeeURL = os.Getenv("HONEYBEE_URL")
 
 // type CredentialInfo struct {
 // 	Username string
@@ -31,6 +38,7 @@ type CommonURL struct {
 	TumbleBugURL string
 	DragonFlyURL string
 	LadyBugURL   string
+	HoneyBeeURL   string
 	CicadaURL   string
 }
 
@@ -40,6 +48,7 @@ func GetCommonURL() CommonURL {
 		TumbleBugURL: os.Getenv("TUMBLE_URL"),
 		DragonFlyURL: os.Getenv("DRAGONFLY_URL"),
 		LadyBugURL:   os.Getenv("LADYBUG_URL"),
+		HoneyBeeURL:   os.Getenv("HONEYBEE_URL"),
 		CicadaURL:   os.Getenv("CICADA_URL"),
 	}
 	return common_url
@@ -129,7 +138,7 @@ func CallLoginInfo(c echo.Context) model.LoginInfo {
 	// cookieUsername, cookeierr := c.Request().Cookie("Username")
 	cookieUserID, cookeierr := c.Request().Cookie("UserID")
 	if cookeierr != nil {
-		fmt.Println(cookeierr)
+		fmt.Println("cookeierr ", cookeierr)
 		// return nil
 		return model.LoginInfo{}
 	}
@@ -214,4 +223,61 @@ func MakeNameSpace(name string) string {
 	result := name + "-" + nanos
 	fmt.Println("makeNameSpace : ", result)
 	return result
+}
+
+// Readyz of Cicada
+func GetCicadaReadyz()(model.WebStatus){
+	var originalUrl = "/readyz"	
+	url := util.CICADA + originalUrl
+
+	resp, err := util.CommonHttpWithoutParam(url, http.MethodGet)
+
+	// defer body.Close()
+	returnStatus := model.WebStatus{}
+	simpleMsg := cicada_common.SimpleMsg{}
+	if err != nil {
+		fmt.Println(err)
+		return model.WebStatus{StatusCode: 500, Message: err.Error()}
+	}
+	// util.DisplayResponse(resp) // 수신내용 확인
+
+	//spew.Dump(resp.Body)
+	respBody := resp.Body
+	respStatus := resp.StatusCode
+
+	json.NewDecoder(respBody).Decode(&simpleMsg)
+	fmt.Println(simpleMsg)
+
+	returnStatus.Message = simpleMsg.Message
+	returnStatus.StatusCode = respStatus
+
+	return returnStatus
+}
+
+func GetHoneyBeeReadyz()(model.WebStatus){
+	var originalUrl = "/readyz"	
+	url := util.HONEYBEE + originalUrl
+
+	resp, err := util.CommonHttpWithoutParam(url, http.MethodGet)
+
+	// defer body.Close()
+	returnStatus := model.WebStatus{}
+	simpleMsg := cicada_common.SimpleMsg{}
+	if err != nil {
+		fmt.Println(err)
+		return model.WebStatus{StatusCode: 500, Message: err.Error()}
+	}
+	// util.DisplayResponse(resp) // 수신내용 확인
+
+	//spew.Dump(resp.Body)
+	respBody := resp.Body
+	respStatus := resp.StatusCode
+
+	json.NewDecoder(respBody).Decode(&simpleMsg)
+	fmt.Println(simpleMsg)
+
+	returnStatus.Message = simpleMsg.Message
+	returnStatus.StatusCode = respStatus
+
+	return returnStatus
 }

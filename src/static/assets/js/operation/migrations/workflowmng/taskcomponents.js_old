@@ -371,6 +371,152 @@ function defineTaskStepInfraMigration(id, name, properties) {
 // 	};
 // }
 
+// DynamicMcis Task 입력 내용 표시
+function appendDynamicMcisTaskPropertiesbox(root, step, isReadonly, editorContext){
+    
+    console.log("in appendDynamicMcisTaskPropertiesbox step ", step)
+    console.log("in appendDynamicMcisTaskPropertiesbox editorContext ", editorContext)
+    var stepBody = step.properties.body;
+    var stepVm = step.properties.body.vm[0];
+	// Editor 정의
+	// Mcis는 여러개의 VM을 가질 수 있으므로 id는 순번을 붙인다.(addVM 하면서 순번 추가할 수 있음)
+	const item = document.createElement('div');
+
+    // MCIS 영력
+    const mcisItem = document.createElement('div');
+    var addMcis = "";
+    addMcis += '<ul>';
+	
+	addMcis += '<li>';
+	addMcis += '	<label>MCIS Label</label>';
+	addMcis += '	<input type="text" name="mcisLabel" value="' + stepBody.label + '" title="" id="mcisLabel" />';
+	addMcis += '</li>';
+    addMcis += '</ul>';
+    mcisItem.innerHTML = addMcis;
+    item.appendChild(mcisItem);
+
+    const hr = document.createElement('hr');
+    item.appendChild(hr);
+
+    // VM 영역
+    const vmItem = document.createElement('div');
+	var addServer = "";
+	addServer += '<ul>';
+	
+	addServer += '<li>';
+	addServer += '	<label>VM Label</label>';
+	addServer += '	<input type="text" name="vmLabel" value="' + stepVm.label + '" title="" id="vmLabel0" />';
+	addServer += '</li>';
+
+	addServer += '<li>';
+	addServer += '	<label><span class="ch">*</span>VM Name</label>';
+	addServer += '	<input type="text" name="vmName" value="' + stepVm.name + '" title="" id="vmName0" />';
+	addServer += '</li>';
+
+	addServer += '<li>';
+	addServer += '	<label><span class="ch">*</span>VM Size</label>';
+	addServer += '	<input type="text" name="subGroupSize" value="' + stepVm.subGroupSize + '" title="" id="subgroupSize0" />';
+	addServer += '</li>';
+
+	addServer += '<li>';
+	addServer += '	<label><span class="ch">*</span>Spec</label>';
+	addServer += '	<input type="text" name="vmSpec" value="' + stepVm.commonSpec + '" title="" id="vmSpec0" />';
+	addServer += '</li>';
+
+	addServer += '<li>';
+	addServer += '	<label><span class="ch">*</span>OS Image</label>';
+	addServer += '	<input type="text" name="vmImage" value="' + stepVm.commonImage + '" title="" id="vmImage0" />';
+	addServer += '</li>';
+
+
+	addServer += '<li>';
+	addServer += '	<label><span class="ch">*</span>Root Disk Type</label>';
+	addServer += '	<input type="text" name="rootDiskType" value="' + stepVm.rootDiskType + '" title="" id="rootDiskType0" />';
+	addServer += '</li>';
+
+	addServer += '<li>';
+	addServer += '	<label><span class="ch">*</span>Root Disk Size</label>';
+	addServer += '	<input type="text" name="rootDiskSize" value="' + stepVm.rootDiskSize + '" title="" id="rootDiskSize0" />';
+	addServer += '</li>';
+
+	addServer += '<li>';
+	addServer += '	<label><span class="ch">*</span>Connection</label>';
+	addServer += '	<input type="text" name="connectionName" value="' + stepVm.connectionName + '" title="" id="connectionName0" />';
+	addServer += '</li>';
+
+	addServer += '</ul>';
+    vmItem.innerHTML = addServer;
+    item.appendChild(vmItem);
+	//item.innerHTML = addServer;
+    //item.appendChild(addServer);
+	root.appendChild(item)
+
+    // event 정의 추가
+    var inputMcisLabel = item.querySelector('input[name="mcisLabel"]');
+    inputMcisLabel.addEventListener('change', function(event) {            
+        step.properties.body.label = inputMcisLabel.value;            
+        editorContext.notifyNameChanged();
+        console.log('mcis label 값이 변경되었습니다.', step);
+    });
+    
+    if( !isReadonly){
+        var inputVmLabel = item.querySelector('input[name="vmLabel"]');
+        inputVmLabel.addEventListener('change', function(event) {            
+            step.properties.body.vm[0].label = inputVmLabel.value;            
+            editorContext.notifyNameChanged();
+            console.log('vm label 값이 변경되었습니다.', step);
+        });
+
+        var inputVmName = item.querySelector('input[name="vmName"]');
+        inputVmName.addEventListener('change', function(event) {            
+            step.properties.body.vm[0].name = inputVmName.value;            
+            editorContext.notifyNameChanged();
+            console.log('vm Name 값이 변경되었습니다.', step);
+        });
+
+        var inputSubGroupSize = item.querySelector('input[name="subGroupSize"]');
+        inputSubGroupSize.addEventListener('change', function(event) {            
+            step.properties.body.vm[0].subGroupSize = inputSubGroupSize.value;            
+            editorContext.notifyNameChanged();
+            console.log('vm size 값이 변경되었습니다.', step);
+        });
+
+        var inputVmSpec = item.querySelector('input[name="vmSpec"]');
+        inputVmSpec.addEventListener('change', function(event) {            
+            step.properties.body.vm[0].commonSpec = inputVmSpec.value;            
+            editorContext.notifyNameChanged();
+            console.log('vm spec 값이 변경되었습니다.', step);
+        });
+
+        var inputVmImage = item.querySelector('input[name="vmImage"]');
+        inputVmImage.addEventListener('change', function(event) {            
+            step.properties.body.vm[0].commonImage = inputVmImage.value;            
+            editorContext.notifyNameChanged();
+            console.log('vm Image 값이 변경되었습니다.', step);
+        });
+
+        var inputRootDiskType = item.querySelector('input[name="rootDiskType"]');
+        inputRootDiskType.addEventListener('change', function(event) {            
+            step.properties.body.vm[0].rootDiskType = inputRootDiskType.value;            
+            editorContext.notifyNameChanged();
+            console.log('rootDiskType 값이 변경되었습니다.', step);
+        });
+        var inputRootDiskSize = item.querySelector('input[name="rootDiskSize"]');
+        inputRootDiskSize.addEventListener('change', function(event) {            
+            step.properties.body.vm[0].rootDiskSize = inputRootDiskSize.value;            
+            editorContext.notifyNameChanged();
+            console.log('rootDiskSize 값이 변경되었습니다.', step);
+        });
+        var inputConnectionName = item.querySelector('input[name="connectionName"]');
+        inputConnectionName.addEventListener('change', function(event) {            
+            step.properties.body.vm[0].connectionName = inputConnectionName.value;            
+            editorContext.notifyNameChanged();
+            console.log('connectionName 값이 변경되었습니다.', step);
+        });
+    }
+    return
+}
+
 
 // 오른쪽 task의 상세정보 표시 영역
 function appendInfraMigrationTaskPropertiesbox(root, step, isReadonly, editorContext){
@@ -413,17 +559,148 @@ function appendInfraMigrationTaskPropertiesbox(root, step, isReadonly, editorCon
 
 
     // VM 영역 정의
-	const vmsItem = document.createElement('div');
-	vmsItem.id = "InfraMigrationTask_VMS"
-	vmsItem.style.overflowY = "scroll";
-	vmsItem.style.height = "400px";
-
-	item.appendChild(vmsItem);
 	for( var i =0; i < stepVms.length; i++){
-		definitionVMArea(vmsItem, stepVms[i], isReadonly)
+		definitionVMArea(item, stepVms[i], isReadonly)
 	}
+	// for( var i =0; i < stepVms.length; i++){
+	// 	const stepVm = stepVms[i];
 	
+	// 	const vmItem = document.createElement('div');
+	// 	var addServer = "";
+	// 	addServer += '<ul>';
+		
+	// 	addServer += '<li>';
+	// 	addServer += '	<label>VM Label</label>';
+	// 	addServer += '	<input type="text" name="vmLabel" value="' + stepVm.label + '" title="" id="vmLabel0" />';
+	// 	addServer += '</li>';
+
+	// 	addServer += '<li>';
+	// 	addServer += '	<label><span class="ch">*</span>VM Name</label>';
+	// 	addServer += '	<input type="text" name="vmName" value="' + stepVm.name + '" title="" id="vmName0" />';
+	// 	addServer += '</li>';
+
+	// 	addServer += '<li>';
+	// 	addServer += '	<label><span class="ch">*</span>VM Size</label>';
+	// 	addServer += '	<input type="text" name="subGroupSize" value="' + stepVm.subGroupSize + '" title="" id="subgroupSize0" />';
+	// 	addServer += '</li>';
+
+	// 	addServer += '<li>';
+	// 	addServer += '	<label><span class="ch">*</span>Spec</label>';
+	// 	addServer += '	<input type="text" name="vmSpec" value="' + stepVm.commonSpec + '" title="" id="vmSpec0" />';
+	// 	addServer += '</li>';
+
+	// 	addServer += '<li>';
+	// 	addServer += '	<label><span class="ch">*</span>OS Image</label>';
+	// 	addServer += '	<input type="text" name="vmImage" value="' + stepVm.commonImage + '" title="" id="vmImage0" />';
+	// 	addServer += '</li>';
+
+
+	// 	addServer += '<li>';
+	// 	addServer += '	<label><span class="ch">*</span>Root Disk Type</label>';
+	// 	addServer += '	<input type="text" name="rootDiskType" value="' + stepVm.rootDiskType + '" title="" id="rootDiskType0" />';
+	// 	addServer += '</li>';
+
+	// 	addServer += '<li>';
+	// 	addServer += '	<label><span class="ch">*</span>Root Disk Size</label>';
+	// 	addServer += '	<input type="text" name="rootDiskSize" value="' + stepVm.rootDiskSize + '" title="" id="rootDiskSize0" />';
+	// 	addServer += '</li>';
+
+	// 	addServer += '<li>';
+	// 	addServer += '	<label><span class="ch">*</span>Connection</label>';
+	// 	addServer += '	<input type="text" name="connectionName" value="' + stepVm.connectionName + '" title="" id="connectionName0" />';
+	// 	addServer += '</li>';
+
+	// 	addServer += '</ul>';
+	// 	vmItem.innerHTML = addServer;
+	// 	item.appendChild(vmItem);
 	
+	// 	//item.innerHTML = addServer;
+	// 	//item.appendChild(addServer);
+	// 	root.appendChild(item)
+	// }
+    // // event 정의 추가
+    // var inputMcisLabel = item.querySelector('input[name="mcisLabel"]');	
+    // inputMcisLabel.addEventListener('change', function(event) {            
+    //     step.properties.body.label = inputMcisLabel.value;            
+    //     editorContext.notifyNameChanged();
+    //     console.log('mcis label 값이 변경되었습니다.', step);
+    // });
+    
+    // if( !isReadonly){
+		
+	// 	const stepBody = JSON.parse(step.properties.body);
+	// 	console.log("stepBody ", stepBody)
+	// 	stepVms = stepBody.vm;
+		
+	// 	item.addEventListener('change', function(event) {
+	// 		// 이벤트가 발생한 요소가 input[name="vmLabel"]인지 확인
+	// 		if (event.target.matches('input[name="vmLabel"]')) {
+	// 			console.log(`Input value: ${event.target.value}`);
+	// 			console.log("step.properties.body ", step.properties.body)
+	// 			console.log("step.properties.body.name ", step.properties.body.name)
+	// 			console.log("step.properties.body.vm ", step.properties.body.vm)
+	// 			stepVms[0].label = event.target.value;
+	// 		  //step.properties.body.vm[0].label = event.target.value;
+	// 		}
+	// 	});
+
+		
+
+    //     // var inputVmLabel = item.querySelector('input[name="vmLabel"]');
+    //     // inputVmLabel.addEventListener('change', function(event) {   
+	// 	// 	step.properties.body.vm[0].label = inputVmLabel.value;
+    //     //     editorContext.notifyNameChanged();
+    //     //     console.log('vm label 값이 변경되었습니다.', step);
+    //     // });
+
+    //     // var inputVmName = item.querySelector('input[name="vmName"]');
+    //     // inputVmName.addEventListener('change', function(event) {            
+    //     //     step.properties.body.vm[0].name = inputVmName.value;            
+    //     //     editorContext.notifyNameChanged();
+    //     //     console.log('vm Name 값이 변경되었습니다.', step);
+    //     // });//
+
+    //     // var inputSubGroupSize = item.querySelector('input[name="subGroupSize"]');
+    //     // inputSubGroupSize.addEventListener('change', function(event) {            
+    //     //     step.properties.body.vm[0].subGroupSize = inputSubGroupSize.value;            
+    //     //     editorContext.notifyNameChanged();
+    //     //     console.log('vm size 값이 변경되었습니다.', step);
+    //     // });
+
+    //     // var inputVmSpec = item.querySelector('input[name="vmSpec"]');
+    //     // inputVmSpec.addEventListener('change', function(event) {            
+    //     //     step.properties.body.vm[0].commonSpec = inputVmSpec.value;            
+    //     //     editorContext.notifyNameChanged();
+    //     //     console.log('vm spec 값이 변경되었습니다.', step);
+    //     // });
+
+    //     // var inputVmImage = item.querySelector('input[name="vmImage"]');
+    //     // inputVmImage.addEventListener('change', function(event) {            
+    //     //     step.properties.body.vm[0].commonImage = inputVmImage.value;            
+    //     //     editorContext.notifyNameChanged();
+    //     //     console.log('vm Image 값이 변경되었습니다.', step);
+    //     // });
+
+    //     // var inputRootDiskType = item.querySelector('input[name="rootDiskType"]');
+    //     // inputRootDiskType.addEventListener('change', function(event) {            
+    //     //     step.properties.body.vm[0].rootDiskType = inputRootDiskType.value;            
+    //     //     editorContext.notifyNameChanged();
+    //     //     console.log('rootDiskType 값이 변경되었습니다.', step);
+    //     // });
+    //     // var inputRootDiskSize = item.querySelector('input[name="rootDiskSize"]');
+    //     // inputRootDiskSize.addEventListener('change', function(event) {            
+    //     //     step.properties.body.vm[0].rootDiskSize = inputRootDiskSize.value;            
+    //     //     editorContext.notifyNameChanged();
+    //     //     console.log('rootDiskSize 값이 변경되었습니다.', step);
+    //     // });
+    //     // var inputConnectionName = item.querySelector('input[name="connectionName"]');
+    //     // inputConnectionName.addEventListener('change', function(event) {            
+    //     //     step.properties.body.vm[0].connectionName = inputConnectionName.value;            
+    //     //     editorContext.notifyNameChanged();
+    //     //     console.log('connectionName 값이 변경되었습니다.', step);
+    //     // });
+    // }
+
 	if( !isReadonly){
 		var addVmButton = document.createElement('button');
 		addVmButton.textContent = "Add VM";
@@ -436,22 +713,13 @@ function appendInfraMigrationTaskPropertiesbox(root, step, isReadonly, editorCon
     
 }
 
-// vm 정의 추가
 function addVM() {
-	const vmsArea = document.querySelector('#InfraMigrationTask_VMS');
-
-	//definitionVMArea(vmsArea, stepVm, isReadonly)
-	definitionVMArea(vmsArea);
     // 이 부분에 addVM 함수의 내용을 작성
     console.log('addVM 함수를 호출했습니다.');
 }
 
-//vm 정의 삭제
 function delVM(vmIndex){
-	const vmArea = document.querySelector('#InfraMigrationTask_vm_' + vmIndex);
-	if (vmArea) {
-		vmArea.remove();
-	}	
+
 }
 
 // vm 영역 정의. addVM()을 통해 여러개 추가 가능
@@ -461,43 +729,18 @@ function definitionVMArea(item, stepVm, isReadonly){
 	const vms = document.querySelectorAll('input[name="vmName"]');
 	const ids = Array.from(vms).map(vm => parseInt(vm.id.replace('vmName_', ''), 10));
 	// 최댓값 찾기
-	const maxId = ids.length > 0 ? Math.max(...ids) : 0;
+	const maxId = Math.max(...ids);
 
 	const eleNames = ["vmName","vmLabel","subGroupSize","vmSpec","vmImage", "rootDiskType", "rootDiskSize"]
 	var addIndex = maxId+1;
 	
 	
 	const vmItem = document.createElement('div');
-	vmItem.id = "InfraMigrationTask_vm_" + addIndex	
-
-	// const serverUl = document.createElement('ul');
-	// item.appendChild(serverUl);
-
-	// const eleLi = document.createElement('li');
-	// serverUl.appendChild(eleLi);
-
-	// const eleLiLabel = document.createElement('label');
-	// eleLiLabel.textContent = "my label"
-	// const eleLiInput = document.createElement('input');
-	// eleLiInput.name = "myInput";
-	// eleLiInput.id = "myInput_"+addIndex
-	
-	// eleLi.appendChild(eleLiLabel)
-	// eleLi.appendChild(eleLiInput)
-
-	// var vmNameObj = item.querySelector('#myInput_' + addIndex);
-	// if(vmNameObj){
-	// 	vmNameObj.value = stepVm.name;
-	// }else{
-	// 	console.error('Element with ID "myInput_' + addIndex + '" not found.');
-	// }
-	
-	
-	
+	vmItem.id = "vm_" + addIndex
 
 	var addServer = "";
 	addServer += '<ul>';
-	//
+	
 	addServer += '<li>';
 	addServer += '	<label>VM Label</label>';
 	addServer += '	<input type="text" name="vmLabel" id="vmLabel_' + addIndex + '" />';
@@ -505,12 +748,12 @@ function definitionVMArea(item, stepVm, isReadonly){
 
 	addServer += '<li>';
 	addServer += '	<label><span class="ch">*</span>VM Name</label>';
-	addServer += '	<span class="sbox"><input type="text" name="vmName" id="vmName_' + addIndex + '" /></span>';
+	addServer += '	<input type="text" name="vmName" id="vmName_' + addIndex + '" />';
 	addServer += '</li>';
 
 	addServer += '<li>';
 	addServer += '	<label><span class="ch">*</span>VM Size</label>';
-	addServer += '	<input type="text" name="subGroupSize" id="subGroupSize_' + addIndex + '" />';
+	addServer += '	<input type="text" name="subGroupSize" id="subgroupSize_' + addIndex + '" />';
 	addServer += '</li>';
 
 	addServer += '<li>';
@@ -545,29 +788,21 @@ function definitionVMArea(item, stepVm, isReadonly){
 	
 	if(stepVm){// data가 있으면 값 mapping
 		try{
-			// var vmNameObj = item.querySelector('#vmName_' + addIndex);
-			// if(vmNameObj){
-			// 	vmNameObj.value = stepVm.name;
-			// }else{
-			// 	console.error('Element with ID "vmName_' + addIndex + '" not found.');
-			// }
-
-			// document에는 아직 추가 안되었으므로 item에서 조회해야 함.
-			item.querySelector('#vmName_' + addIndex).value = stepVm.name;
-			item.querySelector('#vmLabel_' + addIndex).value = stepVm.label;
-			item.querySelector('#subGroupSize_' + addIndex).value = stepVm.subGroupSize;
-			item.querySelector('#vmSpec_' + addIndex).value = stepVm.commonSpec;
-			item.querySelector('#vmImage_' + addIndex).value = stepVm.commonImage;
-			item.querySelector('#rootDiskType_' + addIndex).value = stepVm.rootDiskType;
-			item.querySelector('#rootDiskSize_' + addIndex).value = stepVm.rootDiskSize;
-			item.querySelector('#connectionName_' + addIndex).value = stepVm.connectionName;
+		document.querySelector('#vmName_' + addIndex).value = stepVm.name;
+		document.querySelector('#vmLabel_' + addIndex).value = stepVm.label;
+		document.querySelector('#subGroupSize_' + addIndex).value = stepVm.subGroupSize;
+		document.querySelector('#vmSpec_' + addIndex).value = stepVm.commonSpec;
+		document.querySelector('#vmImage_' + addIndex).value = stepVm.commonImage;
+		document.querySelector('#rootDiskType_' + addIndex).value = stepVm.rootDiskType;
+		document.querySelector('#rootDiskSize_' + addIndex).value = stepVm.rootDiskSize;
+		document.querySelector('#connectionName_' + addIndex).value = stepVm.connectionName;
 		}catch(e){
 			console.log(e);
 		}
 	}
     
     if( !isReadonly){
-		console.log("stepVM ", stepVm)
+		
 		item.addEventListener('change', function(event) {
 			console.log(`Input value: ${event.target.value}`);
 			// 이벤트가 발생한 요소가 input[name="vmLabel"]인지 확인
@@ -606,11 +841,11 @@ function definitionVMArea(item, stepVm, isReadonly){
 
 		// 
 		var delVmButton = document.createElement('button');
-		delVmButton.textContent = "Delete VM";
+		delVmButton.textContent = "del VM";
 		delVmButton.addEventListener("click", function() {
-			delVM(addIndex);
+			delVM();
 		})
-		vmItem.appendChild(delVmButton);
+		item.appendChild(delVmButton);
     }
 	return item;
 }

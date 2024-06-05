@@ -16,6 +16,7 @@ var TUMBLEBUG = os.Getenv("TUMBLE_URL")
 var DRAGONFLY = os.Getenv("DRAGONFLY_URL")
 var LADYBUG = os.Getenv("LADYBUG_URL")
 var CICADA = os.Getenv("CICADA_URL")
+var HONEYBEE = os.Getenv("HONEYBEE_URL")
 
 //var MCKS = os.Getenv("MCKS_URL")
 

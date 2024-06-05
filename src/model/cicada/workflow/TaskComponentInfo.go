@@ -1,4 +1,4 @@
-package cicada
+package workflow
 
 
 type TaskComponentInfo struct {
@@ -6,4 +6,3 @@ type TaskComponentInfo struct {
 	Data   string `json:"Data"`
 	
 }
-
