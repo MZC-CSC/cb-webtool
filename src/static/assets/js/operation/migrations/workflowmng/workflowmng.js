@@ -2,6 +2,7 @@ const placeholder = document.getElementById('workflowplaceholder');
 const localStorageKey = 'sqdMngScreen';
 const confState = readOnlyState();
 let designer;
+let selectedWorkflowId = "";
 
 document.addEventListener('DOMContentLoaded', function() {
     
@@ -44,6 +45,48 @@ $(document).ready(function () {
     });
     
 });
+
+// 저장 된 workflow 실행.
+function runWorkflow(){
+    console.log("runWorkflow")    
+    console.log("selectedWorkflowId ", selectedWorkflowId)
+    //
+    if( selectedWorkflowId == undefined || selectedWorkflowId == ""){
+        commonAlert("Please a Workflow save first");
+        return;
+    }
+
+    // cicada api 호출
+    try{
+        var url = "/operation/migrations/workflowmng/workflow/run/" + selectedWorkflowId;
+        axios.post(url,
+        ).then(result=>{
+            console.log("data : ",result);
+            console.log("Result Status : ",result.status); 
+
+            var statusCode = result.data.status;
+            var message = result.data.message;
+            console.log("Result Status : ",statusCode); 
+            console.log("Result message : ",message); 
+
+            if(result.status == 201 || result.status == 200){
+                commonResultAlert("The workflow has run successfully")
+            
+            }else{
+                commonErrorAlert(statusCode, message) 
+            }
+        }).catch((error) => {
+            console.log(error);
+            console.log(error.response)
+            var errorMessage = error.response.data.error;
+            var statusCode = error.response.status;
+            commonErrorAlert(statusCode, errorMessage) 
+        })
+    }finally{
+        
+    }
+
+}
 
 function deleteWorkflow() {
     var workflowId = "";
@@ -281,6 +324,7 @@ function showWorkflowInfo(workflowId) {
         console.log("templateDefinition : ", templateDefinition)
         resetDesigner(templateDefinition)
         
+        selectedWorkflowId = workflowId;// 선택한 workflowId를 저장 (for run )
     }).catch(function (error) {
         console.log("Network detail error : ", error);
     });

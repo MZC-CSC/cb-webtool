@@ -405,21 +405,6 @@ function getWorkflow(){
     });
 }
 
-// 저장 된 workflow 실행.
-function runWorkflow(){
-    console.log("runWorkflow")
-    var selectedWorkflowId = document.getElementById("workflowId").value;
-    console.log("selectedWorkflowId ", selectedWorkflowId)
-    //
-    if( selectedWorkflowId == undefined || selectedWorkflowId == ""){
-        commonAlert("Please a Workflow save first");
-        return;
-    }
-
-    // 
-
-}
-
 // 해당 step을 cicada에서 사용하는 taskGroup으로 변경
 function convertTaskGroup(step){
     var cicadaTaskGroup = {}    

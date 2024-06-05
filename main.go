@@ -1017,6 +1017,7 @@ func main() {
 	workflowMngGroup.GET("", controller.WorkflowMngForm)
 
 	e.POST("/operation/migrations/workflowmng/workflow", controller.WorkflowRegProc)
+	e.POST("/operation/migrations/workflowmng/workflow/run/:workflowID", controller.WorkflowExecute)
 	e.GET("/operation/migrations/workflowmng/workflow/list", controller.GetWorkflowList)
 	e.GET("/operation/migrations/workflowmng/workflow/id/:workflowID", controller.GetWorkflowInfoData)
 	

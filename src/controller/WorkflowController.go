@@ -137,11 +137,7 @@ func GetWorkflowInfoData(c echo.Context) error {
 // Workflow 등록
 func WorkflowRegProc(c echo.Context) error {
 	log.Println("WorkflowRegProc : ")
-	// loginInfo := service.CallLoginInfo(c)
-	// if loginInfo.UserID == "" {
-	// 	return c.Redirect(http.StatusTemporaryRedirect, "/login")
-	// }
-
+	
 	workflowReqInfo := &workflow.WorkflowReqInfo{}
 	if err := c.Bind(workflowReqInfo); err != nil {
 		log.Println(err)
@@ -150,9 +146,7 @@ func WorkflowRegProc(c echo.Context) error {
 			"status":  "5001",
 		})
 	}
-	log.Println(workflowReqInfo)
-
-	
+	log.Println(workflowReqInfo)	
 	
 	respStatus := service.RegWorkflow(workflowReqInfo)
 
@@ -162,6 +156,22 @@ func WorkflowRegProc(c echo.Context) error {
 		"status":  respStatus.StatusCode,
 	})
 
+}
+
+// Workflow 실행
+func WorkflowExecute(c echo.Context) error {
+	log.Println("WorkflowExecute : ")
+	
+	workflowID := c.Param("workflowID")
+	log.Println("workflowID= " + workflowID)
+	
+	respStatus := service.RunWorkflow(workflowID)
+
+	log.Println("before return")
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": respStatus.Message,
+		"status":  respStatus.StatusCode,
+	})
 }
 
 // Workflow 삭제

@@ -14,7 +14,7 @@ import (
 	// model "github.com/cloud-barista/cb-webtool/src/model"
 	"github.com/cloud-barista/cb-webtool/src/model"
 	// spider "github.com/cloud-barista/cb-webtool/src/model/spider"	
-	//cicada_common "github.com/cloud-barista/cb-webtool/src/model/cicada/common"
+	cicada_common "github.com/cloud-barista/cb-webtool/src/model/cicada/common"
 	workflow "github.com/cloud-barista/cb-webtool/src/model/cicada/workflow"
 
 	//butterfly "github.com/cloud-barista/cb-webtool/src/model/butterfly"
@@ -57,6 +57,43 @@ func RegWorkflow(workflowInfoReq *workflow.WorkflowReqInfo)(model.WebStatus){
 	}
 	returnStatus.StatusCode = respStatus
 
+	return returnStatus
+}
+
+// Workflow 실행
+func RunWorkflow(workflowID string)(model.WebStatus){
+	var originalUrl = "/workflow/{wfId}/run"
+
+	var paramMapper = make(map[string]string)
+	paramMapper["{wfId}"] = workflowID
+	urlParam := util.MappingUrlParameter(originalUrl, paramMapper)
+
+	url := util.CICADA + urlParam
+	
+	resp, err := util.CommonHttp(url, nil, http.MethodPost)
+
+	returnSimpleMsg := cicada_common.SimpleMsg{}
+	returnStatus := model.WebStatus{}
+
+	if err != nil {
+		fmt.Println(err)
+		return model.WebStatus{StatusCode: 500, Message: err.Error()}
+	}
+
+	respBody := resp.Body
+	respStatus := resp.StatusCode
+
+	if respStatus != 200 && respStatus != 201 { // 호출은 정상이나, 가져온 결과값이 200, 201아닌 경우 message에 담겨있는 것을 WebStatus에 set
+		errorInfo := model.ErrorInfo{}
+		json.NewDecoder(respBody).Decode(&errorInfo)
+		fmt.Println("respStatus != 200 reason ", errorInfo)
+		returnStatus.Message = errorInfo.Message
+	} else {
+		json.NewDecoder(respBody).Decode(&returnSimpleMsg)
+		fmt.Println(returnSimpleMsg)
+	}
+	returnStatus.StatusCode = respStatus
+	returnStatus.Message = returnSimpleMsg.Message
 	return returnStatus
 }
 
