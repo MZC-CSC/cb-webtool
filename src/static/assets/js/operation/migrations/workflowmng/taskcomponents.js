@@ -314,29 +314,55 @@ function appendPath(root, parents, step) {
 // step 안에서  appendTitlebox, appendPath
 
 // custom task component
-function defineTaskStepDynamicMcis(id, name, properties) {
-	console.log("createTaskStepDynamicMcis id", id)
-	console.log("createTaskStepDynamicMcis name", name)
-	console.log("createTaskStepDynamicMcis ", properties)
+
+// Task Group 정의 : Loop를 수정하여 껍데기만 있는 TaskGroup을 만든다.
+// TaskGroup의 task들이 있으면 내부 sequence에 추가한다.
+function defineTaskGroupStep(id, name, taskGroupProperties){
+	var taskSequence = []
+	//console.log("defineTaskGroupStep ", id)
+	//console.log("defineTaskGroupStep name", name)
+	//console.log("defineTaskGroupStep taskGroupProperties", taskGroupProperties)	
 	
+	if( taskGroupProperties ){
+		var tasks = taskGroupProperties.tasks;
+		for(var k in tasks){
+			console.log("task ", tasks[k])
+			var taskId = tasks[k].id ? "" : "temp_wf_task_" + k;// taskId가 없으면 readonly이기 때문에 임시 taskId를 넣음.
+			var taskComponent = tasks[k].task_component;
+			//console.log("taskId ", taskId)
+			//console.log("taskComponent ", taskComponent)
+			if( taskComponent == "beetle_task_infra_migration"){
+				var taskName = tasks[k].id ? "" : "tem-mig01"
+				// json객체로 한번 더 형변환 : "request_body": "{\n   \"name\": \"recommended-infra01\", 형태임
+				var request_body_str = tasks[k].request_body
+				const requestBody = JSON.parse(request_body_str);
+				var taskProperties = {body: requestBody};
+				
+				var task = defineTaskStepInfraMigration(taskId, taskName, taskProperties )
+				
+				taskSequence.push(task);
+			}
+		}
+	}
+	console.log("return taskSequence ", taskSequence)
 	return {
 		id,
-		componentType: 'task',
-		type: 'McisDynamic', // Toolbox 에 표시되는 이름
-		name: 'Mcis Dynamic', // task의 이름 - cancas에 display되는 이름. 속성 form에는 실제 task의 name 을 주면 되는가?
-		properties: properties || {
+		componentType: 'container',
+		type: 'TaskGroup',
+		name: 'Task Group',
+		properties: {
 			provider: 'defaultProvider',
-			options: '{}',
-            body: request_body
-		}
+			name: name
+		},
+		sequence: taskSequence
 	};
 }
 
 
 function defineTaskStepInfraMigration(id, name, properties) {
-	console.log("createTaskStepInfraMigration id", id)
-	console.log("createTaskStepInfraMigration name", name)
-	console.log("createTaskStepInfraMigration ", properties)
+	console.log("defineTaskStepInfraMigration id", id)
+	console.log("defineTaskStepInfraMigration name", name)
+	console.log("defineTaskStepInfraMigration ", properties)
 	
 	return {
 		id,
@@ -420,7 +446,24 @@ function appendInfraMigrationTaskPropertiesbox(root, step, isReadonly, editorCon
 
 	item.appendChild(vmsItem);
 	for( var i =0; i < stepVms.length; i++){
-		definitionVMArea(vmsItem, stepVms[i], isReadonly)
+
+		var vmVirtualId = "InfraMigrationTask_vm_" + i
+		console.log("append vmStep ", i)
+		console.log("before  vmStep ", stepVms[i])
+		addedVmItem = definitionVMArea(vmsItem, stepVms[i], isReadonly, i)
+
+		
+		if( !isReadonly){
+			var delVmButton = document.createElement('button');
+			delVmButton.id = "delVm_" + i;
+			delVmButton.textContent = "Delete VM" + i;
+			delVmButton.addEventListener("click", function() {
+				//console.log("delVM addEventListener ", i)
+				delVM(stepVms, vmVirtualId);
+			})
+			addedVmItem.appendChild(delVmButton);
+			
+		}
 	}
 	
 	
@@ -428,7 +471,7 @@ function appendInfraMigrationTaskPropertiesbox(root, step, isReadonly, editorCon
 		var addVmButton = document.createElement('button');
 		addVmButton.textContent = "Add VM";
 		addVmButton.addEventListener("click", function() {
-			addVM();
+			addVM(stepVms, (stepVms.length) );
 		})
 		item.appendChild(addVmButton);
 	}
@@ -437,38 +480,86 @@ function appendInfraMigrationTaskPropertiesbox(root, step, isReadonly, editorCon
 }
 
 // vm 정의 추가
-function addVM() {
+function addVM(stepVms, addIndex) {
 	const vmsArea = document.querySelector('#InfraMigrationTask_VMS');
 
+	console.log("stepVMs ", stepVms)
+
+	// 빈 stepVM을 추가해야 함. 
+	// const definition = designer.getDefinition();
+	// for (let step of definition.sequence) {
+	// 	if (step.type === 'readUserInput') {
+	// 		register = prompt(step.properties['question']);
+	// 	} else if (step.type === 'sendEmail') {
+	// 		if (step.properties['ifReqisterEquals'] === register) {
+	// 			alert(`E-mail sent to ${step.properties['email']}`);
+	// 		}
+	// 	}
+	// }
+
+	//designer.getSelectedStepId()// ID로 할 게 없네...
+
+	var newVm = {
+		commonSpec : "",
+		commonImage : "",
+		connectionName : "", 
+		description : "", 
+		label : "", 
+		name : "", 
+		rootDiskSize : "", 
+		rootDiskType : "", 
+		subGroupSize : 1, 
+		vmUserPassword : ""
+	}
+	stepVms.push(newVm);
 	//definitionVMArea(vmsArea, stepVm, isReadonly)
-	definitionVMArea(vmsArea);
+	definitionVMArea(vmsArea, newVm, false, addIndex);
     // 이 부분에 addVM 함수의 내용을 작성
     console.log('addVM 함수를 호출했습니다.');
 }
 
 //vm 정의 삭제
-function delVM(vmIndex){
-	const vmArea = document.querySelector('#InfraMigrationTask_vm_' + vmIndex);
+// 
+function delVM(stepVms, vmVirtualId){
+	console.log("delVM ", vmVirtualId)
+	const vmArea = document.querySelector('#' + vmVirtualId);
+	
 	if (vmArea) {
+		if(stepVms.length == 1){			
+			console.log("at least 1 vm is required")// 마지막 1개는 못 지움
+			return
+		}
+		for( var i =0; i < stepVms.length; i++){
+			var stepVm = stepVms[i]
+			//var vmVirtualId = "InfraMigrationTask_vm_" + vmIndex
+			if ( stepVm.virtualId == vmVirtualId){
+				console.log("slice~~~~")
+				stepVms.splice(i, 1)
+				break;
+			}
+		}
+		console.log("after stepVms ", stepVms)
 		vmArea.remove();
 	}	
 }
 
 // vm 영역 정의. addVM()을 통해 여러개 추가 가능
 // item은 parentDiv, stepVm 는 data binding 값. 없으면 skip, isReadOnly면 event 제거
-function definitionVMArea(item, stepVm, isReadonly){
-	
-	const vms = document.querySelectorAll('input[name="vmName"]');
-	const ids = Array.from(vms).map(vm => parseInt(vm.id.replace('vmName_', ''), 10));
-	// 최댓값 찾기
-	const maxId = ids.length > 0 ? Math.max(...ids) : 0;
+function definitionVMArea(item, stepVm, isReadonly, addIndex){
+	//var virtualId = "InfraMigrationTask_vm_" + i
+	// const vms = item.querySelectorAll('input[name="vmName"]');
+	// console.log("vms length ", vms.length)
+	// const ids = Array.from(vms).map(vm => parseInt(vm.id.replace('vmName_', ''), 10));
+	// // 최댓값 찾기
+	// const maxId = ids.length > 0 ? Math.max(...ids) : 0;
 
-	const eleNames = ["vmName","vmLabel","subGroupSize","vmSpec","vmImage", "rootDiskType", "rootDiskSize"]
-	var addIndex = maxId+1;
-	
+	// const eleNames = ["vmName","vmLabel","subGroupSize","vmSpec","vmImage", "rootDiskType", "rootDiskSize"]
+	// var addIndex = maxId+1;
+	// console.log("addIndex = ", addIndex)
 	
 	const vmItem = document.createElement('div');
 	vmItem.id = "InfraMigrationTask_vm_" + addIndex	
+	stepVm.virtualId= "InfraMigrationTask_vm_" + addIndex;// ui에서 내부 index찾기를 위해 추가
 
 	// const serverUl = document.createElement('ul');
 	// item.appendChild(serverUl);
@@ -571,46 +662,40 @@ function definitionVMArea(item, stepVm, isReadonly){
 		item.addEventListener('change', function(event) {
 			console.log(`Input value: ${event.target.value}`);
 			// 이벤트가 발생한 요소가 input[name="vmLabel"]인지 확인
-			if (event.target.matches('input[name="vmLabel"]')) {
+			var vmLabelId = "vmLabel_"+addIndex;
+			//if (event.target.matches('input[name="vmLabel"]')) {
+			if (event.target.matches(`input#${vmLabelId}`)) {
 				stepVm.label = event.target.value;
 			}
-
-			if (event.target.matches('input[name="vmName"]')) {
+			var vmNameId = "vmName_"+addIndex;
+			if (event.target.matches(`input#${vmNameId}`)) {
 				stepVm.name = event.target.value;			
 			}
-
-			if (event.target.matches('input[name="subGroupSize"]')) {
+			var subGroupSizeId = "subGroupSize_"+addIndex;
+			if (event.target.matches(`input#${subGroupSizeId}`)) {			
 				stepVm.subGroupSize = event.target.value;			
 			}
-
-			if (event.target.matches('input[name="vmSpec"]')) {
+			var vmSpecId = "vmSpec_"+addIndex;
+			if (event.target.matches(`input#${vmSpecId}`)) {	
 				stepVm.commonSpec = event.target.value;			
 			}
-
-			if (event.target.matches('input[name="vmImage"]')) {
+			var vmImageId = "vmImage_"+addIndex;
+			if (event.target.matches(`input#${vmImageId}`)) {
 				stepVm.commonImage = event.target.value;			
 			}
-
-			if (event.target.matches('input[name="rootDiskType"]')) {
+			var rootDiskTypeId = "rootDiskType_"+addIndex;
+			if (event.target.matches(`input#${rootDiskTypeId}`)) {
 				stepVm.rootDiskType = event.target.value;			
 			}
-
-			if (event.target.matches('input[name="rootDiskSize"]')) {
+			var rootDiskSizeId = "rootDiskSize_"+addIndex;
+			if (event.target.matches(`input#${rootDiskSizeId}`)) {			
 				stepVm.rootDiskSize = event.target.value;			
 			}
-
-			if (event.target.matches('input[name="connectionName"]')) {
+			var connectionNameId = "connectionName_"+addIndex;
+			if (event.target.matches(`input#${connectionNameId}`)) {
 				stepVm.connectionName = event.target.value;			
 			}
-		});
-
-		// 
-		var delVmButton = document.createElement('button');
-		delVmButton.textContent = "Delete VM";
-		delVmButton.addEventListener("click", function() {
-			delVM(addIndex);
-		})
-		vmItem.appendChild(delVmButton);
+		});		
     }
 	return item;
 }

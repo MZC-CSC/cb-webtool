@@ -25,8 +25,10 @@ function toolboxGroup(name) {
             name,
             steps: [
 				// 현재 정의된 TaskComponent
+				defineTaskGroupStep(null, 'Task Group'),
                 //createTaskStepDynamicMcis(null, 'task', 'Dynamic Mcis'),	
-				defineTaskStepDynamicMcis(null, 'Dynamic Mcis')
+				
+				defineTaskStepInfraMigration(null, 'Dynamic Mcis')
             ]
         };
     }
@@ -237,6 +239,10 @@ function defaultStepEditorProvider(step, editorContext, _definition, isReadonly)
 }
 
 // custom task edit provider 정의
+
+// TASK Group
+
+// TASK : infraMigration 
 function infraMigrationStepEditorProvider(step, editorContext, _definition, isReadonly){
 	console.log("in infraMigrationStepEditorProvider")
 	console.log("step ", step)

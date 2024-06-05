@@ -285,8 +285,7 @@ function convertToDiagram(workflowData){
 
 
 // workflow template 선택시 해당 workflow template 정보를 canvas에 그린다.
-function setWorkflowTemplate(selectedOption){
-    
+function setWorkflowTemplate(selectedOption){    
     
     var templateId = selectedOption.value;
     // switch (templateId) {
@@ -295,33 +294,42 @@ function setWorkflowTemplate(selectedOption){
     // }
     if(templateId){
         console.log("templateId", templateId)
+        var workflowSequence = []// 전체( taskGroup의 array)
         var taskSequence = [];
         try{
             for(var i in workflowTemplateList){
-                console.log("workflowTemplateList[i].id", workflowTemplateList[i].id)
+                //console.log("workflowTemplateList[i].id", workflowTemplateList[i].id)
                 if( templateId == workflowTemplateList[i].id){
                     var templateData = workflowTemplateList[i].data
                     var templateTaskGroups = templateData.task_groups
                     for(var j in templateTaskGroups){
-                        console.log("templateTaskGroups ", templateData.task_groups[j])
-                        var tasks = templateData.task_groups[j].tasks;
+                        var aTaskGroup = templateTaskGroups[j]
+                        console.log("taskgroup ", aTaskGroup)
+                        if( aTaskGroup.id == ""){ aTaskGroup.id = "tg" + i}
+                        var taskGroupProperties = {};
+                        taskGroupProperties.tasks = aTaskGroup.tasks;
+                        workflowSequence.push(defineTaskGroupStep(aTaskGroup.id, aTaskGroup.name, taskGroupProperties ))
 
-                        for(var k in tasks){
-                            console.log("task ", tasks[k])
-                            var taskId = tasks[k].id ? "" : "wf_task_" + k;
-                            var taskComponent = tasks[k].task_component;
-                            console.log("taskId ", taskId)
-                            console.log("taskComponent ", taskComponent)
-                            if( taskComponent == "beetle_task_infra_migration"){
-                                var taskName = "tem-mig01"
-                                // json객체로 한번 더 형변환 : "request_body": "{\n   \"name\": \"recommended-infra01\", 형태임
-                                var request_body_str = tasks[k].request_body
-                                const requestBody = JSON.parse(request_body_str);
-                                var taskProperties = {body: requestBody};
+                        /// task group 아래에서 처리하도록 수정
+                        //console.log("templateTaskGroups ", templateData.task_groups[j])
+                        // var tasks = templateData.task_groups[j].tasks;
+
+                        // for(var k in tasks){
+                        //     //console.log("task ", tasks[k])
+                        //     var taskId = tasks[k].id ? "" : "temp_wf_task_" + k;// taskId가 없으면 readonly이기 때문에 임시 taskId를 넣음.
+                        //     var taskComponent = tasks[k].task_component;
+                        //     //console.log("taskId ", taskId)
+                        //     //console.log("taskComponent ", taskComponent)
+                        //     if( taskComponent == "beetle_task_infra_migration"){
+                        //         var taskName = "tem-mig01"
+                        //         // json객체로 한번 더 형변환 : "request_body": "{\n   \"name\": \"recommended-infra01\", 형태임
+                        //         var request_body_str = tasks[k].request_body
+                        //         const requestBody = JSON.parse(request_body_str);
+                        //         var taskProperties = {body: requestBody};
                                 
-                                taskSequence.push(defineTaskStepInfraMigration(taskId, taskName, taskProperties ))            
-                            }
-                        }
+                        //         taskSequence.push(defineTaskStepInfraMigration(taskId, taskName, taskProperties ));
+                        //     }
+                        // }
                     }
                     break;//task component set
                 }
@@ -334,7 +342,7 @@ function setWorkflowTemplate(selectedOption){
         // 가져온 data 변환
         var templateDefinition = {
             properties: {},
-            sequence: taskSequence
+            sequence: workflowSequence
         }
         console.log("templateDefinition : ", templateDefinition)
 
@@ -412,53 +420,146 @@ function runWorkflow(){
 
 }
 
+// 해당 step을 cicada에서 사용하는 taskGroup으로 변경
+function convertTaskGroup(step){
+    var cicadaTaskGroup = {}    
+
+    switch (step.type) {
+        case 'TaskGroup':
+            
+            cicadaTaskGroup.id = step.id;
+            cicadaTaskGroup.name = step.properties.name;
+            cicadaTaskGroup.description = step.properties.name;// TODO : description으로 수정할 것
+            var tasks = []
+
+            if( step.sequence ){
+                var dependency = "";
+                step.sequence.forEach(childStep => {
+                    console.log("convertTaskGroup ", childStep)
+                    var cicadaTask = convertTask(childStep)
+                    tasks.push(cicadaTask)
+                    dependency = cicadaTask.id;
+                })
+            }
+            cicadaTaskGroup.tasks = tasks;
+            
+            break
+        
+    }
+    return cicadaTaskGroup;
+}
+
+// 해당 step을 cicada에서 사용하는 task로 변경
+function convertTask(step){    
+    var cicadaTask = {};
+    //id:"", options:"", task_component:"", dependencies:""};
+    //console.log("convertTask ", step)
+    switch (step.type) {
+        
+        case 'InfraMigration':
+            //if( validateTask(taskType, step) ){
+                cicadaTask.id = step.id;
+                cicadaTask.name = step.id;
+                cicadaTask.task_component = step.name;//"beetle_task_infra_migration";
+                //cicadaTask.request_body = step.properties.body;
+                let strRequestBody = JSON.stringify(step.properties.body);
+                cicadaTask.request_body = strRequestBody;
+                
+            // }else{
+            //     // validation is false.
+            // }
+            break;
+    }
+    return cicadaTask;
+}
+
 // workflow 저장
-// TODO : sequentialWorkflow의 값을 cicada의 workflow로 변경하여 저장 호출.
+// sequentialWorkflow의 값을 cicada의 workflow로 변경하여 저장 호출.
 function saveWorkflow(){
+    var cicadaWorkflow = {}    
+    var cicadaData = {}// data안에 taskGroups가 있음
+    var cicadaTaskGroups = []
+
     var workflowDefinition = designer.getDefinition()
     console.log("save workflow definition ", designer.getDefinition())
 
     //validateWorkflow()
     
     // request 객체에 Set.
-    // sequence가 전체 순서임.
-    var aTaskGroup = {}
+    // sequence가 workflow 전체의 순서임.
+
+    var workflowDependency = "";//cicada 용으로 재정렬
     workflowDefinition.sequence.forEach(step => {
         console.log("step ", step)
         
 		switch (step.type) {
-            case 'InfraMigration':
-                //if( validateTask(taskType, step) ){
-                    aTaskGroup.id="mig_infra_task_group"
-                    var tasks = []
-                    var aTask = {id, options, task_component, dependencies};
-                    aTask.id = "mig_infra_task_01"
-                    aTask.task_component = "beetle_task_infra_migration"
-                    aTask.options.request_body = step.properties.body;
-                    tasks.push(aTask)
-                    aTaskGroup.tasks = tasks;
-                // }else{
-                //     // validation is false.
-                // }
-                break;
+            case 'TaskGroup':
+                console.log("goto taskGroup")
+                var aCicadaTaskGroup = convertTaskGroup(step);
+                aCicadaTaskGroup.dependency = workflowDependency;
+                cicadaTaskGroups.push(aCicadaTaskGroup)
+                workflowDependency = aCicadaTaskGroup.id;
+                break
+            // taskGroup 없이 사용 불가. 모든 task는 taskGroup 안에 있어야 함.
+            // case 'InfraMigration':
+            //     //if( validateTask(taskType, step) ){
+                    
+                
+            //     cicadaTask = convertTask(step);
+            //         // var tasks = []
+            //         // var aTask = {id:"", options:"", task_component:"", dependencies:""};
+
+            //         // aTask.id = step.id;
+            //         // aTask.request_body = step.properties.body;
+            //         // tasks.push(aTask)
+            //         // aTaskGroup.tasks = tasks;
+            //     // }else{
+            //     //     // validation is false.
+            //     // }
+            //     break;
         }
     });
 
-    var cicadaWorkflow = {}    
-    var cicadaData = {}    
-    var cicadaTaskGroup = aTaskGroup;
-
-    cicadaData.task_group = cicadaTaskGroup;
+    
+    cicadaData.task_groups = cicadaTaskGroups;
     cicadaData.description = "data desc"
 
     cicadaWorkflow.name = "my01"
     cicadaWorkflow.data = cicadaData;
 
-    console.log("cicadaWorkflow ", cicadaWorkflow)
-    //TaskGroups []TaskGroup `json:"task_groups"`
+    console.log("cicadaWorkflow ", cicadaWorkflow)  
 	
     // cicada api 호출
+    try{
+        var url = "/operation/migrations/workflowmng/workflow";// /proc 추가할 것
+        axios.post(url,cicadaWorkflow,{
+            headers :{
+                },
+        }).then(result=>{
+            console.log("data : ",result);
+            console.log("Result Status : ",result.status); 
 
+            var statusCode = result.data.status;
+            var message = result.data.message;
+            console.log("Result Status : ",statusCode); 
+            console.log("Result message : ",message); 
+
+            if(result.status == 201 || result.status == 200){
+                commonResultAlert("The workflow has been saved successfully")
+            
+            }else{
+                commonErrorAlert(statusCode, message) 
+            }
+        }).catch((error) => {
+            console.log(error);
+            console.log(error.response)
+            var errorMessage = error.response.data.error;
+            var statusCode = error.response.status;
+            commonErrorAlert(statusCode, errorMessage) 
+        })
+    }finally{
+        
+    }
     // 결과 return.
 }
 

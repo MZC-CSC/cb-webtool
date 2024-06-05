@@ -229,8 +229,8 @@ function displayWorkflowInfo(targetAction) {
 }
 
 // workflow 조회 : 특정 workflow 를 조회하여 화면에 표시
-function showWorkflowInfo(workflowId) {
-    var url = "/operation/migrations/workflow/id/" + workflowId;
+function showWorkflowInfo(workflowId) {               
+    var url = "/operation/migrations/workflowmng/workflow/id/" + workflowId;
     console.log("workflow detail URL : ", url)
 
     return axios.get(url, {
@@ -238,11 +238,11 @@ function showWorkflowInfo(workflowId) {
     }).then(result => {
         console.log(result);
         console.log(result.data);
-        var data = result.data.WorkflowInfo
-        console.log("Show Data : ", data);
+        var workflowInfo = result.data.WorkflowInfo
+        console.log("Show workflowInfo : ", workflowInfo);
 
-        var workflowId = data.id;
-        var workspaceDescription = data.data.description
+        var workflowId = workflowInfo.id;
+        var workspaceDescription = workflowInfo.data.description
         $("#workflow_info_txt").empty();
         $("#dtlDescription").empty();
         
@@ -250,25 +250,33 @@ function showWorkflowInfo(workflowId) {
         $("#dtlDescription").val(workspaceDescription);
 
         // 가져온 정보에서 designer
-        var taskGroupArr = data.data.task_groups;
-        var taskGroup = taskGroupArr[0];
-        var taskGroupId = taskGroup.id
-        var taskArr = taskGroup.tasks;
-        var task0 = taskArr[0];
-        var taskId = task0.id;
-        var taskName = task0.id;
-        var taskComponent = task0.task_component;
-        var taskProperties = {body: task0.options.request_body};
+        var sequenceList = [];// 
+        var cicadaTaskGroups = workflowInfo.data.task_groups;
+        cicadaTaskGroups.forEach(aCicadaTaskGroup => {
+            var sequence = convertTaskGroupToSequentialWorkflow(aCicadaTaskGroup)
+            sequenceList.push(sequence);
+        })
+        console.log("after sequenceList ", sequenceList)
+        
+        // var taskGroup = taskGroupArr[0];
+        // var taskGroupId = taskGroup.id
+        // var taskArr = taskGroup.tasks;
+        // var task0 = taskArr[0];
+        // var taskId = task0.id;
+        // var taskName = task0.id;
+        // var taskComponent = task0.task_component;
+        // var taskProperties = {body: task0.request_body};
         
         //workflowplaceholder
-
+            
         var templateDefinition = {
             properties: {},
-            sequence: [
+            sequence: sequenceList,
+            //sequence: [
                 // templateId가 없으면 edit 불가하므로 taskId 까지 입력한다.
                 //defineTaskStepDynamicMcis(taskId, taskName, taskProperties )
-                defineTaskStepInfraMigration(taskId, taskName, taskProperties)
-            ]
+            //    defineTaskStepInfraMigration(taskId, taskName, taskProperties)
+            //]
         }
         console.log("templateDefinition : ", templateDefinition)
         resetDesigner(templateDefinition)
@@ -278,6 +286,30 @@ function showWorkflowInfo(workflowId) {
     });
 }
 
+function convertTaskGroupToSequentialWorkflow(cicadaTaskGroup){
+    console.log("cicadaTaskGroup ", cicadaTaskGroup)
+
+    var taskGroupProperties = {};    
+    var cicadaTasks = cicadaTaskGroup.tasks;    
+    taskGroupProperties.tasks = cicadaTasks;
+
+    var sequenceTaskGroup = defineTaskGroupStep(cicadaTaskGroup.id, cicadaTaskGroup.name, taskGroupProperties )
+    
+    return sequenceTaskGroup;
+}
+
+// cicada task를 변경
+function convertTaskToSequentialWorkflow(cicadaTask){
+    console.log("cicadaTask ", cicadaTask)
+    var sequenceTask = {};
+    if( cicadaTask.task_component == "beetle_task_infra_migration"){
+    
+        var taskProperties = {body: cicadaTask.request_body};
+        sequenceTask = defineTaskStepInfraMigration(cicadaTask.id, cicadaTask.name, taskProperties )
+    }
+    console.log("sequenceTask ", sequenceTask)
+    return sequenceTask;
+}
 
 
 ///////////////////////////////////////// Workflow Editor 정의영역 start ///////////////////////////////////
