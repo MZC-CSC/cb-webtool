@@ -111,7 +111,7 @@ function deleteWorkflow() {
         return false;
     }
 
-    var url = "/operation/migrations" + "/workflow/del/" + workflowId
+    var url = "/operation/migrations/workflowmng/workflow/del/" + workflowId
     console.log("del workflow url : ", url);
 
     axios.delete(url, {

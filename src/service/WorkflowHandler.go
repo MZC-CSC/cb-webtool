@@ -183,39 +183,78 @@ func GetWorkflowData(workflowID string) (*workflow.WorkflowInfo, model.WebStatus
 }
 
 
-// Workflow 삭제
-func DelWorkflow(nameSpaceID string, workflowId string) (*workflow.WorkflowStatusInfo, model.WebStatus) {
-	var originalUrl = "/ns/{namespace}/workflow/{workflow}"
+// Workflow 수정
+// 수정된 workflow내용이 return되나 상태값만 return.
+func UpdateWorkflow(workflowID string, workflowInfoReq *workflow.WorkflowReqInfo)(model.WebStatus){
+	var originalUrl = "/workflow/{wfId}"
 
 	var paramMapper = make(map[string]string)
-	paramMapper["{namespace}"] = nameSpaceID
-	paramMapper["{workflow}"] = workflowId
+	paramMapper["{wfId}"] = workflowID
 	urlParam := util.MappingUrlParameter(originalUrl, paramMapper)
 	url := util.CICADA + urlParam
 
-	if workflowId == "" {
-		return nil, model.WebStatus{StatusCode: 500, Message: "workflow is required"}
-	}
+	pbytes, _ := json.Marshal(workflowInfoReq)
+	
+	resp, err := util.CommonHttp(url, pbytes, http.MethodPut)
 
-	// 경로안에 parameter가 있어 추가 param없이 호출 함.
-	resp, err := util.CommonHttp(url, nil, http.MethodDelete)
-	statusInfo := workflow.WorkflowStatusInfo{}
+	returnWorkflowInfo := workflow.WorkflowInfo{}
+	returnStatus := model.WebStatus{}
+
 	if err != nil {
-		fmt.Println("delCluster ", err)
-		return &statusInfo, model.WebStatus{StatusCode: 500, Message: err.Error()}
+		fmt.Println(err)
+		return model.WebStatus{StatusCode: 500, Message: err.Error()}
 	}
 
 	respBody := resp.Body
 	respStatus := resp.StatusCode
 
-	json.NewDecoder(respBody).Decode(&statusInfo)
-	fmt.Println(statusInfo)
+	if respStatus != 200 && respStatus != 201 { // 호출은 정상이나, 가져온 결과값이 200, 201아닌 경우 message에 담겨있는 것을 WebStatus에 set
+		errorInfo := model.ErrorInfo{}
+		json.NewDecoder(respBody).Decode(&errorInfo)
+		fmt.Println("respStatus != 200 reason ", errorInfo)
+		returnStatus.Message = errorInfo.Message
+	} else {
+		json.NewDecoder(respBody).Decode(&returnWorkflowInfo)
+		fmt.Println(returnWorkflowInfo)
+	}
+	returnStatus.StatusCode = respStatus
+
+	return returnStatus
+}
+
+// Workflow 삭제
+func DelWorkflow(workflowID string) (*cicada_common.SimpleMsg, model.WebStatus) {
+	var originalUrl = "/workflow/{wfId}"
+
+	var paramMapper = make(map[string]string)
+	paramMapper["{wfId}"] = workflowID
+	urlParam := util.MappingUrlParameter(originalUrl, paramMapper)
+	url := util.CICADA + urlParam
+
+	if workflowID == "" {
+		return nil, model.WebStatus{StatusCode: 500, Message: "workflow is required"}
+	}
+
+	// 경로안에 parameter가 있어 추가 param없이 호출 함.
+	resp, err := util.CommonHttp(url, nil, http.MethodDelete)
+
+	returnSimpleMsg := cicada_common.SimpleMsg{}
+	if err != nil {
+		fmt.Println("DelWorkflow ", err)
+		return &returnSimpleMsg, model.WebStatus{StatusCode: 500, Message: err.Error()}
+	}
+
+	respBody := resp.Body
+	respStatus := resp.StatusCode
+
+	json.NewDecoder(respBody).Decode(&returnSimpleMsg)
+	fmt.Println(returnSimpleMsg)
 
 	if respStatus != 200 && respStatus != 201 {
 		fmt.Println(respBody)
-		return &statusInfo, model.WebStatus{StatusCode: respStatus, Message: statusInfo.Message}
+		return &returnSimpleMsg, model.WebStatus{StatusCode: respStatus, Message: returnSimpleMsg.Message}
 	}
-	return &statusInfo, model.WebStatus{StatusCode: respStatus}
+	return &returnSimpleMsg, model.WebStatus{StatusCode: respStatus}
 }
 
 

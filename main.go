@@ -1020,6 +1020,8 @@ func main() {
 	e.POST("/operation/migrations/workflowmng/workflow/run/:workflowID", controller.WorkflowExecute)
 	e.GET("/operation/migrations/workflowmng/workflow/list", controller.GetWorkflowList)
 	e.GET("/operation/migrations/workflowmng/workflow/id/:workflowID", controller.GetWorkflowInfoData)
+	e.PUT("/operation/migrations/workflowmng/workflow/put/:workflowID", controller.WorkflowUpdateProc)
+	e.DELETE("/operation/migrations/workflowmng/workflow/del/:workflowID", controller.WorkflowDelProc)
 	
 	e.GET("/operation/migrations/workflowmng/workflowtemplate", controller.GetWorkflowTemplateList)
 	e.GET("/operation/migrations/workflowmng/workflowtemplate/id/:workflowTemplateID", controller.GetWorkflowTemplateData)

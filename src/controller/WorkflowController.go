@@ -174,20 +174,39 @@ func WorkflowExecute(c echo.Context) error {
 	})
 }
 
+
+// Workflow 수정
+func WorkflowUpdateProc(c echo.Context) error {
+	log.Println("WorkflowUpdateProc : ")
+	
+	workflowReqInfo := &workflow.WorkflowReqInfo{}
+	if err := c.Bind(workflowReqInfo); err != nil {
+		log.Println(err)
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "fail",
+			"status":  "5001",
+		})
+	}
+	log.Println(workflowReqInfo)
+	workflowID := c.Param("workflowID")
+	log.Println("workflowID= " + workflowID)
+	
+	respStatus := service.UpdateWorkflow(workflowID, workflowReqInfo)
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": respStatus.Message,
+		"status":  respStatus.StatusCode,
+	})
+
+}
+
 // Workflow 삭제
 func WorkflowDelProc(c echo.Context) error {
 	log.Println("WorkflowDelProc : ")
-	loginInfo := service.CallLoginInfo(c)
-	if loginInfo.UserID == "" {
-		return c.Redirect(http.StatusTemporaryRedirect, "/login")
-	}
-
-	defaultNameSpaceID := loginInfo.DefaultNameSpaceID
-
+	
 	workflowID := c.Param("workflowID")
-	//optionParam := c.QueryParam("option")
 	log.Println("workflowID= " + workflowID)
-	_, respStatus := service.DelWorkflow(defaultNameSpaceID, workflowID)
+	_, respStatus := service.DelWorkflow(workflowID)
 	log.Println("WorkflowDelProc service returned")
 	if respStatus.StatusCode != 200 && respStatus.StatusCode != 201 {
 		return c.JSON(respStatus.StatusCode, map[string]interface{}{
