@@ -18,7 +18,7 @@ import (
 HoneyBee Api Manage Handler - 2024.06.05
 */
 
-func GetConnectionInfoDataById(connectionId string) (*honeybee.ConnectionInfo, model.WebStatus) {
+func GetConnectionInfoDataById(connectionId string) ([]honeybee.ConnectionInfo, model.WebStatus) {
 	var originalUrl = "/connection_info/{connId}"
 
 	var paramMapper = make(map[string]string)
@@ -36,7 +36,7 @@ func GetConnectionInfoDataById(connectionId string) (*honeybee.ConnectionInfo, m
 
 	respBody := resp.Body
 	respStatus := resp.StatusCode
-	connectionInfo := &honeybee.ConnectionInfo{}
+	connectionInfo := []honeybee.ConnectionInfo{}
 
 	returnStatus := model.WebStatus{}
 
@@ -45,7 +45,10 @@ func GetConnectionInfoDataById(connectionId string) (*honeybee.ConnectionInfo, m
 		json.NewDecoder(respBody).Decode(&failResultInfo)
 		return nil, model.WebStatus{StatusCode: respStatus, Message: failResultInfo.Message}
 	}
-	json.NewDecoder(respBody).Decode(&connectionInfo)
+	decordErr := json.NewDecoder(respBody).Decode(&connectionInfo)
+	if decordErr != nil {
+		fmt.Println(decordErr)
+	}
 	fmt.Println(connectionInfo)
 
 	returnStatus.StatusCode = respStatus
@@ -213,16 +216,13 @@ func UpdateConnectionInfo(connectionId string, sourceGroupId string, connectionI
 }
 
 // put /honeybee/source_group/{sgId}/connection_info/{connId}
-func DeleteConnectionInfo(connectionId string, sourceGroupId string) (*honeybee.ConnectionInfo, model.WebStatus) {
+func DeleteConnectionInfo(connectionId string, sourceGroupId string) (*common.SimpleMsg, model.WebStatus) {
 	var originalUrl = "/source_group/{sgId}/connection_info/{connId}"
 
 	var paramMapper = make(map[string]string)
 	paramMapper["{connId}"] = connectionId
 	paramMapper["{sgId}"] = sourceGroupId
 	urlParam := util.MappingUrlParameter(originalUrl, paramMapper)
-
-	fmt.Println("UpdateConnectionInfo : URL")
-	fmt.Println(urlParam)
 
 	url := util.HONEYBEE + urlParam
 
@@ -235,7 +235,7 @@ func DeleteConnectionInfo(connectionId string, sourceGroupId string) (*honeybee.
 
 	respBody := resp.Body
 	respStatus := resp.StatusCode
-	connectionInfo := &honeybee.ConnectionInfo{}
+	message := &common.SimpleMsg{}
 
 	returnStatus := model.WebStatus{}
 
@@ -244,14 +244,14 @@ func DeleteConnectionInfo(connectionId string, sourceGroupId string) (*honeybee.
 		json.NewDecoder(respBody).Decode(&failResultInfo)
 		return nil, model.WebStatus{StatusCode: respStatus, Message: failResultInfo.Message}
 	}
-	json.NewDecoder(respBody).Decode(&connectionInfo)
-	fmt.Println(connectionInfo)
+	json.NewDecoder(respBody).Decode(&message)
+	fmt.Println(message)
 
 	returnStatus.StatusCode = respStatus
 	log.Println(respBody)
 	util.DisplayResponse(resp) // 수신내용 확인
 
-	return connectionInfo, returnStatus
+	return message, returnStatus
 }
 
 // /honeybee/readyz
@@ -289,7 +289,7 @@ func CheckReadyHoneybee() (*common.SimpleMsg, model.WebStatus) {
 
 // //////////////////////////////////////SourceGroup
 // /honeybee/source_group get
-func GetSourceGroupList(connectionId string) (*honeybee.SourceGroupInfoList, model.WebStatus) {
+func GetSourceGroupList() ([]honeybee.SourceGroupInfo, model.WebStatus) {
 	var originalUrl = "/source_group"
 
 	url := util.HONEYBEE + originalUrl
@@ -303,7 +303,7 @@ func GetSourceGroupList(connectionId string) (*honeybee.SourceGroupInfoList, mod
 
 	respBody := resp.Body
 	respStatus := resp.StatusCode
-	sourceGroupInfoList := &honeybee.SourceGroupInfoList{}
+	sourceGroupInfoList := []honeybee.SourceGroupInfo{}
 
 	returnStatus := model.WebStatus{}
 
@@ -312,8 +312,15 @@ func GetSourceGroupList(connectionId string) (*honeybee.SourceGroupInfoList, mod
 		json.NewDecoder(respBody).Decode(&failResultInfo)
 		return nil, model.WebStatus{StatusCode: respStatus, Message: failResultInfo.Message}
 	}
-	json.NewDecoder(respBody).Decode(&sourceGroupInfoList)
+	fmt.Println(respBody)
+	decordErr := json.NewDecoder(respBody).Decode(&sourceGroupInfoList)
+	if decordErr != nil {
+		fmt.Println("Decode Error : ", decordErr)
+	}
+
+	fmt.Println("sourceGroupInfoList")
 	fmt.Println(sourceGroupInfoList)
+	fmt.Println("sourceGroupInfoList end")
 
 	returnStatus.StatusCode = respStatus
 	log.Println(respBody)
@@ -436,13 +443,14 @@ func UpdateSourceGroupData(sourceGroupId string, updateSourceGroupInfo honeybee.
 
 // /honeybee/source_group/{sgId} delete
 func DeleteSourceGroupList(sourceGroupId string) (*common.SimpleMsg, model.WebStatus) {
-	var originalUrl = "/source_group"
+	var originalUrl = "/source_group/{sgId}"
 
 	var paramMapper = make(map[string]string)
 	paramMapper["{sgId}"] = sourceGroupId
 	urlParam := util.MappingUrlParameter(originalUrl, paramMapper)
 
 	url := util.HONEYBEE + urlParam
+
 	resp, err := util.CommonHttp(url, nil, http.MethodDelete)
 
 	if err != nil {
@@ -472,7 +480,7 @@ func DeleteSourceGroupList(sourceGroupId string) (*common.SimpleMsg, model.WebSt
 }
 
 // /honeybee/source_group/{sgId}/connection_check get
-func GetCheckConnectionSourceGroupData(sourceGroupId string) (*honeybee.ConnectionInfo, model.WebStatus) {
+func GetCheckConnectionSourceGroupData(sourceGroupId string) ([]honeybee.ConnectionInfo, model.WebStatus) {
 	var originalUrl = "/source_group/{sgId}/connection_check"
 
 	var paramMapper = make(map[string]string)
@@ -489,7 +497,7 @@ func GetCheckConnectionSourceGroupData(sourceGroupId string) (*honeybee.Connecti
 
 	respBody := resp.Body
 	respStatus := resp.StatusCode
-	sourceGroupConnectionInfo := &honeybee.ConnectionInfo{}
+	sourceGroupConnectionInfo := []honeybee.ConnectionInfo{}
 
 	returnStatus := model.WebStatus{}
 
@@ -542,7 +550,11 @@ func GetImportInfraInfoBySourceIdAndConnId(connectionId string, sourceGroupId st
 		json.NewDecoder(respBody).Decode(&failResultInfo)
 		return nil, model.WebStatus{StatusCode: respStatus, Message: failResultInfo.Message}
 	}
-	json.NewDecoder(respBody).Decode(&saveInfraInfo)
+	decodeErr := json.NewDecoder(respBody).Decode(&saveInfraInfo)
+	if decodeErr != nil {
+		fmt.Println(decodeErr)
+		fmt.Println(respBody)
+	}
 	fmt.Println(saveInfraInfo)
 
 	returnStatus.StatusCode = respStatus
@@ -596,7 +608,7 @@ func GetSoftwareInfoBySourceIdAndConnId(connectionId string, sourceGroupId strin
 
 // [Get] Get source info
 // /honeybee/source_group/{sgId}/connection_info/{connId}/infra
-func GetLegacyInfraInfoBySourceIdAndConnId(connectionId string, sourceGroupId string) (*honeybeeinfra.InfraInfo, model.WebStatus) {
+func GetLegacyInfraInfoBySourceIdAndConnId(connectionId string, sourceGroupId string) (honeybeeinfra.InfraInfo, model.WebStatus) {
 	var originalUrl = "/source_group/{sgId}/connection_info/{connId}/import/infra"
 
 	var paramMapper = make(map[string]string)
@@ -613,21 +625,30 @@ func GetLegacyInfraInfoBySourceIdAndConnId(connectionId string, sourceGroupId st
 
 	if err != nil {
 		fmt.Println(err)
-		return nil, model.WebStatus{StatusCode: 500, Message: err.Error()}
+		return honeybeeinfra.InfraInfo{}, model.WebStatus{StatusCode: 500, Message: err.Error()}
 	}
 
 	respBody := resp.Body
 	respStatus := resp.StatusCode
-	infraInfo := &honeybeeinfra.InfraInfo{}
+	infraInfo := honeybeeinfra.InfraInfo{}
 
 	returnStatus := model.WebStatus{}
 
 	if respStatus != 200 && respStatus != 201 { // 호출은 정상이나, 가져온 결과값이 200, 201아닌 경우 message에 담겨있는 것을 WebStatus에 set
 		failResultInfo := honeybeecommon.SimpleMsg{}
 		json.NewDecoder(respBody).Decode(&failResultInfo)
-		return nil, model.WebStatus{StatusCode: respStatus, Message: failResultInfo.Message}
+		return honeybeeinfra.InfraInfo{}, model.WebStatus{StatusCode: respStatus, Message: failResultInfo.Message}
 	}
-	json.NewDecoder(respBody).Decode(&infraInfo)
+	fmt.Println("respBody")
+	fmt.Println(respBody)
+	fmt.Println(&respBody)
+	fmt.Println("respBody end")
+
+	decodeErr := json.NewDecoder(respBody).Decode(&infraInfo)
+	if decodeErr != nil {
+		fmt.Println(respBody)
+		fmt.Println(decodeErr)
+	}
 	fmt.Println(infraInfo)
 
 	returnStatus.StatusCode = respStatus
@@ -661,7 +682,9 @@ func GetLegacySoftwareInfoBySourceIdAndConnId(connectionId string, sourceGroupId
 	respBody := resp.Body
 	respStatus := resp.StatusCode
 	softwareInfo := &honeybeesoftware.SoftwareInfo{}
-
+	fmt.Println("Body")
+	fmt.Println(respBody)
+	fmt.Println("Body")
 	returnStatus := model.WebStatus{}
 
 	if respStatus != 200 && respStatus != 201 { // 호출은 정상이나, 가져온 결과값이 200, 201아닌 경우 message에 담겨있는 것을 WebStatus에 set
@@ -669,8 +692,14 @@ func GetLegacySoftwareInfoBySourceIdAndConnId(connectionId string, sourceGroupId
 		json.NewDecoder(respBody).Decode(&failResultInfo)
 		return nil, model.WebStatus{StatusCode: respStatus, Message: failResultInfo.Message}
 	}
-	json.NewDecoder(respBody).Decode(&softwareInfo)
+	decodeErr := json.NewDecoder(respBody).Decode(&softwareInfo)
+	if decodeErr != nil {
+		fmt.Println(respBody)
+		fmt.Println(decodeErr)
+	}
+	fmt.Println("softwareInfo")
 	fmt.Println(softwareInfo)
+	fmt.Println("softwareInfo end")
 
 	returnStatus.StatusCode = respStatus
 	log.Println(respBody)

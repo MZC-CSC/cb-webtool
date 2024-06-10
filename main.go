@@ -514,7 +514,7 @@ func main() {
 			"templates/Footer",
 
 			"operation/migrations/sourcemodelmng/SourceModelList",
-			"operation/migrations/sourcemodelmng/SourceModelInfo",			
+			"operation/migrations/sourcemodelmng/SourceModelInfo",
 		},
 		DisableCache: true,
 	})
@@ -552,7 +552,7 @@ func main() {
 			"templates/Footer",
 
 			"operation/migrations/targetmodelmng/TargetModelList",
-			"operation/migrations/targetmodelmng/TargetModelInfo",			
+			"operation/migrations/targetmodelmng/TargetModelInfo",
 		},
 		DisableCache: true,
 	})
@@ -592,7 +592,6 @@ func main() {
 			"operation/migrations/workflowmng/WorkflowList",
 			"operation/migrations/workflowmng/WorkflowInfo",
 			"operation/migrations/workflowmng/WorkflowViewer",
-			
 		},
 		DisableCache: true,
 	})
@@ -1019,19 +1018,40 @@ func main() {
 	e.POST("/operation/migrations/workflowmng/workflow", controller.WorkflowRegProc)
 	e.GET("/operation/migrations/workflowmng/workflow/list", controller.GetWorkflowList)
 	e.GET("/operation/migrations/workflowmng/workflow/id/:workflowID", controller.GetWorkflowInfoData)
-	
+
 	e.GET("/operation/migrations/workflowmng/workflowtemplate", controller.GetWorkflowTemplateList)
 	e.GET("/operation/migrations/workflowmng/workflowtemplate/id/:workflowTemplateID", controller.GetWorkflowTemplateData)
 
 	e.GET("/operation/migrations/workflowmng/taskcomponent", controller.GetTaskComponentList)
 	e.GET("/operation/migrations/workflowmng/taskcomponent/id/:taskcomponentID", controller.GetTaskComponentData)
-	
-	
+
 	////// readyz
 	e.GET("/readyz", controller.GetReadyz)
 
-	
-	
+	/////////////////////////////////////
+	// start of honeybee route
+
+	e.GET("/operation/onpremise/sourcegroupmng/connectioninfo/:connId", controller.GetConnectionInfoDataById)
+	e.GET("/operation/onpremise/sourcegroupmng/sourcegroup/:sgId/connection", controller.GetConnectionInfoListBySourceId)
+	e.POST("/operation/onpremise/sourcegroupmng/sourcegroup/:sgId/connection", controller.RegConnectionInfo)
+	e.GET("/operation/onpremise/sourcegroupmng/sourcegroup/:sgId/connection/:connId", controller.GetConnectionInfoDataBysgIdAndconnId)
+	e.PUT("/operation/onpremise/sourcegroupmng/sourcegroup/:sgId/connection/:connId", controller.UpdateConnectionInfo)
+	e.DELETE("/operation/onpremise/sourcegroupmng/sourcegroup/:sgId/connection/:connId", controller.DeleteConnectionInfo)
+
+	e.GET("/operation/onpremise/sourcegroupmng/readyz", controller.CheckReadyHoneybee)
+
+	e.GET("/operation/onpremise/sourcegroupmng/sourcegroup", controller.GetSourceGroupList)
+	e.POST("/operation/onpremise/sourcegroupmng/sourcegroup", controller.RegSourceGroup)
+	e.GET("/operation/onpremise/sourcegroupmng/sourcegroup/:sgId", controller.GetSourceGroupDataById)
+	e.PUT("/operation/onpremise/sourcegroupmng/sourcegroup/:sgId", controller.UpdateSourceGroupData)
+	e.DELETE("/operation/onpremise/sourcegroupmng/sourcegroup/:sgId", controller.DeleteSourceGroupList)
+	e.GET("/operation/onpremise/sourcegroupmng/sourcegroup/:sgId/connectioncheck", controller.GetCheckConnectionSourceGroupData)
+
+	e.GET("/operation/onpremise/sourcegroupmng/sourcegroup/:sgId/connectioninfo/:connId/import/infra", controller.GetImportInfraInfoBySourceIdAndConnId)
+	e.GET("/operation/onpremise/sourcegroupmng/sourcegroup/:sgId/connectioninfo/:connId/import/software", controller.GetSoftwareInfoBySourceIdAndConnId)
+
+	e.GET("/operation/onpremise/sourcegroupmng/sourcegroup/:sgId/connectioninfo/:connId/infra", controller.GetLegacyInfraInfoBySourceIdAndConnId)
+	e.GET("/operation/onpremise/sourcegroupmng/sourcegroup/:sgId/connectioninfo/:connId/software", controller.GetLegacySoftwareInfoBySourceIdAndConnId)
 
 	/////////////////////////////////////
 
